@@ -10,19 +10,21 @@ Hepsi ücretsiz paketle çalışır. Gizli anahtarlar (service role, R2, HotelRu
 3. Authentication → URL Configuration → Site URL: Cloudflare Pages adresi.
 4. İlk admin: Authentication → Users → Add user → `gokcercakir@gmail.com`, şifre, "Auto confirm" işaretli. Rolü uygulamanın giriş adımında verilir.
 
-## 2. GitHub → Settings → Secrets and variables → Actions
-| Tür | Ad | Nereden |
-|---|---|---|
-| Secret | `SUPABASE_ACCESS_TOKEN` | supabase.com → Account → Access Tokens → Generate |
-| Variable | `SUPABASE_PROJECT_REF` | Project Settings → General → Reference ID (adresteki `xxxx.supabase.co` kısmı) |
+## 2. GitHub: Supabase token'ı
+Supabase projesi: `ihwyfllcvkcpjsouhsel` (Frankfurt). Kimlik iş akışına yazılı; GitHub'a sadece token girilir.
 
-Bunlar tanımlıysa `main`'e gelen her veritabanı değişikliği testler geçtikten sonra Supabase'e otomatik uygulanır (Actions → "Supabase güncelle").
+1. supabase.com'a gir → sağ üstte profil resmi → **Account preferences** → soldan **Access Tokens** → **Generate new token**. Ad: `hk-kontrol-github`. Çıkan değeri kopyala (bir daha gösterilmez).
+2. github.com/taregrouphotels-dotcom/hk-kontrol → üstte **Settings** (dişli) → solda **Secrets and variables** → **Actions** → yeşil **New repository secret**.
+3. Name: `SUPABASE_ACCESS_TOKEN`, Secret: kopyaladığın değer → **Add secret**.
+4. **Actions** sekmesi → solda "Supabase güncelle" → **Run workflow**. Yeşil biterse veritabanı kurulmuştur.
+
+Bundan sonra `main`'e gelen her veritabanı değişikliği testler geçtikten sonra Supabase'e otomatik uygulanır.
 
 ## 3. Cloudflare Pages
 Workers & Pages → Create → Pages → Connect to Git → `hk-kontrol`.
 Build command `npm run build`, output `dist`. Ortam değişkenleri:
-- `VITE_SUPABASE_URL` = Project URL
-- `VITE_SUPABASE_ANON_KEY` = anon (publishable) key
+- `VITE_SUPABASE_URL` = `https://ihwyfllcvkcpjsouhsel.supabase.co`
+- `VITE_SUPABASE_ANON_KEY` = publishable key (`sb_publishable_...`)
 
 Bu ikisi tarayıcıya gider, gizli değildir.
 
