@@ -1,26 +1,31 @@
-# HK Kontrol — Başlangıç Paketi
+# HK Kontrol
 
-## Projeyi açma
-1. GitHub'da yeni **private** repo: `hk-kontrol`.
-2. Bu klasördeki dosyaları yapıyı koruyarak repoya koy:
-   ```
-   CLAUDE.md
-   KICKOFF_PROMPT.md
-   README.md
-   docs/SPEC.md
-   supabase/schema.sql
-   templates/X3.json
-   config/team.json
-   data/HK_Veri_Toplama.xlsx
-   ```
-3. `data/HK_Veri_Toplama.xlsx` yerine **doldurduğun Excel'i** aynı adla koy.
-4. HotelRunner API bilgileri (tesis başına `token` + `hr_id`) Supabase Edge Function secret'ı olarak girilir; bkz. Kurulum.
-5. Claude Code'da repoyu aç, `KICKOFF_PROMPT.md` içindeki metni ilk mesaj olarak yapıştır. Soruları cevapla, planı onayla.
+Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulaması. HK temizlikten sonra odayı rehberli kamerayla çeker, süpervizör onaylar.
 
-## Açman gereken hesaplar (hepsi ücretsiz paketle başlar)
-- **Supabase:** yeni proje, bölge Frankfurt (eu-central-1). Veritabanı, giriş, sunucu fonksiyonları.
-- **Cloudflare:** Pages (uygulamanın yayını) + R2 (fotoğraf/video). R2 için kart bilgisi istenebilir; ücretsiz kota aşılmadıkça ücret çıkmaz.
-- **Anthropic API anahtarı:** Faz 2 (AI) için.
+- Tarif: [docs/SPEC.md](docs/SPEC.md) · Kararlar: [docs/KARARLAR.md](docs/KARARLAR.md) · Kurulum: [docs/KURULUM.md](docs/KURULUM.md)
+- Teknoloji ve kurallar: [CLAUDE.md](CLAUDE.md)
+
+## Durum (Faz 1)
+
+| Adım | Ne çalışıyor |
+|---|---|
+| Veritabanı | Şema, bölge bazlı yetki (RLS), temizlik başlatma/kontrol/gönderme/onay/iptal fonksiyonları, Bugün ekranı sorgusu. Testler: `test/veritabani_test.sh` |
+
+## Yapı
+
+| Klasör | İçerik |
+|---|---|
+| `supabase/migrations/` | Veritabanı: `0001_init` (başlangıç şeması), sonraki her değişiklik yeni dosya |
+| `test/` | Veritabanı yetki testleri (yerel Postgres'te Supabase taklidiyle) |
+| `scripts/apply_migrations.sh` | Migration'ları Supabase'e uygular (GitHub Actions çalıştırır) |
+| `data/`, `templates/`, `config/` | Temel veri Excel'i, örnek şablon, ilk admin |
+
+## Testler
+
+```
+PGHOST=/tmp PGPORT=5432 PGUSER=postgres test/veritabani_test.sh
+```
+GitHub'da her push'ta otomatik çalışır. `main`'e gelen veritabanı değişiklikleri testler geçerse Supabase'e uygulanır.
 
 ## Yeni oda tipi eklemek
 Excel'de Oda Tipleri, Odalar, Kontrol Adımları ve Envanter sayfalarına satır ekle, admin panelinden tekrar içe aktar. Her oda tipi için bir kez referans fotoğrafları çekilip adımlara eklenmeli.

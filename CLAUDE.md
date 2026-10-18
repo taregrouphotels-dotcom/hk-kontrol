@@ -1,7 +1,7 @@
 # HK Kontrol — Proje Kuralları
 
 Tare otelleri (İstanbul + İzmir/Urla) için bağımsız housekeeping oda kontrol uygulaması.
-Detaylı tarif: `docs/SPEC.md`. Verilen kararlar: `docs/KARARLAR.md`. Veritabanı: `supabase/schema.sql`. Temel veri: `data/HK_Veri_Toplama.xlsx`. Örnek şablon: `templates/X3.json`.
+Detaylı tarif: `docs/SPEC.md`. Verilen kararlar: `docs/KARARLAR.md`. Veritabanı: `supabase/migrations/` (ilk şema `0001_init.sql`), testi `test/veritabani_test.sh`. Temel veri: `data/HK_Veri_Toplama.xlsx`. Örnek şablon: `templates/X3.json`.
 
 ## Teknoloji (ücretsiz paketlere sığacak şekilde seçildi)
 - **Arayüz:** Vite + React + TypeScript + Tailwind CSS, PWA (manifest + service worker, Web Push)
