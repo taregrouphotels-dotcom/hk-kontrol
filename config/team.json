@@ -1,0 +1,18 @@
+{
+  "_note": "Oteller, oda tipleri, odalar ve envanter data/HK_Veri_Toplama.xlsx dosyasından gelir. Personel (admin dahil) admin panelinden eklenir; HK ve süpervizör bölgesindeki tüm otellerde çalışabilir. Burada sadece ilk admin tanımlı.",
+  "team_size": {
+    "istanbul": {
+      "hk": 4,
+      "supervisor": 1
+    },
+    "izmir": {
+      "hk": 3,
+      "supervisor": 1
+    }
+  },
+  "first_admin": {
+    "full_name": "Gökçer Çakır",
+    "email": "gokcercakir@gmail.com",
+    "role": "admin"
+  }
+}
