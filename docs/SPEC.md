@@ -25,8 +25,10 @@ Housekeeping (HK) temizliğinden sonra odanın rehberli kamerayla kontrol edilme
 - **Temel veri** `data/HK_Veri_Toplama.xlsx` dosyasından gelir: Oteller, Oda Tipleri, Odalar, Kontrol Adımları, Envanter (ve varsa İkram). Admin panelinde **"Excel'den içe aktar"**: yükle → önizleme + hata listesi (bilinmeyen oda tipi kodu, tekrar eden oda no, boş adet vb.) → onayla. Tekrar yüklenince günceller, kopya oluşturmaz. "Minibar ve İkram" sayfası opsiyonel; minibar yok, sadece ikram satırları okunur.
 - **Personel** admin panelinden eklenir: ad soyad, kullanıcı adı, rol, bölge, PIN. Pasife alma, PIN sıfırlama.
 - **Günlük oda durumu** HotelRunner'dan gelir: `stayover` (konaklama devam), `checkout`, `vacant` (boş), `checkin`, `checkout_checkin` (aynı gün çıkış + giriş).
-  - Faz 1: Genel müdür veya admin her sabah HotelRunner'ın günlük raporunu (Excel/CSV) uygulamaya yükler; uygulama oda no + durum eşlemesini yapar. Rapor formatı için örnek dosya sağlanacak; sütun eşlemesi ayarlanabilir olsun. Rapor yoksa süpervizör durumları elle işaretleyebilir.
-  - Faz 3: HotelRunner API'si ile sabah otomatik çekim (API erişimi araştırılacak).
+  - Faz 1: **HotelRunner API'si** (`GET /api/v2/apps/reservations`, tesis başına `token` + `hr_id`, sadece okuma, `undelivered=false`) ile saatte bir senkron. Edge Function `pms-sync` son değişen rezervasyonları `pms_reservations` tablosuna yazar, bugünün ve yarının oda durumlarını hesaplar. Oda eşlemesi: tesis + oda no (`rooms[].number`); Tiny Houses, PMS'te Tare Suites Urla altında `T1–T4` numaralarıyla gelir. Rezervasyonda oda no atanmamışsa o oda için durum üretilmez, admin ekranında uyarı olarak görünür.
+  - Durum hesabı (gün D, iptal ve no_show hariç): aynı gün çıkış ve giriş varsa `checkout_checkin`, sadece çıkış varsa `checkout`, sadece giriş varsa `checkin`, giriş < D < çıkış ise `stayover`, hiçbiri yoksa `vacant`.
+  - Süpervizör durumu elle değiştirebilir; elle girilen durum (`source = manual`) o gün için senkronla ezilmez. Admin "Şimdi senkronla" ile anında çekebilir.
+  - Faz 3: yalnızca WhatsApp ve video kalır; API senkronu Faz 1'e alındı.
 
 ## 4. Giriş ve KVKK
 - HK: kullanıcı adı + 6 haneli PIN (Supabase Auth'ta `kullaniciadi@hk.tare.local` + PIN). Süpervizör/admin: e-posta + şifre.
@@ -39,7 +41,7 @@ Housekeeping (HK) temizliğinden sonra odanın rehberli kamerayla kontrol edilme
 1. **Bugün** ekranı: bölgesindeki oteller → odalar, HotelRunner durumuna göre gruplu (Çıkış, Konaklama, Giriş, Boş), her odanın temizlik durumu (bekliyor / temizleniyor – kim / tamamlandı / sorunlu).
 2. HK odayı seçer → odanın kapısındaki **QR'ı okutur** → "Temizliğe başla". QR uyuşmazsa başlatmaz. QR okunamıyorsa "QR'sız başlat" seçilebilir ama kayıt "QR yok" etiketi alır ve raporda görünür.
 3. Opsiyonel: **"Birlikte temizleyen ekle"** → bölgedeki başka bir HK seçilir. Raporda oda iki kişiye de yazılır, "ortak" etiketiyle.
-4. Temizlik türü odanın günlük durumundan gelir: `checkout`, `checkout_checkin`, `vacant` → **tam kontrol**; `stayover` → **konaklama kontrolü**. HK değiştiremez, süpervizör değiştirebilir.
+4. Temizlik türü odanın günlük durumundan gelir: `checkout`, `checkout_checkin`, `vacant`, `checkin` → **tam kontrol**; `stayover` → **konaklama kontrolü**. Durum bilinmiyorsa tam kontrol, kayıt "durum bilinmiyor" etiketi alır. HK değiştiremez, süpervizör değiştirebilir.
 
 ### 5.2 Rehberli kamera ("sanal kamera")
 Temizlik bitince **"Kontrole başla"**. Kamera tam ekran açılır ve HK'yı adım adım yönlendirir:
@@ -85,7 +87,7 @@ Temizlik bitince **"Kontrole başla"**. Kamera tam ekran açılır ve HK'yı ad�
 - **Açık eksikler:** otel/oda/kalem bazında liste, kapatma.
 - **Hasar** ve **kayıp eşya** listeleri.
 - **Bildirimler:** uygulama içi bildirim merkezi + Web Push (iPhone'da push için uygulamanın ana ekrana eklenmesi gerekir). WhatsApp Faz 3.
-- **Admin:** kullanıcılar, oteller, odalar, oda tipleri/adımlar/demirbaşlar, Excel içe aktarma, HotelRunner raporu yükleme, QR etiket PDF'i (oda no + otel + QR, A4'e 12'li), ayarlar, KVKK metni.
+- **Admin:** kullanıcılar, oteller, odalar, oda tipleri/adımlar/demirbaşlar, Excel içe aktarma, HotelRunner senkron durumu, QR etiket PDF'i (oda no + otel + QR, A4'e 12'li), ayarlar, KVKK metni.
 
 ## 7. Raporlar (filtre: tarih aralığı, bölge, otel, kişi, oda tipi)
 - **Personel:** oda sayısı (tam / konaklama / ortak ayrı), oda başına ortalama süre, AI'dan ilk seferde geçme oranı, düzeltme sayısı, escalated sayısı, en sık sorun türleri, QR'sız başlatma, minimum süreden kısa temizlikler.
@@ -131,7 +133,7 @@ Faz 1'de (AI yokken): `in_progress` → `submitted` → `approved` (süpervizör
 **Faz 1 — Temel (AI yok)**
 - Giriş/PIN, KVKK, roller, RLS
 - Excel içe aktarma, personel yönetimi, QR PDF
-- HotelRunner günlük rapor yükleme + elle durum
+- HotelRunner API senkronu (saatlik) + elle durum
 - HK akışı: oda seçimi, QR, ortak temizleyen, rehberli kamera (adım fotoğrafı, referans hayaleti, fener, kalite kontrolü), çevrimdışı kuyruk, R2 yükleme
 - Süpervizör onayı (Faz 1'de her kayıt `submitted` olur ve onaylanır)
 - Hasar bildirimi, kayıp eşya
@@ -147,7 +149,6 @@ Faz 1'de (AI yokken): `in_progress` → `submitted` → `approved` (süpervizör
 
 **Faz 3 — Video ve entegrasyon**
 - Kontrol boyunca kesintisiz video, otomatik çekim (sabitlik + kadraj benzerliği)
-- HotelRunner API ile otomatik sabah çekimi
 - WhatsApp bildirimi
 - Personel takip uygulamasına özet veri aktarımı (API)
 

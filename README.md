@@ -14,7 +14,7 @@
    data/HK_Veri_Toplama.xlsx
    ```
 3. `data/HK_Veri_Toplama.xlsx` yerine **doldurduğun Excel'i** aynı adla koy.
-4. HotelRunner'dan bir günlük oda durumu raporu indir, `data/hotelrunner_ornek.xlsx` (veya .csv) olarak repoya ekle.
+4. HotelRunner API bilgileri (tesis başına `token` + `hr_id`) Supabase Edge Function secret'ı olarak girilir; bkz. Kurulum.
 5. Claude Code'da repoyu aç, `KICKOFF_PROMPT.md` içindeki metni ilk mesaj olarak yapıştır. Soruları cevapla, planı onayla.
 
 ## Açman gereken hesaplar (hepsi ücretsiz paketle başlar)
