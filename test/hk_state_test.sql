@@ -143,6 +143,8 @@ grant select on rid to authenticated;
 insert into ops.app_secrets (name, value) values ('SUMMARY_KEY', 'ozet-test');
 select t.eq((select daily_summary('ozet-test', 'morning') like '%Tare Houses Hotel%'), true, 'sabah özeti otelleri listeler');
 select t.eq((select daily_summary('ozet-test', 'evening') like '%gün sonu%'), true, 'akşam özeti üretilir');
+select set_config('request.headers', '{"x-summary-key": "ozet-test"}', false);
+select t.eq((select daily_summary_auth('morning') like '%sabah%'), true, 'özet anahtarı istek başlığından okunur');
 
 -- Bugün ekranı yeni sütunlarla çalışır
 set role authenticated;
