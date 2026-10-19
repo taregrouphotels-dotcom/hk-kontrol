@@ -3,7 +3,8 @@ import { callFunction } from '../lib/api'
 import { errorText, supabase, type Profile, type Region, type Role } from '../lib/supabase'
 import { regionLabel, roleLabel } from '../lib/format'
 
-// Personel yönetimi (sadece admin): liste, yeni personel, düzenleme, PIN/şifre sıfırlama, pasife alma.
+// Personel yönetimi. Admin: liste, yeni personel, düzenleme, PIN/şifre sıfırlama, pasife alma.
+// Süpervizör: kendi bölgesindeki HK'lar; sadece hesap açma ve PIN sıfırlama.
 // Kullanıcı açma ve şifre işlemleri admin-users Edge Function'ında (service role tarayıcıya gitmez).
 
 const input =
@@ -146,10 +147,11 @@ function Credentials({ lines, onDone }: { lines: [string, string][]; onDone: () 
   )
 }
 
-function NewStaff({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
+function NewStaff({ me, onClose, onSaved }: { me: Profile; onClose: () => void; onSaved: () => void }) {
+  const isSup = me.role === 'supervisor'
   const [fullName, setFullName] = useState('')
   const [role, setRole] = useState<Role>('hk')
-  const [region, setRegion] = useState<Region | ''>('')
+  const [region, setRegion] = useState<Region | ''>(isSup ? (me.region ?? '') : '')
   const [login, setLogin] = useState('')
   const [secret, setSecret] = useState(randomPin)
   const [busy, setBusy] = useState(false)
@@ -169,11 +171,17 @@ function NewStaff({ onClose, onSaved }: { onClose: () => void; onSaved: () => vo
     setBusy(true)
     setError(undefined)
     try {
-      const body = { action: 'create', full_name: fullName, role, region: region || null, secret }
-      const res = await callFunction<{ username: string | null; email: string | null }>(
-        'admin-users',
-        role === 'hk' ? { ...body, username: login } : { ...body, email: login },
-      )
+      const body = {
+        action: 'create',
+        full_name: fullName,
+        role,
+        region: region || null,
+        secret,
+      }
+      const res = await callFunction<{
+        username: string | null
+        email: string | null
+      }>('admin-users', role === 'hk' ? { ...body, username: login } : { ...body, email: login })
       onSaved()
       setDone(
         role === 'hk'
@@ -199,8 +207,24 @@ function NewStaff({ onClose, onSaved }: { onClose: () => void; onSaved: () => vo
         <Credentials lines={done} onDone={onClose} />
       ) : (
         <form onSubmit={submit} className="space-y-3">
-          <input className={input} placeholder="Ad soyad" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-          <RoleRegionFields role={role} region={region} setRole={changeRole} setRegion={setRegion} roles={['hk', 'supervisor', 'admin']} />
+          <input
+            className={input}
+            placeholder="Ad soyad"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            required
+          />
+          {isSup ? (
+            <p className="text-sm text-slate-500">HK · {me.region && regionLabel[me.region]}</p>
+          ) : (
+            <RoleRegionFields
+              role={role}
+              region={region}
+              setRole={changeRole}
+              setRegion={setRegion}
+              roles={['hk', 'supervisor', 'admin']}
+            />
+          )}
           <label className="block text-sm font-medium text-slate-600">Giriş bilgisi</label>
           {role === 'hk' ? (
             <input
@@ -243,6 +267,7 @@ function EditStaff({ person, me, onClose, onSaved }: { person: Profile; me: Prof
   const [error, setError] = useState<string>()
   const [done, setDone] = useState<[string, string][]>()
   const isMe = person.id === me.id
+  const isAdmin = me.role === 'admin'
 
   async function run(body: Record<string, unknown>, after?: () => void) {
     setBusy(true)
@@ -270,44 +295,62 @@ function EditStaff({ person, me, onClose, onSaved }: { person: Profile; me: Prof
   return (
     <Sheet title={person.full_name} onClose={onClose}>
       <div className="space-y-6">
-        <form
-          className="space-y-3"
-          onSubmit={(e) => {
-            e.preventDefault()
-            run({ action: 'update', full_name: fullName, role, region: region || null })
-          }}
-        >
-          <input className={input} value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-          {person.username && <p className="text-sm text-slate-500">Kullanıcı adı: {person.username}</p>}
-          <RoleRegionFields
-            role={role}
-            region={region}
-            setRole={setRole}
-            setRegion={setRegion}
-            roles={person.role === 'hk' ? ['hk'] : ['supervisor', 'admin']}
-          />
-          <button className={primary} disabled={busy || (role !== 'admin' && !region)}>
-            Kaydet
-          </button>
-        </form>
+        {isAdmin && (
+          <form
+            className="space-y-3"
+            onSubmit={(e) => {
+              e.preventDefault()
+              run({
+                action: 'update',
+                full_name: fullName,
+                role,
+                region: region || null,
+              })
+            }}
+          >
+            <input className={input} value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+            {person.username && <p className="text-sm text-slate-500">Kullanıcı adı: {person.username}</p>}
+            <RoleRegionFields
+              role={role}
+              region={region}
+              setRole={setRole}
+              setRegion={setRegion}
+              roles={person.role === 'hk' ? ['hk'] : ['supervisor', 'admin']}
+            />
+            <button className={primary} disabled={busy || (role !== 'admin' && !region)}>
+              Kaydet
+            </button>
+          </form>
+        )}
+        {!isAdmin && person.username && <p className="text-sm text-slate-500">Kullanıcı adı: {person.username}</p>}
 
         <form
-          className="space-y-3 border-t border-slate-200 pt-5"
+          className={`space-y-3 ${isAdmin ? 'border-t border-slate-200 pt-5' : ''}`}
           onSubmit={(e) => {
             e.preventDefault()
             const lines: [string, string][] =
-              person.role === 'hk' ? [['Kullanıcı adı', person.username ?? ''], ['PIN', secret]] : [['Şifre', secret]]
+              person.role === 'hk'
+                ? [
+                    ['Kullanıcı adı', person.username ?? ''],
+                    ['PIN', secret],
+                  ]
+                : [['Şifre', secret]]
             run({ action: 'reset_secret', secret }, () => setDone(lines))
           }}
         >
-          <label className="block text-sm font-medium text-slate-600">{person.role === 'hk' ? 'PIN sıfırla' : 'Şifre sıfırla'}</label>
+          <label className="block text-sm font-medium text-slate-600">
+            {person.role === 'hk' ? 'PIN sıfırla' : 'Şifre sıfırla'}
+          </label>
           <SecretField role={person.role} value={secret} onChange={setSecret} />
-          <button className="w-full rounded-xl border border-brand bg-white py-3 font-semibold text-brand disabled:opacity-50" disabled={busy || !secret}>
+          <button
+            className="w-full rounded-xl border border-brand bg-white py-3 font-semibold text-brand disabled:opacity-50"
+            disabled={busy || !secret}
+          >
             {person.role === 'hk' ? 'Yeni PIN’i kaydet' : 'Yeni şifreyi kaydet'}
           </button>
         </form>
 
-        {!isMe && (
+        {isAdmin && !isMe && (
           <div className="border-t border-slate-200 pt-5">
             <button
               disabled={busy}
@@ -349,8 +392,10 @@ export default function Staff({ me }: { me: Profile }) {
     load()
   }, [load])
 
-  const visible = (people ?? []).filter((p) => showPassive || p.active)
-  const passiveCount = (people ?? []).filter((p) => !p.active).length
+  // Süpervizör sadece HK'ları yönetir (RLS zaten kendi bölgesiyle sınırlar)
+  const managed = (people ?? []).filter((p) => me.role === 'admin' || p.role === 'hk')
+  const visible = managed.filter((p) => showPassive || p.active)
+  const passiveCount = managed.filter((p) => !p.active).length
   const order: Role[] = ['admin', 'supervisor', 'hk']
 
   return (
@@ -377,9 +422,14 @@ export default function Staff({ me }: { me: Profile }) {
               <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl bg-white shadow-sm">
                 {list.map((p) => (
                   <li key={p.id}>
-                    <button onClick={() => setEditing(p)} className="flex w-full items-center justify-between px-4 py-3 text-left active:bg-slate-50">
+                    <button
+                      onClick={() => setEditing(p)}
+                      className="flex w-full items-center justify-between px-4 py-3 text-left active:bg-slate-50"
+                    >
                       <div>
-                        <div className={`font-medium ${p.active ? 'text-slate-800' : 'text-slate-400 line-through'}`}>{p.full_name}</div>
+                        <div className={`font-medium ${p.active ? 'text-slate-800' : 'text-slate-400 line-through'}`}>
+                          {p.full_name}
+                        </div>
                         <div className="text-xs text-slate-500">
                           {[p.username, p.region && regionLabel[p.region], p.id === me.id && 'siz'].filter(Boolean).join(' · ')}
                         </div>
@@ -399,7 +449,7 @@ export default function Staff({ me }: { me: Profile }) {
         </button>
       )}
 
-      {adding && <NewStaff onClose={() => setAdding(false)} onSaved={load} />}
+      {adding && <NewStaff me={me} onClose={() => setAdding(false)} onSaved={load} />}
       {editing && <EditStaff person={editing} me={me} onClose={() => setEditing(undefined)} onSaved={load} />}
     </div>
   )

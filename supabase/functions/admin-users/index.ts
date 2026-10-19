@@ -1,5 +1,6 @@
 // Personel yönetimi: kullanıcı açma, bilgi güncelleme, PIN/şifre sıfırlama, pasife alma.
-// Sadece aktif adminler çağırabilir. Supabase Auth'ta kullanıcı açmak service role ister; bu anahtar sadece burada.
+// Admin her şeyi yapar. Süpervizör sadece kendi bölgesinde HK hesabı açar ve HK PIN'i sıfırlar.
+// Sadece aktif admin/süpervizör çağırabilir. Supabase Auth'ta kullanıcı açmak service role ister; bu anahtar sadece burada.
 // HK: kullaniciadi@hk.tare.local + 6 haneli PIN. Süpervizör/admin: e-posta + en az 8 karakter şifre.
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4'
 
@@ -55,9 +56,23 @@ async function getProfile(id: string) {
   return data as { id: string; role: Role; region: Region | null; active: boolean; username: string | null }
 }
 
-async function create(body: Record<string, unknown>) {
+interface Caller {
+  id: string
+  role: Role
+  region: Region | null
+}
+
+// Süpervizör sadece kendi bölgesindeki HK'lar için
+function checkSupervisorScope(me: Caller, role: Role, region: Region | null) {
+  if (me.role === 'supervisor' && (role !== 'hk' || region !== me.region)) {
+    throw new UserError('Süpervizör sadece kendi bölgesindeki HK hesaplarını yönetebilir.')
+  }
+}
+
+async function create(body: Record<string, unknown>, me: Caller) {
   const full_name = checkName(body.full_name)
   const { role, region } = checkRoleRegion(body.role, body.region)
+  checkSupervisorScope(me, role, region)
   const secret = checkSecret(role, body.secret)
   let email: string
   let username: string | null = null
@@ -114,8 +129,9 @@ async function setActive(body: Record<string, unknown>, me: string) {
   return {}
 }
 
-async function resetSecret(body: Record<string, unknown>) {
+async function resetSecret(body: Record<string, unknown>, me: Caller) {
   const target = await getProfile(String(body.id))
+  checkSupervisorScope(me, target.role, target.region)
   const secret = checkSecret(target.role, body.secret)
   const { error } = await admin.auth.admin.updateUserById(target.id, { password: secret })
   if (error) throw error
@@ -130,8 +146,11 @@ Deno.serve(async (req) => {
   if (!token) return json({ error: 'Oturum yok.' }, 401)
   const { data: auth, error: authErr } = await admin.auth.getUser(token)
   if (authErr || !auth.user) return json({ error: 'Oturum geçersiz. Tekrar giriş yapın.' }, 401)
-  const { data: me } = await admin.from('profiles').select('role, active').eq('id', auth.user.id).maybeSingle()
-  if (!me || me.role !== 'admin' || !me.active) return json({ error: 'Bu işlem için admin yetkisi gerekir.' }, 403)
+  const { data: profile } = await admin.from('profiles').select('role, region, active').eq('id', auth.user.id).maybeSingle()
+  if (!profile || !profile.active || !['admin', 'supervisor'].includes(profile.role)) {
+    return json({ error: 'Bu işlem için yönetici yetkisi gerekir.' }, 403)
+  }
+  const me: Caller = { id: auth.user.id, role: profile.role, region: profile.region }
 
   let body: Record<string, unknown>
   try {
@@ -143,13 +162,13 @@ Deno.serve(async (req) => {
   try {
     switch (body.action) {
       case 'create':
-        return json(await create(body))
-      case 'update':
-        return json(await update(body, auth.user.id))
-      case 'set_active':
-        return json(await setActive(body, auth.user.id))
+        return json(await create(body, me))
       case 'reset_secret':
-        return json(await resetSecret(body))
+        return json(await resetSecret(body, me))
+      case 'update':
+      case 'set_active':
+        if (me.role !== 'admin') return json({ error: 'Bu işlem için admin yetkisi gerekir.' }, 403)
+        return json(body.action === 'update' ? await update(body, me.id) : await setActive(body, me.id))
       default:
         return json({ error: 'Bilinmeyen işlem.' }, 400)
     }

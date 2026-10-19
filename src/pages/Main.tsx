@@ -14,7 +14,7 @@ interface Tab {
 // Alt menü; adres çubuğundaki #/... ile eşleşir, geri tuşu çalışır
 const TABS: Tab[] = [
   { path: '', label: 'Bugün', roles: ['hk', 'supervisor', 'admin'] },
-  { path: 'personel', label: 'Personel', roles: ['admin'] },
+  { path: 'personel', label: 'Personel', roles: ['admin', 'supervisor'] },
   { path: 'veri', label: 'Veri', roles: ['admin'] },
 ]
 

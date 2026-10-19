@@ -11,7 +11,7 @@ Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulamas
 |---|---|
 | Veritabanı | Şema, bölge bazlı yetki (RLS), temizlik başlatma/kontrol/gönderme/onay/iptal fonksiyonları, Bugün ekranı sorgusu. Testler: `test/veritabani_test.sh` |
 | Arayüz iskeleti | Giriş (personel: kullanıcı adı + 6 haneli PIN; yönetici: e-posta + şifre), ilk girişte KVKK onayı, ilk adminin kendi profilini alması, Bugün ekranı (otel → Çıkış/Konaklama/Giriş/Boş, kim temizliyor), ana ekrana eklenebilir (PWA) |
-| Personel yönetimi | Admin → Personel: HK (kullanıcı adı + PIN) ve süpervizör/admin (e-posta + şifre) hesabı açma, ad/rol/bölge düzenleme, PIN/şifre sıfırlama, pasife alma. Hesap işlemleri `admin-users` Edge Function'ında |
+| Personel yönetimi | Süpervizör → Personel: kendi bölgesinde HK hesabı açma ve PIN sıfırlama. Admin → Personel: HK (kullanıcı adı + PIN) ve süpervizör/admin (e-posta + şifre) hesabı açma, ad/rol/bölge düzenleme, PIN/şifre sıfırlama, pasife alma. Hesap işlemleri `admin-users` Edge Function'ında |
 | Excel'den içe aktarma | Admin → Veri: `HK_Veri_Toplama.xlsx` seçilir → önizleme (sayılar, hata ve uyarı listesi) → İçe aktar. Hata varsa hiçbir şey yazılmaz; tekrar yükleme günceller. Adımı olmayan oda tiplerine geçici 5 adımlık şablon, adedi boş envanter satırları atlanır, minibar/ikram satırları ikram kalemi olarak eklenir. Testler: `test/import_test.sql`, `test/excel_import_test.mjs` |
 
 ## Yapı
