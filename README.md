@@ -13,6 +13,7 @@ Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulamas
 | Arayüz iskeleti | Giriş (personel: kullanıcı adı + 6 haneli PIN; yönetici: e-posta + şifre), ilk girişte KVKK onayı, ilk adminin kendi profilini alması, Bugün ekranı (otel → Çıkış/Konaklama/Giriş/Boş, kim temizliyor), ana ekrana eklenebilir (PWA) |
 | Personel yönetimi | Süpervizör → Personel: kendi bölgesinde HK hesabı açma ve PIN sıfırlama. Admin → Personel: HK (kullanıcı adı + PIN) ve süpervizör/admin (e-posta + şifre) hesabı açma, ad/rol/bölge düzenleme, PIN/şifre sıfırlama, pasife alma. Hesap işlemleri `admin-users` Edge Function'ında |
 | Excel'den içe aktarma | Admin → Veri: `HK_Veri_Toplama.xlsx` seçilir → önizleme (sayılar, hata ve uyarı listesi) → İçe aktar. Hata varsa hiçbir şey yazılmaz; tekrar yükleme günceller. Adımı olmayan oda tiplerine geçici 5 adımlık şablon, adedi boş envanter satırları atlanır, minibar/ikram satırları ikram kalemi olarak eklenir. Testler: `test/import_test.sql`, `test/excel_import_test.mjs` |
+| HotelRunner senkronu | `pms-sync` Edge Function saatte bir (Supabase cron) 4 tesisin değişen rezervasyonlarını okur (sadece oda no, tarih, durum; misafir bilgisi saklanmaz), bugünün ve yarının oda durumunu hesaplar. Süpervizör/admin Bugün ekranında odaya dokunup durumu elle değiştirir; elle girilen o gün ezilmez. Admin: "Şimdi senkronla", hata ve odası eşleşmeyen rezervasyon listesi. Test: `test/pms_test.sql` |
 
 ## Yapı
 

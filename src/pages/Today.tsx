@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { errorText, supabase, type CleaningStatus, type DayStatus } from '../lib/supabase'
-import { dayGroups, fmtDate, minutesSince } from '../lib/format'
+import { callFunction } from '../lib/api'
+import { errorText, supabase, type CleaningStatus, type DayStatus, type Profile } from '../lib/supabase'
+import { dayGroups, dayStatusLabel, fmtDate, fmtTime, minutesSince } from '../lib/format'
+import Sheet from '../components/Sheet'
 
 interface BoardRow {
   room_id: string
@@ -8,6 +10,7 @@ interface BoardRow {
   room_no: string
   room_type_code: string
   day_status: DayStatus | null
+  day_status_source: string | null
   cleaning_id: string | null
   cleaning_status: CleaningStatus | null
   hk_name: string | null
@@ -19,6 +22,170 @@ interface BoardRow {
 interface Property {
   id: string
   name: string
+}
+
+interface SyncRun {
+  started_at: string
+  finished_at: string | null
+  ok: boolean | null
+  summary: Record<string, unknown> | null
+}
+
+interface Unmatched {
+  hr_number: string
+  pms_name: string
+  room_no: string | null
+  checkin: string
+  checkout: string
+}
+
+const istanbulToday = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' }).format(new Date())
+
+// Son HotelRunner senkronu; admin "Şimdi senkronla" ile başlatır, sonucu ve sorunları görür
+function SyncBar({ me, onSynced }: { me: Profile; onSynced: () => void }) {
+  const [run, setRun] = useState<SyncRun | null>()
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string>()
+  const [open, setOpen] = useState(false)
+
+  const loadRun = useCallback(async () => {
+    const { data } = await supabase.from('pms_sync_runs').select('started_at, finished_at, ok, summary')
+      .order('started_at', { ascending: false }).limit(1).maybeSingle()
+    setRun((data as SyncRun) ?? null)
+    return data as SyncRun | null
+  }, [])
+
+  useEffect(() => {
+    loadRun()
+  }, [loadRun])
+
+  async function syncNow() {
+    setBusy(true)
+    setError(undefined)
+    try {
+      const res = await callFunction<{ started: boolean; message?: string }>('pms-sync', {})
+      if (!res.started && res.message) setError(res.message)
+      // Arka planda çalışır; bitene kadar 5 sn'de bir bakılır (en fazla 3 dk)
+      const startedAt = Date.now()
+      for (;;) {
+        await new Promise((r) => setTimeout(r, 5000))
+        const last = await loadRun()
+        if ((last?.finished_at && Date.parse(last.started_at) >= startedAt - 60_000) || Date.now() - startedAt > 180_000) break
+      }
+      onSynced()
+    } catch (e) {
+      setError(errorText(e))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  if (run === undefined) return null
+  const summary = run?.summary ?? {}
+  const problems = Object.entries(summary).filter(
+    ([k, v]) => k !== 'applied' && (k === 'error' || (v && typeof v === 'object' && 'error' in (v as object))),
+  )
+  const unmatched = ((summary.applied as { unmatched?: Unmatched[] } | undefined)?.unmatched ?? []) as Unmatched[]
+  const label = !run
+    ? 'HotelRunner henüz senkronlanmadı'
+    : !run.finished_at
+      ? 'HotelRunner senkronu sürüyor…'
+      : `HotelRunner: ${fmtTime(run.finished_at)}${run.ok ? '' : ' · sorun var'}`
+
+  return (
+    <div className="mx-4 mb-2 rounded-xl bg-white px-4 py-3 text-sm shadow-sm">
+      <div className="flex items-center justify-between gap-2">
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className={`text-left ${run && run.finished_at && !run.ok ? 'text-red-700' : 'text-slate-600'}`}
+        >
+          {label}
+          {me.role === 'admin' && (problems.length > 0 || unmatched.length > 0) && <span className="ml-1 underline">ayrıntı</span>}
+        </button>
+        {me.role === 'admin' && (
+          <button onClick={syncNow} disabled={busy} className="shrink-0 rounded-lg bg-brand px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">
+            {busy ? 'Senkronlanıyor…' : 'Şimdi senkronla'}
+          </button>
+        )}
+      </div>
+      {error && <p className="mt-2 text-red-700">{error}</p>}
+      {open && me.role === 'admin' && (
+        <div className="mt-2 space-y-1 text-xs">
+          {problems.map(([k, v]) => (
+            <p key={k} className="text-red-700">
+              {k === 'error' ? String(v) : `${k}: ${(v as { error: string }).error}`}
+            </p>
+          ))}
+          {unmatched.length > 0 && (
+            <>
+              <p className="font-semibold text-amber-800">Odası eşleşmeyen rezervasyonlar (HotelRunner'da oda atayın):</p>
+              {unmatched.map((u) => (
+                <p key={u.hr_number + (u.room_no ?? '')} className="text-amber-800">
+                  {u.pms_name} · {u.room_no ?? 'oda yok'} · {fmtDate(u.checkin)}–{fmtDate(u.checkout)} · {u.hr_number}
+                </p>
+              ))}
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const STATUS_CHOICES: DayStatus[] = ['checkout', 'checkout_checkin', 'stayover', 'checkin', 'vacant']
+
+// Süpervizör/admin günlük durumu elle değiştirir; o gün senkron ezmez (karar 5)
+function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profile; onClose: () => void; onSaved: () => void }) {
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string>()
+
+  async function save(status: DayStatus | null) {
+    setBusy(true)
+    setError(undefined)
+    const day = istanbulToday()
+    const { error } =
+      status === null
+        ? await supabase.from('room_day_status').delete().eq('room_id', room.room_id).eq('day', day).eq('source', 'manual')
+        : await supabase.from('room_day_status').upsert({
+            room_id: room.room_id, day, status, source: 'manual', updated_by: me.id, updated_at: new Date().toISOString(),
+          })
+    setBusy(false)
+    if (error) setError(errorText(error))
+    else {
+      onSaved()
+      onClose()
+    }
+  }
+
+  return (
+    <Sheet title={`Oda ${room.room_no} · bugünkü durum`} onClose={onClose}>
+      <div className="space-y-3">
+        <p className="text-sm text-slate-600">
+          Şu an: <b>{room.day_status ? dayStatusLabel[room.day_status] : 'bilinmiyor'}</b>
+          {room.day_status_source === 'manual' ? ' (elle girildi)' : room.day_status ? ' (HotelRunner)' : ''}. Elle seçilen durum
+          bugün HotelRunner senkronuyla değişmez.
+        </p>
+        {STATUS_CHOICES.map((s) => (
+          <button
+            key={s}
+            disabled={busy}
+            onClick={() => save(s)}
+            className={`w-full rounded-xl border py-4 text-base font-semibold disabled:opacity-50 ${
+              room.day_status === s ? 'border-brand bg-brand text-white' : 'border-slate-300 bg-white text-slate-700'
+            }`}
+          >
+            {dayStatusLabel[s]}
+          </button>
+        ))}
+        {room.day_status_source === 'manual' && (
+          <button disabled={busy} onClick={() => save(null)} className="w-full py-3 text-sm text-slate-500">
+            Elle girileni kaldır (sonraki senkronda HotelRunner'dan gelir)
+          </button>
+        )}
+        {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
+      </div>
+    </Sheet>
+  )
 }
 
 // Odanın temizlik durumu: bekliyor / temizleniyor – kim / tamamlandı / sorunlu (spec 5.1)
@@ -45,7 +212,9 @@ function cleaningBadge(r: BoardRow): { text: string; cls: string } {
   }
 }
 
-export default function Today() {
+export default function Today({ me }: { me: Profile }) {
+  const canEdit = me.role === 'supervisor' || me.role === 'admin'
+  const [editing, setEditing] = useState<BoardRow>()
   const [rows, setRows] = useState<BoardRow[]>()
   const [properties, setProperties] = useState<Property[]>([])
   const [error, setError] = useState<string>()
@@ -77,6 +246,7 @@ export default function Today() {
         </button>
       </div>
 
+      {canEdit && <SyncBar me={me} onSynced={load} />}
       {error && <p className="mx-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
       {!rows && !error && <p className="px-4 text-slate-500">Yükleniyor…</p>}
       {rows && rows.length === 0 && (
@@ -104,14 +274,19 @@ export default function Today() {
                       {list.map((r) => {
                         const b = cleaningBadge(r)
                         return (
-                          <li key={r.room_id} className="flex items-center justify-between gap-3 px-4 py-3">
-                            <div>
-                              <span className="text-lg font-semibold text-slate-800">{r.room_no}</span>
-                              <span className="ml-2 text-xs text-slate-400">{r.room_type_code}</span>
-                            </div>
-                            <span className={`rounded-full px-3 py-1 text-right text-xs font-medium ${b.cls}`}>
-                              {b.text}
-                            </span>
+                          <li key={r.room_id}>
+                            <button
+                              disabled={!canEdit}
+                              onClick={() => setEditing(r)}
+                              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left enabled:active:bg-slate-50"
+                            >
+                              <div>
+                                <span className="text-lg font-semibold text-slate-800">{r.room_no}</span>
+                                <span className="ml-2 text-xs text-slate-400">{r.room_type_code}</span>
+                                {r.day_status_source === 'manual' && <span className="ml-2 text-xs text-amber-700">elle</span>}
+                              </div>
+                              <span className={`rounded-full px-3 py-1 text-right text-xs font-medium ${b.cls}`}>{b.text}</span>
+                            </button>
                           </li>
                         )
                       })}
@@ -122,6 +297,8 @@ export default function Today() {
             </section>
           )
         })}
+
+      {editing && <StatusSheet room={editing} me={me} onClose={() => setEditing(undefined)} onSaved={load} />}
     </div>
   )
 }

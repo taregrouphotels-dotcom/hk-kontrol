@@ -45,7 +45,7 @@ Yayın adresi Supabase → Authentication → URL Configuration → Site URL'e y
 |---|---|
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` | R2 bilgileri (`R2_BUCKET=hk-media`) |
 | `APP_ORIGIN` | Pages adresi |
-| `HOTELRUNNER_CONNECTIONS` | Tesis başına HotelRunner API bilgisi, tek satır JSON: `[{"hr_id":"...","token":"..."}, ...]` (4 tesis) |
+| `HOTELRUNNER_CONNECTIONS` | Tesis başına HotelRunner API bilgisi, tek satır JSON: `[{"pms_name":"Tare Houses Hotel","hr_id":"...","token":"..."}, ...]` (4 tesis; `pms_name` Excel'deki "PMS'teki Adı" ile aynı) |
 | `ANTHROPIC_API_KEY`, `CLAUDE_MODEL` | Faz 2 |
 
 HotelRunner bilgileri, n8n'deki "HotelRunner Biriktirici" akışının dört HTTP düğümündeki `token` ve `hr_id` değerleridir. Uygulama HotelRunner'a sadece okuma isteği gönderir (`undelivered=false`).

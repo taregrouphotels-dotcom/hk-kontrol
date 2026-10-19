@@ -53,7 +53,7 @@ export default function Main({ profile }: { profile: Profile }) {
         </button>
       </header>
 
-      {active.path === '' && <Today />}
+      {active.path === '' && <Today me={profile} />}
       {active.path === 'personel' && <Staff me={profile} />}
       {active.path === 'veri' && <DataImport />}
 

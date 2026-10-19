@@ -17,6 +17,14 @@ export function minutesSince(d: string): number {
 export const roleLabel: Record<Role, string> = { hk: 'HK', supervisor: 'Süpervizör', admin: 'Admin' }
 export const regionLabel: Record<Region, string> = { istanbul: 'İstanbul', izmir: 'İzmir' }
 
+export const dayStatusLabel: Record<DayStatus, string> = {
+  checkout: 'Çıkış',
+  checkout_checkin: 'Çıkış + giriş',
+  stayover: 'Konaklama',
+  checkin: 'Giriş',
+  vacant: 'Boş',
+}
+
 // Bugün ekranındaki gruplar (spec 5.1): Çıkış, Konaklama, Giriş, Boş
 export const dayGroups: { key: string; label: string; statuses: (DayStatus | null)[] }[] = [
   { key: 'out', label: 'Çıkış', statuses: ['checkout', 'checkout_checkin'] },
