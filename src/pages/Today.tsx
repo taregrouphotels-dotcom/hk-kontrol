@@ -4,6 +4,7 @@ import { errorText, supabase, type CleaningStatus, type DayStatus, type Profile 
 import { dayStatusLabel, fmtDate, fmtTime, minutesSince } from '../lib/format'
 import Sheet from '../components/Sheet'
 import { openCleanings } from '../lib/active'
+import PushBanner from '../components/PushBanner'
 
 interface BoardRow {
   room_id: string
@@ -28,6 +29,8 @@ interface BoardRow {
   departing: boolean
   arriving: boolean
   cleaning_requested_at: string | null
+  min_minutes: number | null
+  max_minutes: number | null
 }
 
 interface Property {
@@ -399,6 +402,9 @@ const dirtyArrival = (r: BoardRow) =>
   (r.day_status === 'checkin' || r.day_status === 'checkout_checkin')
 const cleanedToday = (r: BoardRow) => r.cleaning_status === 'submitted' || r.cleaning_status === 'analyzing' || r.cleaning_status === 'approved'
 
+// Oda tipinin en uzun süresi (Excel: Max. Süre) aşıldı mı (karar 21)
+const overTime = (r: BoardRow) => inProgress(r) && !!r.max_minutes && minutesSince(r.started_at!) > r.max_minutes
+
 function tileOf(r: BoardRow): Tile {
   if (inProgress(r)) return 'cleaning'
   if (r.block_id) return 'blocked'
@@ -414,8 +420,11 @@ function tileOf(r: BoardRow): Tile {
 function tileNote(r: BoardRow): string {
   const who = r.hk_name?.split(' ')[0] ?? ''
   switch (tileOf(r)) {
-    case 'cleaning':
-      return `${who} ${r.check_started_at ? 'kontrol' : minutesSince(r.started_at!) + 'dk'}`
+    case 'cleaning': {
+      const m = minutesSince(r.started_at!)
+      if (overTime(r)) return `${who} ⚠ ${m}/${r.max_minutes}dk`
+      return `${who} ${r.check_started_at ? 'kontrol' : m + 'dk'}`
+    }
     case 'blocked':
       return r.block_reason ?? 'Kullanım dışı'
     case 'urgent':
@@ -498,6 +507,7 @@ export default function Today({ me }: { me: Profile }) {
         </button>
       </div>
 
+      <PushBanner me={me} />
       {canEdit && <SyncBar me={me} onSynced={load} />}
       {me.role === 'hk' &&
         openCleanings().map((c) => (
@@ -556,7 +566,9 @@ export default function Today({ me }: { me: Profile }) {
                     <button
                       key={r.room_id}
                       onClick={() => (canEdit ? setEditing(r) : (window.location.hash = `#/oda/${r.room_id}`))}
-                      className={`relative flex h-[60px] flex-col justify-between rounded-xl px-2 py-1.5 text-left shadow-sm ${t.cls} enabled:active:scale-95`}
+                      className={`relative flex h-[60px] flex-col justify-between rounded-xl px-2 py-1.5 text-left shadow-sm ${t.cls} ${
+                        overTime(r) ? 'ring-4 ring-red-500' : ''
+                      } enabled:active:scale-95`}
                     >
                       <div className="flex items-start justify-between gap-1">
                         <span className="text-lg font-extrabold leading-none tracking-tight">{r.room_no}</span>

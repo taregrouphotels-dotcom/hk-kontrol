@@ -48,3 +48,32 @@ self.addEventListener('fetch', (e) => {
     )
   }
 })
+
+// Telefon bildirimi (Web Push): başlık + metin; dokununca uygulama ilgili sayfada açılır
+self.addEventListener('push', (e) => {
+  let d = { title: 'HK Kontrol', body: '', link: '#/' }
+  try {
+    d = { ...d, ...e.data.json() }
+  } catch {
+    /* boş bildirim */
+  }
+  e.waitUntil(
+    self.registration.showNotification(d.title, { body: d.body, icon: '/icon-192.png', badge: '/icon-192.png', data: { link: d.link } }),
+  )
+})
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close()
+  const target = '/' + (e.notification.data?.link || '#/')
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      for (const c of list) {
+        if ('focus' in c) {
+          c.navigate(target)
+          return c.focus()
+        }
+      }
+      return self.clients.openWindow(target)
+    }),
+  )
+})

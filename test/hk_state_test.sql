@@ -102,6 +102,38 @@ insert into step_results (cleaning_id, step_id, shot, attempt, media_key, ai_sta
 select refresh_cleaning_ai((select id from ai_c));
 select t.eq((select ai_overall::text from cleanings where id = (select id from ai_c)), 'warn', 'tekrar çekilen karenin son denemesi sayılır');
 
+-- Otomatik onay ayarı (0019): kapalıyken onay süpervizörde, açıkken tüm adımlar ok ise onaylanır
+update step_results set ai_status = 'ok', ai_false_alarm = false where cleaning_id = (select id from ai_c);
+update cleanings set status = 'in_progress', check_started_at = started_at where id = (select id from ai_c);
+update cleanings set status = 'submitted' where id = (select id from ai_c);
+select t.eq((select status::text from cleanings where id = (select id from ai_c)), 'submitted', 'otomatik onay kapalıyken süpervizöre gider');
+update settings set value = 'false' where key = 'manual_approval_required';
+select refresh_cleaning_ai((select id from ai_c));
+select t.eq((select status::text || '/' || approved_by_ai from cleanings where id = (select id from ai_c)), 'approved/true',
+            'otomatik onay açıkken tüm adımları geçen kayıt onaylanır');
+update settings set value = 'true' where key = 'manual_approval_required';
+
+-- AI demirbaş sayımı (0019): eksik açılır, tamsa kapanır
+create temp table inv as
+  select e.id, e.item_key, e.qty, e.step_id from expected_items e join rooms r on r.room_type_id = e.room_type_id
+  where r.id = pg_temp.room('303') and e.step_id is not null and e.qty > 1 limit 1;
+insert into cleanings (id, room_id, day, hk_id, type, status, started_at)
+  values ('70000000-0000-0000-0000-000000000001', pg_temp.room('303'), '2026-05-11', '00000000-0000-0000-0000-00000000aa01', 'full', 'in_progress', now());
+insert into step_results (id, cleaning_id, step_id, shot, attempt, media_key)
+  select '70000000-0000-0000-0000-000000000002', '70000000-0000-0000-0000-000000000001', step_id, 1, 1, 'k/inv' from inv;
+select apply_inventory('70000000-0000-0000-0000-000000000002', jsonb_build_array(jsonb_build_object('key', (select item_key from inv), 'seen', (select qty - 1 from inv))));
+select t.eq((select count(*) from inventory_issues where status = 'open'), 1::bigint, 'AI eksik sayınca açık eksik açılır');
+select t.eq((select count(*) from notifications where kind = 'inventory_missing') > 0, true, 'eksik için bildirim');
+select apply_inventory('70000000-0000-0000-0000-000000000002', jsonb_build_array(jsonb_build_object('key', (select item_key from inv), 'seen', (select qty from inv))));
+select t.eq((select count(*) from inventory_issues where status = 'resolved' and resolved_by is null), 1::bigint, 'tam sayılınca eksik kendiliğinden kapanır');
+
+-- Saklama (0019): 15 günden eski fotoğraf silinecekler listesinde, şikayetli kayıt değil
+update step_results set captured_at = now() - interval '20 days' where cleaning_id = (select id from ai_c);
+select t.eq((select count(*) from media_to_delete() where kind = 'step') >= 2, true, '15 günü geçen fotoğraf silinecek');
+update cleanings set complaint = true where id = (select id from ai_c);
+select t.eq((select count(*) from media_to_delete() m join step_results r on r.id = m.id where r.cleaning_id = (select id from ai_c)), 0::bigint,
+            'şikayetli kaydın fotoğrafı silinmez');
+
 -- Müşteri temizlik talebi (0016): bugün girilen talep görünür, sonradan gönderilen temizlik kapatır
 insert into cleaning_requests (room_id, requested_at) values (pg_temp.room('402'), now() - interval '1 minute');
 create temp table rid as select pg_temp.room('402') r402, pg_temp.room('403') r403;
@@ -128,6 +160,9 @@ select t.eq((select cleaning_requested_at is null from today_board() where room_
 select t.eq((select count(*) > 0 from today_board() where hk_state is not null), true, 'Bugün ekranı temiz/kirli durumunu döner');
 select t.fails($$ select * from room_hk_state(gen_random_uuid()) $$, 'room_hk_state doğrudan çağrılamaz');
 select t.fails($$ select refresh_cleaning_ai(gen_random_uuid()) $$, 'refresh_cleaning_ai doğrudan çağrılamaz');
+select t.fails($$ select * from media_to_delete() $$, 'silinecek medya listesi tarayıcıdan okunamaz');
+select t.fails($$ select apply_inventory(gen_random_uuid(), '[]') $$, 'demirbaş sayımı tarayıcıdan yazılamaz');
+select t.eq((select ai_stats(current_date - 30, current_date)->>'photos'), '0', 'HK AI istatistiğini göremez (sıfır döner)');
 select t.fails($$ insert into room_hk_marks (room_id, clean) values ((select id from rooms limit 1), true) $$, 'HK temiz/kirli işaretleyemez');
 reset role;
 \echo 'ODA DURUMU TESTLERİ GEÇTİ'

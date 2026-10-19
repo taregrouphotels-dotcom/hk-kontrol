@@ -61,7 +61,9 @@ Kurallar:
 - Referans fotoğraf yerleşim ve olması gereken durum içindir; kamera açısındaki küçük farkları sorun sayma.
 - "note": HK'ya ekranda gösterilecek tek cümle, Türkçe, emir kipinde ve uygulanabilir
   (ör. "Klozet kapağının altını silip tekrar çek."). Sorun yoksa "Tamam".
-- Konaklama kontrolünde misafirin kişisel eşyalarını (bavul, kıyafet, kozmetik) sorun sayma.`
+- Konaklama kontrolünde misafirin kişisel eşyalarını (bavul, kıyafet, kozmetik) sorun sayma.
+- "Sayılacak kalemler" verilirse her biri için fotoğrafta net sayabildiğin adedi "items"a yaz; net göremiyorsan -1 yaz.
+  Beklenenden az görürsen bunu ayrıca "problems"a da ekle.`
 
 const SCHEMA = {
   type: 'object',
@@ -77,13 +79,23 @@ const SCHEMA = {
       },
     },
     note: { type: 'string' },
+    items: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: { key: { type: 'string' }, seen: { type: 'integer' } },
+        required: ['key', 'seen'],
+        additionalProperties: false,
+      },
+    },
   },
-  required: ['status', 'problems', 'note'],
+  required: ['status', 'problems', 'note', 'items'],
   additionalProperties: false,
 }
 
 interface Row {
   id: string
+  step_id: string
   cleaning_id: string
   shot: number
   media_key: string | null
@@ -94,11 +106,16 @@ interface Row {
 
 async function analyze(id: string) {
   const { data } = await admin.from('step_results')
-    .select('id, cleaning_id, shot, media_key, skipped, cleanings(type), check_steps(title, instruction, checks, ai_prompt, reference_key, shots)')
+    .select('id, step_id, cleaning_id, shot, media_key, skipped, cleanings(type), check_steps(title, instruction, checks, ai_prompt, reference_key, shots)')
     .eq('id', id).maybeSingle()
   const r = data as unknown as Row | null
   if (!r || r.skipped || !r.media_key) return null
   const st = r.check_steps
+  // Demirbaş sayımı sadece tam kontrolde (konaklamada mutfak sayılmaz, spec 5.4)
+  const { data: expected } = r.cleanings.type === 'full'
+    ? await admin.from('expected_items').select('item_key, label, qty, item_catalog(description)').eq('step_id', r.step_id).gt('qty', 0)
+    : { data: [] }
+  const items = (expected ?? []) as unknown as { item_key: string; label: string; qty: number; item_catalog: { description: string | null } | null }[]
   const content: Anthropic.ContentBlockParam[] = []
   if (st.reference_key) {
     content.push({ type: 'text', text: 'Referans fotoğraf (olması gereken):' }, await image(st.reference_key))
@@ -112,6 +129,9 @@ async function analyze(id: string) {
       `Çekim talimatı: ${st.instruction}`,
       `Kontrol maddeleri:\n${st.checks.map((c) => `- ${c}`).join('\n')}`,
       st.ai_prompt ? `Özellikle bak: ${st.ai_prompt}` : '',
+      items.length
+        ? `Sayılacak kalemler (key: ad, beklenen adet):\n${items.map((i) => `- ${i.item_key}: ${i.label}${i.item_catalog?.description ? ` (${i.item_catalog.description})` : ''}, beklenen ${i.qty}`).join('\n')}`
+        : 'Sayılacak kalem yok; items boş liste olsun.',
     ].filter(Boolean).join('\n'),
   })
 
@@ -127,7 +147,12 @@ async function analyze(id: string) {
   await admin.from('ai_usage').insert({
     step_result_id: r.id, model: res.model, input_tokens: res.usage.input_tokens, output_tokens: res.usage.output_tokens,
   })
-  let result: { status: 'ok' | 'warn' | 'fail' | 'unclear'; problems: { check: string; problem: string }[]; note: string }
+  let result: {
+    status: 'ok' | 'warn' | 'fail' | 'unclear'
+    problems: { check: string; problem: string }[]
+    note: string
+    items?: { key: string; seen: number }[]
+  }
   if (res.stop_reason === 'refusal') {
     result = { status: 'unclear', problems: [], note: 'AI bu fotoğrafı değerlendirmedi; süpervizör bakacak.' }
   } else {
@@ -136,6 +161,8 @@ async function analyze(id: string) {
     if (!['ok', 'warn', 'fail', 'unclear'].includes(result.status)) throw new Error('AI yanıtı okunamadı')
   }
   await admin.from('step_results').update({ ai_status: result.status, ai_result: { ...result, model: res.model } }).eq('id', r.id)
+  const counts = (result.items ?? []).filter((i) => i.seen >= 0 && items.some((x) => x.item_key === i.key))
+  if (counts.length) await admin.rpc('apply_inventory', { p_step_result: r.id, p_counts: counts })
   await admin.rpc('refresh_cleaning_ai', { p_cleaning: r.cleaning_id })
   return result
 }
