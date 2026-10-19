@@ -20,16 +20,17 @@ Supabase projesi: `ihwyfllcvkcpjsouhsel` (Frankfurt). Kimlik iş akışına yaz�
 
 Bundan sonra `main`'e gelen her veritabanı değişikliği testler geçtikten sonra Supabase'e otomatik uygulanır.
 
-## 3. Cloudflare Pages
-Workers & Pages → Create → Pages → Connect to Git → `hk-kontrol`.
-- Framework preset: **Vite** (ya da None)
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Ortam değişkeni: `NODE_VERSION` = `22`
+## 3. Cloudflare (yayın)
+Workers & Pages → Create → Import a repository → `hk-kontrol`. Worker olarak yayınlanır; ayarlar repodaki `wrangler.jsonc`'de.
+- Project name: `hk-kontrol` (`wrangler.jsonc`'deki `name` ile aynı olmalı)
+- Build command: boş bırakılabilir (`wrangler.jsonc` derlemeyi kendisi yapar)
+- Deploy command: `npx wrangler deploy`
+
+Pages olarak kurulursa: Build command `npm run build`, output `dist`, ortam değişkeni `NODE_VERSION=22`.
 
 Supabase adresi ve publishable key koda yazılı; tarayıcıya giden değerlerdir, gizli değildir. Başka bir Supabase projesine geçilirse `VITE_SUPABASE_URL` ve `VITE_SUPABASE_ANON_KEY` ortam değişkenleriyle değiştirilir.
 
-Yayın bitince verilen `https://….pages.dev` adresini Supabase → Authentication → URL Configuration → Site URL'e yaz.
+Yayın bitince verilen adresi (`https://hk-kontrol.….workers.dev`) Supabase → Authentication → URL Configuration → Site URL'e yaz.
 
 ## 4. Cloudflare R2 (fotoğraflar)
 1. R2'yi etkinleştir, `hk-media` adlı bucket aç (public erişim kapalı).

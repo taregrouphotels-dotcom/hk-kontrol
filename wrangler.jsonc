@@ -1,0 +1,14 @@
+// Cloudflare Workers ayarı: arayüzü derler, dist/ klasörünü statik site olarak yayınlar.
+// "name", Cloudflare'deki Worker adıyla aynı olmalı (adres: hk-kontrol.<hesap>.workers.dev).
+{
+  "name": "hk-kontrol",
+  "compatibility_date": "2025-09-01",
+  "build": {
+    "command": "npm run build"
+  },
+  "assets": {
+    "directory": "./dist",
+    // Uygulama tek sayfa: bilinmeyen adresler index.html'e düşer
+    "not_found_handling": "single-page-application"
+  }
+}

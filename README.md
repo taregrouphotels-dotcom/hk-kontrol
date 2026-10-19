@@ -17,7 +17,8 @@ Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulamas
 | Klasör | İçerik |
 |---|---|
 | `src/` | Arayüz (Vite + React + TypeScript + Tailwind): `pages/` ekranlar, `lib/` Supabase bağlantısı ve biçimlendirme |
-| `public/` | PWA manifest, service worker, simgeler, Cloudflare Pages yönlendirmesi |
+| `public/` | PWA manifest, service worker, simgeler |
+| `wrangler.jsonc` | Cloudflare yayın ayarı (derle, `dist/`i yayınla) |
 | `supabase/migrations/` | Veritabanı: `0001_init` (başlangıç şeması), sonraki her değişiklik yeni dosya |
 | `test/` | Veritabanı yetki testleri (yerel Postgres'te Supabase taklidiyle) |
 | `scripts/apply_migrations.sh` | Migration'ları Supabase'e uygular (GitHub Actions çalıştırır) |
