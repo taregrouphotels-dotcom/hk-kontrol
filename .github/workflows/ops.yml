@@ -1,7 +1,8 @@
 # Elle çalıştırılan bakım işleri (Actions → Bakım → Run workflow):
 #   secrets:        Edge Function gizli değişkenleri, her satır AD=değer (ör. TTLOCK_CLIENT_ID=...). Boşsa atlanır.
 #   test_password:  claude-test@hk-kontrol.local test admin hesabını açar/şifresini günceller. Boşsa atlanır.
-# Değerler loglarda gizlenir (add-mask). Test hesabı admin panelinden pasife alınabilir.
+# Değerler env'e konmaz (GitHub adım env'ini loga yazar); olay dosyasından okunur ve maskelenir.
+# Test hesabı admin panelinden pasife alınabilir.
 name: Bakım
 
 on:
@@ -23,22 +24,22 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPBASE_ACCESS_TOKEN }}
       SUPABASE_PROJECT_REF: ihwyfllcvkcpjsouhsel
       SUPABASE_URL: https://ihwyfllcvkcpjsouhsel.supabase.co
-      IN_SECRETS: ${{ inputs.secrets }}
-      IN_PASSWORD: ${{ inputs.test_password }}
     steps:
       - name: Değerleri gizle
         run: |
-          printf '%s\n' "$IN_SECRETS" | while IFS= read -r line; do
-            v="${line#*=}"; [ -n "$v" ] && [ "$v" != "$line" ] && echo "::add-mask::$v"
+          jq -r '.inputs.secrets // ""' "$GITHUB_EVENT_PATH" | while IFS= read -r line; do
+            v="${line#*=}"
+            if [ -n "$v" ] && [ "$v" != "$line" ]; then echo "::add-mask::$v"; fi
           done
-          [ -n "$IN_PASSWORD" ] && echo "::add-mask::$IN_PASSWORD" || true
+          p=$(jq -r '.inputs.test_password // ""' "$GITHUB_EVENT_PATH")
+          if [ -n "$p" ]; then echo "::add-mask::$p"; fi
       - uses: supabase/setup-cli@v1
         with:
           version: 2.119.0
       - name: Gizli değişkenler
         if: inputs.secrets != ''
         run: |
-          printf '%s\n' "$IN_SECRETS" | grep -E '^[A-Z][A-Z0-9_]*=.+' > /tmp/secrets.env
+          jq -r '.inputs.secrets' "$GITHUB_EVENT_PATH" | grep -E '^[A-Z][A-Z0-9_]*=.+' > /tmp/secrets.env
           echo "ayarlanacak: $(cut -d= -f1 /tmp/secrets.env | tr '\n' ' ')"
           supabase secrets set --project-ref "$SUPABASE_PROJECT_REF" --env-file /tmp/secrets.env
           rm -f /tmp/secrets.env
@@ -46,6 +47,7 @@ jobs:
       - name: Test admin hesabı
         if: inputs.test_password != ''
         run: |
+          IN_PASSWORD=$(jq -r '.inputs.test_password' "$GITHUB_EVENT_PATH")
           KEY=$(supabase projects api-keys --project-ref "$SUPABASE_PROJECT_REF" -o json | jq -r '.[] | select(.name=="service_role") | .api_key')
           echo "::add-mask::$KEY"
           EMAIL=claude-test@hk-kontrol.local
