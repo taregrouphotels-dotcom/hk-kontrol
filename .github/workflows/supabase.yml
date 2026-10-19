@@ -1,6 +1,6 @@
 # main'e gelen her veritabanı değişikliğini Supabase'e uygular (önce testler geçmeli).
 # Gerekli: GitHub → Settings → Secrets and variables → Actions → New repository secret
-#   SUPABASE_ACCESS_TOKEN  (supabase.com → Account → Access Tokens)
+#   SUPBASE_ACCESS_TOKEN  (supabase.com → Account → Access Tokens)
 name: Supabase güncelle
 
 on:
@@ -24,14 +24,14 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPBASE_ACCESS_TOKEN }}   # GitHub'daki secret adı böyle (A harfi eksik)
       SUPABASE_PROJECT_REF: ihwyfllcvkcpjsouhsel   # gizli değil; proje adresindeki kimlik
     steps:
       - name: Ayar kontrolü
         id: ayar
         run: |
           if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
-            echo "::warning::SUPABASE_ACCESS_TOKEN tanımlı değil; Supabase güncellemesi atlandı."
+            echo "::warning::SUPBASE_ACCESS_TOKEN secret'ı tanımlı değil; Supabase güncellemesi atlandı."
             echo "var=hayir" >> "$GITHUB_OUTPUT"
           else
             echo "var=evet" >> "$GITHUB_OUTPUT"
