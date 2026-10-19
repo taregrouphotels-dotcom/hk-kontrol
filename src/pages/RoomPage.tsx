@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { supabase, type CleaningStatus, type DayStatus, type Profile } from '../lib/supabase'
+import { errorText, supabase, type CleaningStatus, type DayStatus, type Profile } from '../lib/supabase'
 import { dayStatusLabel, fmtTime, minutesSince } from '../lib/format'
 import { activeForRoom, cleaningTypeFor, saveActive, updateActive, type ActiveCleaning } from '../lib/active'
 import { enqueue } from '../lib/queue'
-import QrScanner from '../components/QrScanner'
+import { callFunction } from '../lib/api'
 
-// Oda ekranı (spec 5.1): HK odayı seçer → QR okutur → "Temizliğe başla" → (birlikte temizleyen) → "Kontrole başla".
+// Oda ekranı (spec 5.1): HK odayı seçer → TTLock odada "Kapıyı aç ve temizliğe başla", diğerlerinde "Temizliğe başla" →
+// (birlikte temizleyen) → "Kontrole başla". QR şimdilik kullanılmıyor (karar 16), #/qr/<token> bağlantısı çalışmaya devam eder.
 // Çevrimdışı da çalışır: işlemler kuyruğa girer, ekran cihazdaki kayıttan (active.ts) beslenir.
 
 interface Room {
@@ -13,6 +14,7 @@ interface Room {
   room_no: string
   qr_token: string
   room_type_id: string
+  ttlock_lock_id: number | null
   properties: { name: string; lock_type: string | null }
   room_types: { code: string; name: string }
 }
@@ -40,15 +42,17 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
   const [active, setActive] = useState<ActiveCleaning | undefined>(() => activeForRoom(roomId))
   const [team, setTeam] = useState<Member[]>([])
   const [members, setMembers] = useState<string[]>([])
-  const [scan, setScan] = useState(false)
   const [error, setError] = useState<string>()
+  const [unlocking, setUnlocking] = useState(false)
+  const [opened, setOpened] = useState<Date>()
+  const [doorFailed, setDoorFailed] = useState(false)
   const [, tick] = useState(0)
 
   const load = useCallback(async () => {
     const [r, b] = await Promise.all([
       supabase
         .from('rooms')
-        .select('id, room_no, qr_token, room_type_id, properties(name, lock_type), room_types(code, name)')
+        .select('id, room_no, qr_token, room_type_id, ttlock_lock_id, properties(name, lock_type), room_types(code, name)')
         .eq('id', roomId)
         .maybeSingle(),
       supabase.rpc('today_board'),
@@ -82,14 +86,36 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
 
   // Kapıdaki QR telefonun kendi kamerasıyla okutulduysa (#/qr/<token>) tekrar okutmaya gerek yok
   const qrMatched = !!viaQr && room?.qr_token === viaQr
-  // Kilidi TTLock olmayan tesislerde (villa, tiny house: anahtar kutusu) QR yok; düğmeyle başlanır (karar 15)
-  const buttonOnly = !!room && room.properties.lock_type !== 'TTLock'
+  // TTLock kilidi olan odada kapı uygulamadan açılarak başlanır (karar 16); diğerlerinde (villa, tiny house) sadece düğme (karar 15)
+  const hasLock = !!room?.ttlock_lock_id
 
-  async function start(viaQr: boolean) {
+  async function unlock(cleaningId?: string): Promise<boolean> {
+    if (!room) return false
+    setError(undefined)
+    setUnlocking(true)
+    try {
+      await callFunction('ttlock-unlock', { action: 'unlock', room_id: room.id, cleaning_id: cleaningId })
+      setOpened(new Date())
+      return true
+    } catch (e) {
+      setError(navigator.onLine ? `Kapı açılamadı. ${errorText(e)}` : 'İnternet yok, kapı uygulamadan açılamıyor.')
+      return false
+    } finally {
+      setUnlocking(false)
+    }
+  }
+
+  async function openAndStart() {
+    const id = crypto.randomUUID()
+    if (await unlock(id)) await start(false, 'opened', id)
+    else setDoorFailed(true)
+  }
+
+  async function start(viaQr: boolean, door?: 'opened' | 'failed', id = crypto.randomUUID()) {
     if (!room) return
     setError(undefined)
     const c: ActiveCleaning = {
-      id: crypto.randomUUID(),
+      id,
       room_id: room.id,
       room_no: room.room_no,
       property_name: room.properties.name,
@@ -99,6 +125,7 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
       check_started_at: null,
       submitted_at: null,
       via_qr: viaQr,
+      door,
       done: {},
     }
     saveActive(c)
@@ -108,12 +135,6 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
       fn: 'start_cleaning',
       args: { p_id: c.id, p_room: c.room_id, p_started_at: c.started_at, p_via_qr: viaQr },
     })
-  }
-
-  function onScan(token: string) {
-    setScan(false)
-    if (room && token === room.qr_token) start(true)
-    else setError('Bu QR bu odaya ait değil. Doğru odanın kapısındaki QR’ı okutun.')
   }
 
   async function addMember(id: string) {
@@ -173,28 +194,32 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
           {othersCleaning && (
             <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">Bu odayı şu an {board?.hk_name} temizliyor.</p>
           )}
-          {buttonOnly ? (
-            <button className={primary} onClick={() => start(false)}>
-              Temizliğe başla
-            </button>
-          ) : qrMatched ? (
+          {qrMatched ? (
             <button className={primary} onClick={() => start(true)}>
               Temizliğe başla
             </button>
+          ) : hasLock ? (
+            <button className={primary} disabled={unlocking} onClick={openAndStart}>
+              {unlocking ? 'Kapı açılıyor…' : 'Kapıyı aç ve temizliğe başla'}
+            </button>
           ) : (
-            <button className={primary} onClick={() => setScan(true)}>
-              QR okut ve temizliğe başla
+            <button className={primary} onClick={() => start(false)}>
+              Temizliğe başla
             </button>
           )}
-          {!buttonOnly && (
+          {hasLock && doorFailed && (
             <button
-              className="w-full py-3 text-sm text-slate-500"
+              className="w-full rounded-2xl border border-slate-300 bg-white py-4 text-base font-semibold text-slate-700"
               onClick={() => {
-                if (window.confirm('QR okutmadan başlatılsın mı? Kayıt "QR yok" olarak işaretlenir ve raporda görünür.'))
-                  start(false)
+                if (
+                  window.confirm(
+                    'Kapı uygulamadan açılmadan başlatılsın mı? Kayıt raporda "kapı uygulamadan açılmadı" olarak görünür.',
+                  )
+                )
+                  start(false, 'failed')
               }}
             >
-              QR okunmuyor, QR'sız başlat
+              Kapı açılamadı, yine de başla
             </button>
           )}
         </div>
@@ -205,7 +230,7 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
           <div className="rounded-2xl bg-amber-50 p-4 text-amber-900">
             <p className="text-lg font-bold">Temizlik sürüyor · {minutesSince(active.started_at)} dk</p>
             <p className="text-sm">
-              {fmtTime(active.started_at)}'da başladı{active.via_qr || buttonOnly ? '' : ' · QR yok'}
+              {fmtTime(active.started_at)}'da başladı{active.door === 'failed' ? ' · kapı uygulamadan açılmadı' : ''}
             </p>
           </div>
           <div className="rounded-2xl bg-white p-4 shadow-sm">
@@ -242,7 +267,20 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
         </a>
       )}
 
-      {scan && <QrScanner onResult={onScan} onClose={() => setScan(false)} />}
+      {hasLock && ((me.role === 'hk' && active && !active.submitted_at) || me.role !== 'hk') && (
+        <div className="space-y-2">
+          <button
+            disabled={unlocking}
+            onClick={() => unlock(active?.id)}
+            className="w-full rounded-2xl border border-brand bg-white py-4 text-base font-semibold text-brand disabled:opacity-50"
+          >
+            {unlocking ? 'Kapı açılıyor…' : me.role === 'hk' ? 'Kapıyı tekrar aç' : 'Kapıyı aç'}
+          </button>
+          {opened && (
+            <p className="text-center text-sm font-semibold text-emerald-700">Kapı açıldı · {fmtTime(opened.toISOString())}</p>
+          )}
+        </div>
+      )}
     </div>
   )
 }

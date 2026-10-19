@@ -206,6 +206,7 @@ export default function DataImport() {
       )}
 
       <StorageTest />
+      <TTLockTest />
     </div>
   )
 }
@@ -237,6 +238,54 @@ function StorageTest() {
       </button>
       {state.ok && <p className="rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{state.ok}</p>}
       {state.error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{state.error}</p>}
+    </div>
+  )
+}
+
+// TTLock bağlantısı: giriş, kilit listesi, odalarla eşleşme, ağ geçidi ve pil (kapı açmaz)
+function TTLockTest() {
+  const [busy, setBusy] = useState(false)
+  const [res, setRes] = useState<{ locks: number; rooms: number; missing: string[]; noGateway: string[]; lowBattery: string[] }>()
+  const [error, setError] = useState<string>()
+
+  async function test() {
+    setBusy(true)
+    setError(undefined)
+    setRes(undefined)
+    try {
+      setRes(await callFunction('ttlock-unlock', { action: 'test' }))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : errorText(e))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const list = (title: string, items: string[]) =>
+    items.length > 0 && (
+      <p>
+        <b>{title}:</b> {items.join(', ')}
+      </p>
+    )
+
+  return (
+    <div className="mt-6 space-y-2 border-t border-slate-200 pt-4">
+      <h2 className="font-semibold text-slate-800">TTLock kilitleri</h2>
+      <button onClick={test} disabled={busy} className="w-full rounded-xl bg-white py-3 text-sm font-semibold text-brand shadow-sm disabled:opacity-50">
+        {busy ? 'Deneniyor…' : 'TTLock bağlantısını test et'}
+      </button>
+      {res && (
+        <div className={`space-y-1 rounded-lg px-4 py-3 text-sm ${res.missing.length ? 'bg-amber-50 text-amber-900' : 'bg-emerald-50 text-emerald-800'}`}>
+          <p>
+            TTLock hesabında {res.locks} kilit, uygulamada kilidi tanımlı {res.rooms} oda.
+            {res.missing.length === 0 && ' Hepsi eşleşiyor.'}
+          </p>
+          {list('Hesapta bulunamayan', res.missing)}
+          {list('Ağ geçidine bağlı değil', res.noGateway)}
+          {list('Pili zayıf', res.lowBattery)}
+        </div>
+      )}
+      {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
     </div>
   )
 }

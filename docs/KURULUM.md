@@ -46,6 +46,11 @@ Yayın adresi Supabase → Authentication → URL Configuration → Site URL'e y
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` | R2 bilgileri (`R2_BUCKET=hk-media`) |
 | `APP_ORIGIN` | Pages adresi |
 | `HOTELRUNNER_CONNECTIONS` | Tesis başına HotelRunner API bilgisi, tek satır JSON: `[{"pms_name":"Tare Houses Hotel","hr_id":"...","token":"..."}, ...]` (4 tesis; `pms_name` Excel'deki "PMS'teki Adı" ile aynı) |
+| `TTLOCK_CLIENT_ID`, `TTLOCK_CLIENT_SECRET` | TTLock geliştirici hesabındaki uygulamanın bilgileri (open.ttlock.com) |
+| `TTLOCK_USERNAME`, `TTLOCK_PASSWORD` | Kilitlerin bağlı olduğu TTLock hesabı (şifre düz ya da md5) |
+| `TTLOCK_API` | İsteğe bağlı; varsayılan `https://euapi.ttlock.com`. n8n'deki TTlock akışı başka bir adres kullanıyorsa o |
 | `ANTHROPIC_API_KEY`, `CLAUDE_MODEL` | Faz 2 |
 
 HotelRunner bilgileri, n8n'deki "HotelRunner Biriktirici" akışının dört HTTP düğümündeki `token` ve `hr_id` değerleridir. Uygulama HotelRunner'a sadece okuma isteği gönderir (`undelivered=false`).
+
+TTLock bilgileri n8n'deki "TTlock" akışındaki HTTP düğümlerinde bulunur. Girdikten sonra admin → Veri → "TTLock bağlantısını test et": kilit sayısı, odalarla eşleşme, ağ geçidi ve pil durumu görünür (kapı açılmaz). Uzaktan açma için kilidin TTLock uygulamasında "Uzaktan açma" ayarı açık olmalı.

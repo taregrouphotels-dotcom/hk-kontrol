@@ -188,8 +188,24 @@ select t.fails($$ insert into room_blocks (room_id, start_date, end_date, reason
             values ('40000000-0000-0000-0000-000000000001', current_date, current_date, 'x') $$,
             'İzmir süpervizörü İstanbul odasını kullanım dışı yapamaz');
 
+-- Kapı açma kayıtları (Edge Function yazar)
+reset role;
+insert into door_unlocks (room_id, profile_id, ok) values
+  ('40000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a2', true),
+  ('40000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-0000000000b2', false);
+insert into ttlock_token (access_token, expires_at) values ('gizli', now() + interval '1 day');
+set role authenticated;
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.eq((select count(*) from door_unlocks), 1::bigint, 'HK sadece kendi kapı açma kaydını görür');
+select t.fails($$ insert into door_unlocks (room_id, profile_id, ok)
+            values ('40000000-0000-0000-0000-000000000001', auth.uid(), true) $$, 'HK kapı açma kaydı yazamaz');
+select t.fails($$ select * from ttlock_token $$, 'TTLock anahtarı okunamaz');
+select t.as_user('00000000-0000-0000-0000-0000000000b2');
+select t.eq((select count(*) from door_unlocks), 1::bigint, 'İzmir süpervizörü sadece İzmir kapı kayıtlarını görür');
+
 -- ---------- Admin ----------
 select t.as_user('00000000-0000-0000-0000-0000000000c1');
+select t.eq((select count(*) from door_unlocks), 2::bigint, 'admin tüm kapı açma kayıtlarını görür');
 select t.eq((select count(*) from cleanings), 2::bigint, 'admin tüm kayıtları görür');
 select t.eq((select count(*) from today_board()), 3::bigint, 'admin Bugün ekranında tüm odaları görür');
 select t.eq((select count(*) from rooms), 3::bigint, 'admin tüm odaları görür');
