@@ -206,14 +206,12 @@ export default function DataImport() {
         </>
       )}
 
-      <StorageTest />
-      <AiKey />
     </div>
   )
 }
 
 // Fotoğraf deposu (R2) testi: sunucu anahtarları, sonra bu tarayıcıdan yükleme/okuma (CORS)
-function StorageTest() {
+export function StorageTest() {
   const [state, setState] = useState<{ busy?: boolean; ok?: string; error?: string }>({})
 
   async function test() {
@@ -245,7 +243,7 @@ function StorageTest() {
 
 
 // AI anahtarı (karar 20): admin girer, değer geri okunamaz; sadece ne zaman girildiği görünür
-function AiKey() {
+export function AiKey() {
   const [at, setAt] = useState<string | null>()
   const [value, setValue] = useState('')
   const [busy, setBusy] = useState(false)

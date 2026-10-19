@@ -42,7 +42,27 @@ const ROOM = 'rooms(room_no, properties(name)), report_media(media_key, media_de
 const DAMAGE_SELECT = `id, room_id, category, description, status, created_at, resolved_at, resolve_note, ${ROOM}, reporter:profiles!damage_reports_reported_by_fkey(full_name), resolver:profiles!damage_reports_resolved_by_fkey(full_name)`
 const LOST_SELECT = `id, room_id, description, found_at, stored_at, status, closed_at, returned_to, close_note, ${ROOM}, finder:profiles!lost_items_found_by_fkey(full_name), closer:profiles!lost_items_closed_by_fkey(full_name)`
 
-export default function Records({ me, kind, openId }: { me: Profile; kind: 'hasar' | 'esya'; openId?: string }) {
+export default function Records({ me, kind, openId }: { me: Profile; kind: 'hasar' | 'esya' | 'eksik'; openId?: string }) {
+  if (kind === 'eksik') return <Issues me={me} />
+  return <ReportList me={me} kind={kind} openId={openId} />
+}
+
+function Tabs({ kind }: { kind: string }) {
+  const tab = (k: string, label: string) => (
+    <a href={`#/kayitlar/${k}`} className={`flex-1 rounded-lg py-2 text-center text-sm font-semibold ${kind === k ? 'bg-white text-brand shadow-sm' : 'text-slate-500'}`}>
+      {label}
+    </a>
+  )
+  return (
+    <div className="flex gap-1 rounded-xl bg-slate-200 p-1">
+      {tab('hasar', 'Hasar')}
+      {tab('esya', 'Kayıp eşya')}
+      {tab('eksik', 'Eksikler')}
+    </div>
+  )
+}
+
+function ReportList({ me, kind, openId }: { me: Profile; kind: 'hasar' | 'esya'; openId?: string }) {
   const damage = kind === 'hasar'
   const canManage = me.role !== 'hk'
   const [filter, setFilter] = useState<string>(damage ? 'active' : 'stored')
@@ -90,21 +110,13 @@ export default function Records({ me, kind, openId }: { me: Profile; kind: 'hasa
   )
   const open = shown.find((r) => r.id === openId)
 
-  const tab = (k: 'hasar' | 'esya', label: string) => (
-    <a href={`#/kayitlar/${k}`} className={`flex-1 rounded-lg py-2 text-center text-sm font-semibold ${kind === k ? 'bg-white text-brand shadow-sm' : 'text-slate-500'}`}>
-      {label}
-    </a>
-  )
   const filters: [string, string][] = damage
     ? [['active', 'Açık + işlemde'], ['resolved', 'Giderildi'], ['all', 'Hepsi']]
     : [['stored', 'Saklanıyor'], ['returned', 'Teslim edildi'], ['disposed', 'İmha / bağış'], ['all', 'Hepsi']]
 
   return (
     <div className="space-y-3 px-4 pt-4">
-      <div className="flex gap-1 rounded-xl bg-slate-200 p-1">
-        {tab('hasar', 'Hasar')}
-        {tab('esya', 'Kayıp eşya')}
-      </div>
+      <Tabs kind={kind} />
       <a
         href={`#/bildir/${kind}`}
         className="block w-full rounded-xl bg-brand py-3 text-center text-sm font-semibold text-white shadow-sm"
@@ -318,5 +330,91 @@ function Detail({
         </div>
       )}
     </Sheet>
+  )
+}
+
+// Açık demirbaş eksikleri (spec 5.3, AI sayımı): süpervizör "yerine konuldu" ile kapatır; sonraki kontrolde tamsa kendiliğinden kapanır
+interface Issue {
+  id: string
+  expected_qty: number
+  observed_qty: number | null
+  status: 'open' | 'resolved'
+  opened_at: string
+  last_seen_at: string
+  resolved_at: string | null
+  note: string | null
+  rooms: { room_no: string; properties: { name: string } }
+  expected_items: { label: string }
+  resolver: { full_name: string } | null
+}
+
+function Issues({ me }: { me: Profile }) {
+  const [status, setStatus] = useState<'open' | 'resolved'>('open')
+  const [rows, setRows] = useState<Issue[]>()
+  const [error, setError] = useState<string>()
+
+  const load = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('inventory_issues')
+      .select('id, expected_qty, observed_qty, status, opened_at, last_seen_at, resolved_at, note, rooms(room_no, properties(name)), expected_items(label), resolver:profiles!inventory_issues_resolved_by_fkey(full_name)')
+      .eq('status', status)
+      .order(status === 'open' ? 'opened_at' : 'resolved_at', { ascending: false })
+      .limit(200)
+    if (error) return setError(errorText(error))
+    setRows(data as unknown as Issue[])
+  }, [status])
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  async function resolve(i: Issue) {
+    const note = window.prompt('Not (ör. yerine konuldu):', 'Yerine konuldu')
+    if (note === null) return
+    const { error } = await supabase
+      .from('inventory_issues')
+      .update({ status: 'resolved', resolved_at: new Date().toISOString(), resolved_by: me.id, note: note.trim() || null })
+      .eq('id', i.id)
+    if (error) setError(errorText(error))
+    load()
+  }
+
+  return (
+    <div className="space-y-3 px-4 pt-4">
+      <Tabs kind="eksik" />
+      <div className="flex gap-1.5">
+        {(['open', 'resolved'] as const).map((k) => (
+          <button key={k} onClick={() => setStatus(k)} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${status === k ? 'bg-slate-800 text-white' : 'bg-white text-slate-600'}`}>
+            {k === 'open' ? 'Açık' : 'Kapanan'}
+          </button>
+        ))}
+      </div>
+      <p className="text-xs text-slate-500">AI tam kontrollerde demirbaşları sayar; eksik görürse burada açılır, sonraki kontrolde tamsa kendiliğinden kapanır.</p>
+      {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
+      {rows?.length === 0 && <p className="rounded-xl bg-white p-4 text-slate-600 shadow-sm">Kayıt yok.</p>}
+      {rows?.map((i) => (
+        <div key={i.id} className="rounded-xl bg-white p-4 shadow-sm">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="text-lg font-bold text-slate-800">
+              {i.rooms.room_no} <span className="text-xs font-normal text-slate-500">{i.rooms.properties.name}</span>
+            </span>
+            <span className="text-sm font-semibold text-red-700">
+              {i.observed_qty ?? '?'} / {i.expected_qty}
+            </span>
+          </div>
+          <p className="text-sm text-slate-700">{i.expected_items.label}</p>
+          <p className="mt-1 text-xs text-slate-500">
+            Açıldı {fmtDate(i.opened_at)} · son görülme {fmtDate(i.last_seen_at)} {fmtTime(i.last_seen_at)}
+            {i.status === 'resolved' && ` · kapandı ${i.resolved_at ? fmtDate(i.resolved_at) : ''} ${i.resolver ? '· ' + i.resolver.full_name : '· otomatik'}`}
+            {i.note && ` · ${i.note}`}
+          </p>
+          {i.status === 'open' && me.role !== 'hk' && (
+            <button onClick={() => resolve(i)} className="mt-2 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700">
+              Yerine konuldu
+            </button>
+          )}
+        </div>
+      ))}
+    </div>
   )
 }

@@ -3,7 +3,9 @@ import { supabase, type Profile } from '../lib/supabase'
 import { regionLabel, roleLabel } from '../lib/format'
 import Today from './Today'
 import Staff from './Staff'
-import DataImport from './DataImport'
+import Admin from './Admin'
+import Reports from './Reports'
+import ReferenceCapture from './ReferenceCapture'
 import RoomPage from './RoomPage'
 import Capture from './Capture'
 import Review from './Review'
@@ -26,8 +28,9 @@ const TABS: Tab[] = [
   { path: '', label: 'Bugün', roles: ['hk', 'supervisor', 'admin'] },
   { path: 'onay', label: 'Onay', roles: ['admin', 'supervisor'] },
   { path: 'kayitlar', label: 'Hasar & Eşya', roles: ['hk', 'supervisor', 'admin'] },
+  { path: 'raporlar', label: 'Raporlar', roles: ['admin', 'supervisor'] },
   { path: 'personel', label: 'Personel', roles: ['admin', 'supervisor'] },
-  { path: 'veri', label: 'Veri', roles: ['admin'] },
+  { path: 'veri', label: 'Yönetim', roles: ['admin'] },
 ]
 
 function currentPath(): string {
@@ -48,7 +51,7 @@ export default function Main({ profile }: { profile: Profile }) {
   // kontrol kaydı (#/kayit/<temizlik id>), hasar/eşya bildir (#/bildir/hasar|esya[/<oda id>]), bildirimler (#/bildirim)
   const [route, arg, arg2] = path.split('/')
   const active = tabs.find((t) => t.path === route) ?? tabs[0]
-  const page = (['oda', 'qr', 'cek', 'kayit', 'bildir'].includes(route) && arg) || route === 'bildirim' ? route : null
+  const page = (['oda', 'qr', 'cek', 'kayit', 'bildir', 'referans'].includes(route) && arg) || route === 'bildirim' ? route : null
   const [menu, setMenu] = useState(false)
   const unread = useUnread(profile.id)
 
@@ -114,11 +117,13 @@ export default function Main({ profile }: { profile: Profile }) {
       {page === 'kayit' && profile.role !== 'hk' && <CleaningDetail key={arg} cleaningId={arg} />}
       {page === 'bildir' && (arg === 'hasar' || arg === 'esya') && <ReportForm key={path} kind={arg} roomId={arg2} me={profile} />}
       {page === 'bildirim' && <Notifications me={profile} />}
+      {page === 'referans' && profile.role !== 'hk' && <ReferenceCapture key={arg} roomId={arg} me={profile} />}
       {!page && active.path === '' && <Today me={profile} />}
-      {!page && active.path === 'kayitlar' && <Records me={profile} kind={arg === 'esya' ? 'esya' : 'hasar'} openId={arg2} />}
+      {!page && active.path === 'kayitlar' && <Records me={profile} kind={arg === 'esya' || arg === 'eksik' ? arg : 'hasar'} openId={arg2} />}
       {!page && active.path === 'onay' && <Review />}
       {!page && active.path === 'personel' && <Staff me={profile} />}
-      {!page && active.path === 'veri' && <DataImport />}
+      {!page && active.path === 'veri' && <Admin seg={arg} />}
+      {!page && active.path === 'raporlar' && <Reports seg={arg} me={profile} />}
 
       {tabs.length > 1 && !page && (
         <nav className="fixed inset-x-0 bottom-0 z-10 border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)]">
@@ -127,7 +132,7 @@ export default function Main({ profile }: { profile: Profile }) {
               <a
                 key={t.path}
                 href={`#/${t.path}`}
-                className={`flex-1 py-4 text-center text-sm font-semibold ${
+                className={`flex flex-1 items-center justify-center px-0.5 py-3 text-center text-xs font-semibold leading-tight ${
                   t === active ? 'text-brand' : 'text-slate-400'
                 }`}
               >

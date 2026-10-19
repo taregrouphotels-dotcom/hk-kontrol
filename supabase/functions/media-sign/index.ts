@@ -138,6 +138,26 @@ Deno.serve(async (req) => {
     return json({ photos, references })
   }
 
+  // Referans çekim modu: süpervizör/admin adım için doğrudan referans yükler (reference_upload → PUT → reference_commit)
+  if (body.action === 'reference_upload' || body.action === 'reference_commit') {
+    const { data: me } = await admin.from('profiles').select('role, active').eq('id', who.user.id).maybeSingle()
+    if (!me?.active || (me.role !== 'admin' && me.role !== 'supervisor')) return json({ error: 'Yetkiniz yok.' }, 403)
+    const { data: st } = await admin.from('check_steps').select('id, reference_key, room_types(code)').eq('id', body.step_id).maybeSingle()
+    if (!st) return json({ error: 'Adım bulunamadı.' }, 404)
+    const prefix = `ref/${slug((st as any).room_types.code)}/${st.id}-`
+    if (body.action === 'reference_upload') {
+      const key = `${prefix}${Date.now()}.jpg`
+      return json({ key, url: await presign('PUT', key, 'image/jpeg') })
+    }
+    const key = String(body.key ?? '')
+    if (!key.startsWith(prefix) || !/^\d+\.jpg$/.test(key.slice(prefix.length))) return json({ error: 'Geçersiz anahtar.' }, 400)
+    await admin.from('check_steps').update({ reference_key: key }).eq('id', st.id)
+    if (st.reference_key?.startsWith('ref/') && st.reference_key !== key) {
+      await r2()!.client.fetch(`${r2()!.base}/${st.reference_key}`, { method: 'DELETE' })
+    }
+    return json({ reference_key: key })
+  }
+
   if (body.action === 'set_reference') {
     const { data: me } = await admin.from('profiles').select('role, region, active').eq('id', who.user.id).maybeSingle()
     if (!me?.active || (me.role !== 'admin' && me.role !== 'supervisor')) return json({ error: 'Yetkiniz yok.' }, 403)

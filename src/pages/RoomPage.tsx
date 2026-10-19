@@ -229,6 +229,11 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
         </a>
       )}
 
+      {me.role !== 'hk' && (
+        <a href={`#/referans/${room.id}`} className="block rounded-xl bg-white py-3 text-center text-sm font-semibold text-amber-700 shadow-sm">
+          Referans çek ({room.room_types.code} tipindeki tüm odalar için)
+        </a>
+      )}
       <div className="grid grid-cols-2 gap-2 pt-2">
         <a href={`#/bildir/hasar/${room.id}`} className="rounded-xl bg-white py-3 text-center text-sm font-semibold text-slate-700 shadow-sm">
           Hasar bildir
