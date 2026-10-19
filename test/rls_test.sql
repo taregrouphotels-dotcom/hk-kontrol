@@ -71,6 +71,9 @@ set role authenticated;
 -- ---------- Giriş yapmamış kullanıcı ----------
 select t.as_user(null);
 select t.eq((select count(*) from rooms), 0::bigint, 'oturumsuz kullanıcı oda göremez');
+select t.eq((select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace
+             and has_function_privilege('anon', p.oid, 'execute')), 0::bigint,
+            'oturumsuz kullanıcı hiçbir fonksiyonu çağıramaz');
 
 -- ---------- HK-1: başlatma ----------
 select t.as_user('00000000-0000-0000-0000-0000000000a1');
