@@ -139,6 +139,11 @@ insert into cleaning_requests (room_id, requested_at) values (pg_temp.room('402'
 create temp table rid as select pg_temp.room('402') r402, pg_temp.room('403') r403;
 grant select on rid to authenticated;
 
+-- Günlük özet (0021)
+insert into ops.app_secrets (name, value) values ('SUMMARY_KEY', 'ozet-test');
+select t.eq((select daily_summary('ozet-test', 'morning') like '%Tare Houses Hotel%'), true, 'sabah özeti otelleri listeler');
+select t.eq((select daily_summary('ozet-test', 'evening') like '%gün sonu%'), true, 'akşam özeti üretilir');
+
 -- Bugün ekranı yeni sütunlarla çalışır
 set role authenticated;
 select t.as_user('00000000-0000-0000-0000-00000000aa01');

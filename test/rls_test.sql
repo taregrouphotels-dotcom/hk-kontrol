@@ -72,8 +72,11 @@ set role authenticated;
 select t.as_user(null);
 select t.eq((select count(*) from rooms), 0::bigint, 'oturumsuz kullanıcı oda göremez');
 select t.eq((select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace
+             and p.proname <> 'daily_summary'  -- anahtarla korunuyor (n8n Telegram özeti)
              and has_function_privilege('anon', p.oid, 'execute')), 0::bigint,
             'oturumsuz kullanıcı hiçbir fonksiyonu çağıramaz');
+select t.fails($$ select daily_summary('yanlis', 'morning') $$, 'günlük özet anahtarsız çağrılamaz');
+select t.fails($$ select daily_summary(null, 'morning') $$, 'günlük özet boş anahtarla çağrılamaz');
 
 -- ---------- HK-1: başlatma ----------
 select t.as_user('00000000-0000-0000-0000-0000000000a1');
