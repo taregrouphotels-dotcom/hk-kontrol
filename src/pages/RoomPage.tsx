@@ -13,7 +13,7 @@ interface Room {
   room_no: string
   qr_token: string
   room_type_id: string
-  properties: { name: string }
+  properties: { name: string; lock_type: string | null }
   room_types: { code: string; name: string }
 }
 
@@ -46,7 +46,11 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
 
   const load = useCallback(async () => {
     const [r, b] = await Promise.all([
-      supabase.from('rooms').select('id, room_no, qr_token, room_type_id, properties(name), room_types(code, name)').eq('id', roomId).maybeSingle(),
+      supabase
+        .from('rooms')
+        .select('id, room_no, qr_token, room_type_id, properties(name, lock_type), room_types(code, name)')
+        .eq('id', roomId)
+        .maybeSingle(),
       supabase.rpc('today_board'),
     ])
     if (r.data) {
@@ -57,13 +61,19 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
       const cached = localStorage.getItem(CACHE(roomId))
       setRoom(cached ? JSON.parse(cached).room : null)
     } else setRoom(null)
-    if (b.data) setBoard(((b.data as (Board & { room_id: string })[]).find((x) => x.room_id === roomId)) ?? null)
+    if (b.data) setBoard((b.data as (Board & { room_id: string })[]).find((x) => x.room_id === roomId) ?? null)
   }, [roomId])
 
   useEffect(() => {
     load()
     if (me.role === 'hk') {
-      supabase.from('profiles').select('id, full_name').eq('role', 'hk').eq('active', true).neq('id', me.id).order('full_name')
+      supabase
+        .from('profiles')
+        .select('id, full_name')
+        .eq('role', 'hk')
+        .eq('active', true)
+        .neq('id', me.id)
+        .order('full_name')
         .then(({ data }) => setTeam((data as Member[]) ?? []))
     }
     const t = setInterval(() => tick((n) => n + 1), 30_000)
@@ -72,6 +82,8 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
 
   // Kapıdaki QR telefonun kendi kamerasıyla okutulduysa (#/qr/<token>) tekrar okutmaya gerek yok
   const qrMatched = !!viaQr && room?.qr_token === viaQr
+  // Kilidi TTLock olmayan tesislerde (villa, tiny house: anahtar kutusu) QR yok; düğmeyle başlanır (karar 15)
+  const buttonOnly = !!room && room.properties.lock_type !== 'TTLock'
 
   async function start(viaQr: boolean) {
     if (!room) return
@@ -91,7 +103,11 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
     }
     saveActive(c)
     setActive(c)
-    await enqueue({ kind: 'rpc', fn: 'start_cleaning', args: { p_id: c.id, p_room: c.room_id, p_started_at: c.started_at, p_via_qr: viaQr } })
+    await enqueue({
+      kind: 'rpc',
+      fn: 'start_cleaning',
+      args: { p_id: c.id, p_room: c.room_id, p_started_at: c.started_at, p_via_qr: viaQr },
+    })
   }
 
   function onScan(token: string) {
@@ -123,19 +139,25 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
 
   return (
     <div className="space-y-4 px-4 pt-4">
-      <a href="#/" className="text-sm text-brand">← Bugün</a>
+      <a href="#/" className="text-sm text-brand">
+        ← Bugün
+      </a>
       <div className="rounded-2xl bg-white p-5 shadow-sm">
         <div className="flex items-baseline justify-between">
           <h1 className="text-4xl font-extrabold text-slate-800">{room.room_no}</h1>
           <span className="text-sm font-semibold text-slate-500">{room.room_types.code}</span>
         </div>
-        <p className="text-sm text-slate-500">{room.properties.name} · {room.room_types.name}</p>
+        <p className="text-sm text-slate-500">
+          {room.properties.name} · {room.room_types.name}
+        </p>
         <p className="mt-3 text-base">
           Bugün: <b>{board?.day_status ? dayStatusLabel[board.day_status] : 'durum bilinmiyor'}</b>
           {' · '}
           {(active?.type ?? cleaningTypeFor(board?.day_status ?? null)) === 'stayover' ? 'konaklama kontrolü' : 'tam kontrol'}
         </p>
-        {board?.block_reason && <p className="mt-2 rounded-lg bg-slate-800 px-3 py-2 text-sm text-white">Kullanım dışı: {board.block_reason}</p>}
+        {board?.block_reason && (
+          <p className="mt-2 rounded-lg bg-slate-800 px-3 py-2 text-sm text-white">Kullanım dışı: {board.block_reason}</p>
+        )}
         {board?.cleaning_status && board.hk_name && !active && (
           <p className="mt-2 text-sm text-slate-600">
             {doneToday ? 'Temizlendi' : 'Temizliyor'}: <b>{board.hk_name}</b>
@@ -148,8 +170,14 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
 
       {me.role === 'hk' && !active && (
         <div className="space-y-3">
-          {othersCleaning && <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">Bu odayı şu an {board?.hk_name} temizliyor.</p>}
-          {qrMatched ? (
+          {othersCleaning && (
+            <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">Bu odayı şu an {board?.hk_name} temizliyor.</p>
+          )}
+          {buttonOnly ? (
+            <button className={primary} onClick={() => start(false)}>
+              Temizliğe başla
+            </button>
+          ) : qrMatched ? (
             <button className={primary} onClick={() => start(true)}>
               Temizliğe başla
             </button>
@@ -158,14 +186,17 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
               QR okut ve temizliğe başla
             </button>
           )}
-          <button
-            className="w-full py-3 text-sm text-slate-500"
-            onClick={() => {
-              if (window.confirm('QR okutmadan başlatılsın mı? Kayıt "QR yok" olarak işaretlenir ve raporda görünür.')) start(false)
-            }}
-          >
-            QR okunmuyor, QR'sız başlat
-          </button>
+          {!buttonOnly && (
+            <button
+              className="w-full py-3 text-sm text-slate-500"
+              onClick={() => {
+                if (window.confirm('QR okutmadan başlatılsın mı? Kayıt "QR yok" olarak işaretlenir ve raporda görünür.'))
+                  start(false)
+              }}
+            >
+              QR okunmuyor, QR'sız başlat
+            </button>
+          )}
         </div>
       )}
 
@@ -173,7 +204,9 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
         <div className="space-y-3">
           <div className="rounded-2xl bg-amber-50 p-4 text-amber-900">
             <p className="text-lg font-bold">Temizlik sürüyor · {minutesSince(active.started_at)} dk</p>
-            <p className="text-sm">{fmtTime(active.started_at)}'da başladı{active.via_qr ? '' : ' · QR yok'}</p>
+            <p className="text-sm">
+              {fmtTime(active.started_at)}'da başladı{active.via_qr || buttonOnly ? '' : ' · QR yok'}
+            </p>
           </div>
           <div className="rounded-2xl bg-white p-4 shadow-sm">
             <label className="mb-2 block text-sm font-semibold text-slate-600">Birlikte temizleyen (isteğe bağlı)</label>
@@ -183,12 +216,18 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
               onChange={(e) => addMember(e.target.value)}
             >
               <option value="">Kişi ekle…</option>
-              {team.filter((t) => !members.includes(t.id)).map((t) => (
-                <option key={t.id} value={t.id}>{t.full_name}</option>
-              ))}
+              {team
+                .filter((t) => !members.includes(t.id))
+                .map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.full_name}
+                  </option>
+                ))}
             </select>
             {members.length > 0 && (
-              <p className="mt-2 text-sm text-slate-600">{members.map((id) => team.find((t) => t.id === id)?.full_name).join(', ')}</p>
+              <p className="mt-2 text-sm text-slate-600">
+                {members.map((id) => team.find((t) => t.id === id)?.full_name).join(', ')}
+              </p>
             )}
           </div>
           <button className={primary} onClick={startCheck}>

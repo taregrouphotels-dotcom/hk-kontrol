@@ -18,3 +18,4 @@ Spec'te açık kalan noktalar için verilen kararlar. Değişirse burası ve `do
 | 12 | Max süre | Excel'deki Max. Süre / Max Süre Aktif Faz 1'e alınır (canlı panoda kırmızı, raporda "süre aşımı"). |
 | 13 | AI talimatı, kare sayısı | Excel'e isteğe bağlı "Kare Sayısı" ve "AI Talimatı" sütunları; boşsa `templates/*.json` değeri. Diğer farklarda Excel geçerli. |
 | 14 | Kalem fotoğrafları | Faz 1'de var: admin ekranından R2'ye yüklenir. |
+| 15 | Temizliğe başlama | Kilidi TTLock olmayan tesislerde (Tare Village Urla, Tiny Houses: anahtar kutusu) QR yok, "Temizliğe başla" düğmesiyle başlanır; raporda "QR yok" sayılmaz. TTLock tesislerinde (ağ geçidi var: Tare Houses Hotel, Tare Suites Beşiktaş, Tare Suites Urla) ileride TTLock ile kapı/konum doğrulaması; o zamana kadar QR. |
