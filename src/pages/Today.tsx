@@ -359,9 +359,13 @@ const TILES: { key: Tile; label: string; cls: string; dot: string }[] = [
 ]
 
 const inProgress = (r: BoardRow) => r.cleaning_status === 'in_progress' || r.cleaning_status === 'fixing'
-// Giriş yapılmış ama oda temizlenmemiş: acil
+// Giriş saati geçmiş (yeni misafir girmiş) ama oda temizlenmemiş: acil. Çık+gir odasında 12:00 öncesi
+// içerideki eski misafirdir (departing), sayılmaz.
 const dirtyArrival = (r: BoardRow) =>
-  r.occupied === true && r.hk_state === 'dirty' && (r.day_status === 'checkin' || r.day_status === 'checkout_checkin')
+  r.occupied === true &&
+  !r.departing &&
+  r.hk_state === 'dirty' &&
+  (r.day_status === 'checkin' || r.day_status === 'checkout_checkin')
 
 function tileOf(r: BoardRow): Tile {
   if (inProgress(r)) return 'cleaning'
@@ -381,7 +385,7 @@ function tileNote(r: BoardRow): string {
   if (dirtyArrival(r)) return 'Giriş · kirli!'
   const cleanedToday = r.cleaning_status && r.cleaning_status !== 'cancelled' && r.hk_state === 'clean'
   if (r.occupied) {
-    if (r.departing) return 'Çıkacak'
+    if (r.departing) return r.arriving ? 'Çık+gir' : 'Çıkacak'
     if (r.day_status === 'stayover') return cleanedToday ? `Konak. ✓ ${who}` : 'Konak.'
     return 'Giriş yaptı'
   }
