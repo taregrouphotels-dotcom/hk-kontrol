@@ -3,6 +3,10 @@
 \set ON_ERROR_STOP 1
 set client_min_messages = notice;
 
+-- 0009'daki gerçek ilk dolum kayıtları test tarihlerini bozmasın
+delete from pms_reservations;
+delete from room_day_status;
+
 create temp table d as select (now() at time zone 'Europe/Istanbul')::date as today;
 grant select on d to service_role, authenticated;
 
