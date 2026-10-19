@@ -27,9 +27,14 @@ interface Property {
 interface SyncRun {
   started_at: string
   finished_at: string | null
+  heartbeat_at: string | null
   ok: boolean | null
   summary: Record<string, unknown> | null
+  progress: Record<string, { next_page: number; pages: number | null; done: boolean }> | null
 }
+
+// Bitmemiş çalışma 3 dk'dır ilerlemiyorsa ölmüş sayılır (sunucu da aynı kuralı uygular)
+const isStale = (r: SyncRun) => !r.finished_at && Date.now() - Date.parse(r.heartbeat_at ?? r.started_at) > 3 * 60_000
 
 interface Unmatched {
   hr_number: string
@@ -49,7 +54,7 @@ function SyncBar({ me, onSynced }: { me: Profile; onSynced: () => void }) {
   const [open, setOpen] = useState(false)
 
   const loadRun = useCallback(async () => {
-    const { data } = await supabase.from('pms_sync_runs').select('started_at, finished_at, ok, summary')
+    const { data } = await supabase.from('pms_sync_runs').select('started_at, finished_at, heartbeat_at, ok, summary, progress')
       .order('started_at', { ascending: false }).limit(1).maybeSingle()
     setRun((data as SyncRun) ?? null)
     return data as SyncRun | null
@@ -59,18 +64,28 @@ function SyncBar({ me, onSynced }: { me: Profile; onSynced: () => void }) {
     loadRun()
   }, [loadRun])
 
+  // Çalışma sürüyorsa (başka cihazdan ya da cron'dan başlamış olabilir) ekran kendiliğinden güncellenir
+  useEffect(() => {
+    if (!run || run.finished_at || isStale(run) || busy) return
+    const t = setTimeout(async () => {
+      const last = await loadRun()
+      if (last?.finished_at) onSynced()
+    }, 10_000)
+    return () => clearTimeout(t)
+  }, [run, busy, loadRun, onSynced])
+
   async function syncNow() {
     setBusy(true)
     setError(undefined)
     try {
       const res = await callFunction<{ started: boolean; message?: string }>('pms-sync', {})
       if (!res.started && res.message) setError(res.message)
-      // Arka planda çalışır; bitene kadar 5 sn'de bir bakılır (en fazla 3 dk)
+      // Arka planda parça parça çalışır; bitene kadar 5 sn'de bir bakılır (ilk senkron uzun sürebilir)
       const startedAt = Date.now()
       for (;;) {
         await new Promise((r) => setTimeout(r, 5000))
         const last = await loadRun()
-        if ((last?.finished_at && Date.parse(last.started_at) >= startedAt - 60_000) || Date.now() - startedAt > 180_000) break
+        if (!last || last.finished_at || isStale(last) || Date.now() - startedAt > 30 * 60_000) break
       }
       onSynced()
     } catch (e) {
@@ -86,11 +101,17 @@ function SyncBar({ me, onSynced }: { me: Profile; onSynced: () => void }) {
     ([k, v]) => k !== 'applied' && (k === 'error' || (v && typeof v === 'object' && 'error' in (v as object))),
   )
   const unmatched = ((summary.applied as { unmatched?: Unmatched[] } | undefined)?.unmatched ?? []) as Unmatched[]
+  const pages = Object.values(run?.progress ?? {})
+  const pageText = pages.some((p) => p.pages)
+    ? ` · ${pages.reduce((n, p) => n + Math.min(p.next_page - 1, p.pages ?? 0), 0)}/${pages.reduce((n, p) => n + (p.pages ?? 0), 0)} sayfa`
+    : ''
   const label = !run
     ? 'HotelRunner henüz senkronlanmadı'
-    : !run.finished_at
-      ? 'HotelRunner senkronu sürüyor…'
-      : `HotelRunner: ${fmtTime(run.finished_at)}${run.ok ? '' : ' · sorun var'}`
+    : isStale(run)
+      ? 'HotelRunner senkronu yarıda kaldı; tekrar başlatın'
+      : !run.finished_at
+        ? `HotelRunner senkronu sürüyor${pageText}…`
+        : `HotelRunner: ${fmtTime(run.finished_at)}${run.ok ? '' : ' · sorun var'}`
 
   return (
     <div className="mx-4 mb-2 rounded-xl bg-white px-4 py-3 text-sm shadow-sm">
