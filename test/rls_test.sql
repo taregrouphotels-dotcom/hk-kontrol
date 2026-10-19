@@ -195,6 +195,32 @@ set role authenticated;
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.fails($$ select * from ttlock_token $$, 'TTLock anahtarı okunamaz');
 
+-- Hasar ve kayıp eşya (0018)
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+insert into damage_reports (id, room_id, reported_by, category, description) values
+  ('60000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', auth.uid(), 'Mobilya', 'Komodin kapağı kırık');
+insert into lost_items (id, room_id, found_by, description, stored_at) values
+  ('60000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000001', auth.uid(), 'Siyah şarj aleti', 'Resepsiyon');
+insert into report_media (damage_id, media_key) values ('60000000-0000-0000-0000-000000000001', 'x/hasar/1.jpg');
+select t.fails($$ insert into damage_reports (room_id, reported_by, category, description)
+            values ('40000000-0000-0000-0000-000000000001', auth.uid(), 'Uzay', 'x') $$, 'listede olmayan hasar kategorisi girilemez');
+select t.fails($$ insert into damage_reports (room_id, reported_by, category, description)
+            values ('40000000-0000-0000-0000-000000000003', auth.uid(), 'Mobilya', 'x') $$, 'HK başka bölgeye hasar giremez');
+create temp table hk_upd as with u as (update damage_reports set status = 'resolved' returning 1) select count(*) n from u;
+select t.eq((select n from hk_upd), 0::bigint, 'HK hasarı kapatamaz');
+select t.eq((select count(*) from notifications), 0::bigint, 'HK başkasının bildirimini görmez');
+select t.as_user('00000000-0000-0000-0000-0000000000b1');
+select t.eq((select count(*) from notifications where kind in ('damage', 'lost_item')), 2::bigint, 'bölge süpervizörüne hasar ve eşya bildirimi');
+update damage_reports set status = 'resolved', resolve_note = 'Değiştirildi' where id = '60000000-0000-0000-0000-000000000001';
+select t.eq((select resolved_by from damage_reports where id = '60000000-0000-0000-0000-000000000001'), auth.uid(), 'kapatan süpervizör yazılır');
+update lost_items set status = 'returned', returned_to = 'Misafir Ali Veli' where id = '60000000-0000-0000-0000-000000000002';
+select t.eq((select closed_by is not null and closed_at is not null from lost_items where id = '60000000-0000-0000-0000-000000000002'), true,
+            'eşya teslim edilince kim/ne zaman yazılır');
+select t.eq((select count(*) from report_media), 1::bigint, 'süpervizör hasar fotoğrafını görür');
+select t.as_user('00000000-0000-0000-0000-0000000000b2');
+select t.eq((select count(*) from damage_reports) + (select count(*) from lost_items) + (select count(*) from notifications where kind = 'damage'),
+            0::bigint, 'İzmir süpervizörü İstanbul hasar/eşya ve bildirimlerini görmez');
+
 -- Uygulama gizli bilgileri (0017)
 select t.fails($$ select set_app_secret('ANTHROPIC_API_KEY', 'x') $$, 'süpervizör AI anahtarı giremez');
 select t.fails($$ select get_app_secret('ANTHROPIC_API_KEY') $$, 'kullanıcı AI anahtarını okuyamaz');
@@ -205,6 +231,7 @@ select t.eq((select set_app_secret('ANTHROPIC_API_KEY', ' sk-test ') is not null
 select t.fails($$ select set_app_secret('BASKA', 'x') $$, 'listede olmayan ad girilemez');
 select t.fails($$ select get_app_secret('ANTHROPIC_API_KEY') $$, 'admin de anahtarı geri okuyamaz');
 select t.eq((select count(*) from app_secret_status()), 1::bigint, 'admin sadece girildiğini görür');
+select t.eq((select count(*) from notifications where kind = 'damage' and user_id = auth.uid()), 1::bigint, 'admine hasar bildirimi');
 select t.fails($$ select * from ttlock_token $$, 'admin de TTLock anahtarını okuyamaz');
 select t.eq((select count(*) from cleanings), 2::bigint, 'admin tüm kayıtları görür');
 select t.eq((select count(*) from today_board()), 3::bigint, 'admin Bugün ekranında tüm odaları görür');

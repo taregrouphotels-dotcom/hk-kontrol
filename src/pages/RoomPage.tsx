@@ -228,6 +228,15 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
           Kontrol çekimine devam et
         </a>
       )}
+
+      <div className="grid grid-cols-2 gap-2 pt-2">
+        <a href={`#/bildir/hasar/${room.id}`} className="rounded-xl bg-white py-3 text-center text-sm font-semibold text-slate-700 shadow-sm">
+          Hasar bildir
+        </a>
+        <a href={`#/bildir/esya/${room.id}`} className="rounded-xl bg-white py-3 text-center text-sm font-semibold text-slate-700 shadow-sm">
+          Eşya buldum
+        </a>
+      </div>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 // Cloudflare R2 için süreli imzalı adres (spec 9). Anahtarlar sadece burada; tarayıcı R2'ye doğrudan yükler/okur.
 // upload: kaydı başlatan HK, açık (in_progress/fixing) temizliğin adım fotoğrafı için PUT adresi alır.
 // view:   kullanıcı, RLS'e göre görebildiği bir fotoğrafın GET adresini alır.
+// report_upload: hasar/kayıp eşya fotoğrafı için PUT adresi (sadece kaydı giren kişi).
 // set_reference: süpervizör/admin bir adım fotoğrafını o oda tipinin referansı yapar (kalıcı kopya: ref/...).
 // cleaning: bir temizlik kaydının tüm adım fotoğrafları ve adımların referans fotoğrafları (onay ekranı), tek çağrıda.
 // Anahtar biçimi: {bölge}/{otel}/{oda}/{gün}/{temizlik}/{adım}-{kare}-{deneme}.jpg
@@ -76,6 +77,20 @@ Deno.serve(async (req) => {
     const attempt = Number(body.attempt) || 1
     const key = [room.properties.region, slug(room.properties.name), slug(room.room_no), c.day, c.id,
       `${step.step_order}-${shot}-${attempt}.jpg`].join('/')
+    return json({ key, url: await presign('PUT', key, 'image/jpeg') })
+  }
+
+  if (body.action === 'report_upload') {
+    const isDamage = body.kind === 'damage'
+    const { data: rep } = await admin.from(isDamage ? 'damage_reports' : 'lost_items')
+      .select(`id, ${isDamage ? 'reported_by' : 'found_by'}, created:${isDamage ? 'created_at' : 'found_at'}, rooms(room_no, properties(name, region))`)
+      .eq('id', body.id).maybeSingle()
+    const owner = rep && (rep as any)[isDamage ? 'reported_by' : 'found_by']
+    if (!rep || owner !== who.user.id) return json({ error: 'Kayıt bulunamadı.' }, 404)
+    const room = (rep as any).rooms
+    const n = Math.min(Math.max(Number(body.n) || 1, 1), 3)
+    const key = [room.properties.region, slug(room.properties.name), slug(room.room_no), isDamage ? 'hasar' : 'esya',
+      String((rep as any).created).slice(0, 10), `${rep.id}-${n}.jpg`].join('/')
     return json({ key, url: await presign('PUT', key, 'image/jpeg') })
   }
 

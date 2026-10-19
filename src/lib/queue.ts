@@ -9,6 +9,9 @@ export type QueueOp =
   | { kind: 'rpc'; fn: 'start_cleaning' | 'add_cleaning_member' | 'remove_cleaning_member' | 'start_check' | 'submit_cleaning'; args: Record<string, unknown> }
   | { kind: 'photo'; cleaning_id: string; step_id: string; shot: number; attempt: number; captured_at: string; blob: Blob }
   | { kind: 'skip'; cleaning_id: string; step_id: string; shot: number; reason: string; captured_at: string }
+  // Hasar bildirimi / kayıp eşya: kimlik cihazda üretilir, tekrar gönderilirse kopya oluşmaz
+  | { kind: 'report'; table: 'damage_reports' | 'lost_items'; row: Record<string, unknown> }
+  | { kind: 'report_photo'; report: 'damage' | 'lost'; id: string; n: number; blob: Blob }
 
 interface Stored {
   id?: number
@@ -64,7 +67,7 @@ export function subscribe(fn: (s: QueueState) => void): () => void {
 
 async function refreshCounts() {
   const items = await all()
-  emit({ pending: items.length, photos: items.filter((i) => i.op.kind === 'photo').length })
+  emit({ pending: items.length, photos: items.filter((i) => i.op.kind === 'photo' || i.op.kind === 'report_photo').length })
   return items
 }
 
@@ -97,6 +100,33 @@ async function run(op: QueueOp) {
       cleaning_id: op.cleaning_id, step_id: op.step_id, shot: op.shot, attempt: 1,
       skipped: true, skip_reason: op.reason, captured_at: op.captured_at,
     })
+    if (error && error.code !== '23505') {
+      if (isNetwork(error)) throw error
+      throw new Permanent(errorText(error))
+    }
+    return
+  }
+  if (op.kind === 'report') {
+    const { error } = await supabase.from(op.table).insert(op.row)
+    if (error && error.code !== '23505') {
+      if (isNetwork(error)) throw error
+      throw new Permanent(errorText(error))
+    }
+    return
+  }
+  if (op.kind === 'report_photo') {
+    let signed: { key: string; url: string }
+    try {
+      signed = await callFunction('media-sign', { action: 'report_upload', kind: op.report, id: op.id, n: op.n })
+    } catch (e) {
+      if (isNetwork(e)) throw e
+      throw new Permanent(errorText(e))
+    }
+    const put = await fetch(signed.url, { method: 'PUT', body: op.blob, headers: { 'Content-Type': 'image/jpeg' } })
+    if (!put.ok) throw new Error(`Yükleme hatası (${put.status})`)
+    const { error } = await supabase
+      .from('report_media')
+      .insert({ [op.report === 'damage' ? 'damage_id' : 'lost_id']: op.id, media_key: signed.key })
     if (error && error.code !== '23505') {
       if (isNetwork(error)) throw error
       throw new Permanent(errorText(error))
