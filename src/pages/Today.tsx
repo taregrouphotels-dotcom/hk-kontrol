@@ -11,6 +11,9 @@ interface BoardRow {
   room_type_code: string
   day_status: DayStatus | null
   day_status_source: string | null
+  block_id: string | null
+  block_reason: string | null
+  block_until: string | null
   cleaning_id: string | null
   cleaning_status: CleaningStatus | null
   hk_name: string | null
@@ -157,6 +160,84 @@ function SyncBar({ me, onSynced }: { me: Profile; onSynced: () => void }) {
 
 const STATUS_CHOICES: DayStatus[] = ['checkout', 'checkout_checkin', 'stayover', 'checkin', 'vacant']
 
+// Kullanım dışı (tadilat, boya, arıza): sebep ve bitiş tarihi; kaldırılınca bugünden itibaren biter
+function BlockEditor({ room, me, onSaved }: { room: BoardRow; me: Profile; onSaved: () => void }) {
+  const today = istanbulToday()
+  const [reason, setReason] = useState('')
+  const [until, setUntil] = useState(today)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string>()
+
+  async function run(fn: () => Promise<{ error: unknown }> | PromiseLike<{ error: unknown }>) {
+    setBusy(true)
+    setError(undefined)
+    const { error } = await fn()
+    setBusy(false)
+    if (error) setError(errorText(error))
+    else onSaved()
+  }
+
+  if (room.block_id) {
+    return (
+      <div className="space-y-2 rounded-xl bg-slate-800 p-4 text-white">
+        <p className="text-sm">
+          Kullanım dışı: <b>{room.block_reason}</b>
+          {room.block_until && ` · ${fmtDate(room.block_until)} dahil`}
+        </p>
+        <button
+          disabled={busy}
+          onClick={() => {
+            const id = room.block_id!
+            const yesterday = new Date(Date.parse(today + 'T00:00:00Z') - 86_400_000).toISOString().slice(0, 10)
+            // Bugün başladıysa silinir; önceden başladıysa dünle biter (geçmiş kayıt kalır)
+            run(async () => {
+              const del = await supabase.from('room_blocks').delete().eq('id', id).gte('start_date', today)
+              if (del.error) return del
+              return await supabase.from('room_blocks').update({ end_date: yesterday }).eq('id', id).lt('start_date', today)
+            })
+          }}
+          className="w-full rounded-lg bg-white py-3 text-sm font-semibold text-slate-800 disabled:opacity-50"
+        >
+          Kullanıma aç
+        </button>
+        {error && <p className="text-sm text-red-300">{error}</p>}
+      </div>
+    )
+  }
+
+  return (
+    <details className="rounded-xl bg-white p-4 shadow-sm">
+      <summary className="cursor-pointer text-sm font-semibold text-slate-700">Kullanım dışı yap (tadilat, arıza…)</summary>
+      <div className="mt-3 space-y-2">
+        <input
+          className="w-full rounded-lg border border-slate-300 px-3 py-2"
+          placeholder="Sebep (ör. Tadilat, Tavan boya)"
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
+        <label className="flex items-center justify-between gap-2 text-sm text-slate-600">
+          Bitiş (dahil)
+          <input type="date" min={today} className="rounded-lg border border-slate-300 px-3 py-2" value={until} onChange={(e) => setUntil(e.target.value)} />
+        </label>
+        <button
+          disabled={busy || reason.trim().length < 2 || until < today}
+          onClick={() =>
+            run(() =>
+              supabase.from('room_blocks').insert({
+                room_id: room.room_id, start_date: today, end_date: until, reason: reason.trim(), created_by: me.id,
+              }),
+            )
+          }
+          className="w-full rounded-lg bg-slate-800 py-3 text-sm font-semibold text-white disabled:opacity-50"
+        >
+          Kaydet
+        </button>
+        {error && <p className="text-sm text-red-700">{error}</p>}
+      </div>
+    </details>
+  )
+}
+
 // Süpervizör/admin günlük durumu elle değiştirir; o gün senkron ezmez (karar 5)
 function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profile; onClose: () => void; onSaved: () => void }) {
   const [busy, setBusy] = useState(false)
@@ -206,6 +287,7 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
             {dayStatusLabel[s]}
           </button>
         ))}
+        <BlockEditor room={room} me={me} onSaved={() => { onSaved(); onClose() }} />
         {room.day_status_source === 'manual' && (
           <button disabled={busy} onClick={() => save(null)} className="w-full py-3 text-sm text-slate-500">
             Elle girileni kaldır (sonraki senkronda HotelRunner'dan gelir)
@@ -218,17 +300,19 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
 }
 
 // Oda kutusunun rengi: önce temizlik durumu, temizlik yoksa günlük durum (spec 5.1)
-type Tile = 'todo' | 'cleaning' | 'done' | 'occupied' | 'vacant' | 'unknown'
+type Tile = 'todo' | 'cleaning' | 'done' | 'occupied' | 'vacant' | 'blocked' | 'unknown'
 const TILES: { key: Tile; label: string; cls: string; dot: string }[] = [
-  { key: 'todo', label: 'Temizlenecek', cls: 'bg-red-100 text-red-900 ring-red-200', dot: 'bg-red-500' },
-  { key: 'cleaning', label: 'Temizleniyor', cls: 'bg-amber-100 text-amber-900 ring-amber-200', dot: 'bg-amber-500' },
-  { key: 'done', label: 'Temizlendi', cls: 'bg-green-100 text-green-900 ring-green-200', dot: 'bg-green-500' },
-  { key: 'occupied', label: 'Dolu', cls: 'bg-blue-100 text-blue-900 ring-blue-200', dot: 'bg-blue-500' },
-  { key: 'vacant', label: 'Boş', cls: 'bg-white text-slate-700 ring-slate-200', dot: 'bg-slate-300' },
-  { key: 'unknown', label: 'Bilinmiyor', cls: 'bg-slate-100 text-slate-500 ring-slate-200 ring-dashed', dot: 'bg-slate-200' },
+  { key: 'todo', label: 'Temizlenecek', cls: 'bg-red-500 text-white', dot: 'bg-red-500' },
+  { key: 'cleaning', label: 'Temizleniyor', cls: 'bg-amber-400 text-amber-950', dot: 'bg-amber-400' },
+  { key: 'done', label: 'Temizlendi', cls: 'bg-emerald-500 text-white', dot: 'bg-emerald-500' },
+  { key: 'occupied', label: 'Dolu', cls: 'bg-sky-600 text-white', dot: 'bg-sky-600' },
+  { key: 'vacant', label: 'Boş', cls: 'bg-white text-slate-700 ring-1 ring-slate-200', dot: 'bg-white ring-1 ring-slate-300' },
+  { key: 'blocked', label: 'Kullanım dışı', cls: 'bg-slate-800 text-white', dot: 'bg-slate-800' },
+  { key: 'unknown', label: 'Bilinmiyor', cls: 'bg-slate-200 text-slate-500', dot: 'bg-slate-300' },
 ]
 
 function tileOf(r: BoardRow): Tile {
+  if (r.block_id && !r.cleaning_status) return 'blocked'
   switch (r.cleaning_status) {
     case 'approved':
     case 'submitted':
@@ -263,6 +347,7 @@ const SHORT: Record<DayStatus, string> = {
 
 // Kutunun alt satırı: temizlik sürüyorsa kim ve kaç dakikadır, bittiyse kim, yoksa günlük durum
 function tileNote(r: BoardRow): string {
+  if (r.block_id && !r.cleaning_status) return r.block_reason ?? 'Kullanım dışı'
   const who = r.hk_name?.split(' ')[0] ?? ''
   if (r.cleaning_status === 'in_progress' || r.cleaning_status === 'fixing')
     return `${who} ${r.check_started_at ? 'kontrol' : minutesSince(r.started_at!) + 'dk'}`
@@ -339,7 +424,7 @@ export default function Today({ me }: { me: Profile }) {
           return (
             <section key={p.id} className="mt-3 px-4">
               <h2 className="mb-1.5 text-sm font-semibold text-brand">{p.name}</h2>
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-4 gap-2">
                 {own.map((r) => {
                   const t = TILES.find((x) => x.key === tileOf(r))!
                   return (
@@ -347,12 +432,15 @@ export default function Today({ me }: { me: Profile }) {
                       key={r.room_id}
                       disabled={!canEdit}
                       onClick={() => setEditing(r)}
-                      className={`relative rounded-lg px-1 py-1.5 text-center ring-1 ${t.cls} enabled:active:opacity-70`}
+                      className={`relative flex h-[60px] flex-col justify-between rounded-xl px-2 py-1.5 text-left shadow-sm ${t.cls} enabled:active:scale-95`}
                     >
-                      <div className="text-base font-bold leading-tight">{r.room_no}</div>
-                      <div className="truncate text-[10px] leading-tight opacity-80">{tileNote(r)}</div>
+                      <div className="flex items-start justify-between gap-1">
+                        <span className="text-lg font-extrabold leading-none tracking-tight">{r.room_no}</span>
+                        <span className="text-[9px] font-semibold uppercase leading-none opacity-70">{r.room_type_code}</span>
+                      </div>
+                      <div className="truncate text-[11px] font-medium leading-tight opacity-90">{tileNote(r)}</div>
                       {r.day_status_source === 'manual' && (
-                        <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-amber-600" title="elle" />
+                        <span className="absolute bottom-1.5 right-1.5 h-2 w-2 rounded-full bg-orange-400 ring-2 ring-white" title="elle" />
                       )}
                     </button>
                   )

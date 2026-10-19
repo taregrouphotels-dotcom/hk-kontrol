@@ -175,6 +175,19 @@ select t.fails($$ insert into room_day_status (room_id, day, status, source)
             values ('40000000-0000-0000-0000-000000000003', current_date, 'checkout', 'manual') $$,
             'İstanbul süpervizörü İzmir oda durumunu yazamaz');
 
+-- Kullanım dışı (tadilat)
+insert into room_blocks (room_id, start_date, end_date, reason, created_by)
+  values ('40000000-0000-0000-0000-000000000001', current_date - 1, current_date + 3, 'Tadilat', auth.uid());
+select t.eq((select block_reason from today_board() where room_no = '103'), 'Tadilat', 'süpervizör odayı kullanım dışı yapar');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.eq((select block_reason from today_board() where room_no = '103'), 'Tadilat', 'HK kullanım dışı odayı görür');
+select t.fails($$ insert into room_blocks (room_id, start_date, end_date, reason)
+            values ('40000000-0000-0000-0000-000000000001', current_date, current_date, 'x') $$, 'HK kullanım dışı giremez');
+select t.as_user('00000000-0000-0000-0000-0000000000b2');
+select t.fails($$ insert into room_blocks (room_id, start_date, end_date, reason)
+            values ('40000000-0000-0000-0000-000000000001', current_date, current_date, 'x') $$,
+            'İzmir süpervizörü İstanbul odasını kullanım dışı yapamaz');
+
 -- ---------- Admin ----------
 select t.as_user('00000000-0000-0000-0000-0000000000c1');
 select t.eq((select count(*) from cleanings), 2::bigint, 'admin tüm kayıtları görür');
