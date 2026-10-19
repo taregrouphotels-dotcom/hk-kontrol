@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { errorText, supabase, type CleaningStatus, type DayStatus, type Profile } from '../lib/supabase'
+import { supabase, type CleaningStatus, type DayStatus, type Profile } from '../lib/supabase'
 import { dayStatusLabel, fmtTime, minutesSince } from '../lib/format'
 import { activeForRoom, cleaningTypeFor, saveActive, updateActive, type ActiveCleaning } from '../lib/active'
 import { enqueue } from '../lib/queue'
-import { callFunction } from '../lib/api'
 
-// Oda ekranı (spec 5.1): HK odayı seçer → TTLock odada "Kapıyı aç ve temizliğe başla", diğerlerinde "Temizliğe başla" →
-// (birlikte temizleyen) → "Kontrole başla". QR şimdilik kullanılmıyor (karar 16), #/qr/<token> bağlantısı çalışmaya devam eder.
+// Oda ekranı (spec 5.1): HK odayı seçer → "Temizliğe başla" → (birlikte temizleyen) → "Kontrole başla".
+// Kapı uygulamadan açılmaz; QR şimdilik kullanılmıyor (karar 16). #/qr/<token> bağlantısı çalışmaya devam eder.
 // Çevrimdışı da çalışır: işlemler kuyruğa girer, ekran cihazdaki kayıttan (active.ts) beslenir.
 
 interface Room {
@@ -14,8 +13,7 @@ interface Room {
   room_no: string
   qr_token: string
   room_type_id: string
-  ttlock_lock_id: number | null
-  properties: { name: string; lock_type: string | null }
+  properties: { name: string }
   room_types: { code: string; name: string }
 }
 
@@ -43,16 +41,13 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
   const [team, setTeam] = useState<Member[]>([])
   const [members, setMembers] = useState<string[]>([])
   const [error, setError] = useState<string>()
-  const [unlocking, setUnlocking] = useState(false)
-  const [opened, setOpened] = useState<Date>()
-  const [doorFailed, setDoorFailed] = useState(false)
   const [, tick] = useState(0)
 
   const load = useCallback(async () => {
     const [r, b] = await Promise.all([
       supabase
         .from('rooms')
-        .select('id, room_no, qr_token, room_type_id, ttlock_lock_id, properties(name, lock_type), room_types(code, name)')
+        .select('id, room_no, qr_token, room_type_id, properties(name), room_types(code, name)')
         .eq('id', roomId)
         .maybeSingle(),
       supabase.rpc('today_board'),
@@ -86,36 +81,12 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
 
   // Kapıdaki QR telefonun kendi kamerasıyla okutulduysa (#/qr/<token>) tekrar okutmaya gerek yok
   const qrMatched = !!viaQr && room?.qr_token === viaQr
-  // TTLock kilidi olan odada kapı uygulamadan açılarak başlanır (karar 16); diğerlerinde (villa, tiny house) sadece düğme (karar 15)
-  const hasLock = !!room?.ttlock_lock_id
 
-  async function unlock(cleaningId?: string): Promise<boolean> {
-    if (!room) return false
-    setError(undefined)
-    setUnlocking(true)
-    try {
-      await callFunction('ttlock-unlock', { action: 'unlock', room_id: room.id, cleaning_id: cleaningId })
-      setOpened(new Date())
-      return true
-    } catch (e) {
-      setError(navigator.onLine ? `Kapı açılamadı. ${errorText(e)}` : 'İnternet yok, kapı uygulamadan açılamıyor.')
-      return false
-    } finally {
-      setUnlocking(false)
-    }
-  }
-
-  async function openAndStart() {
-    const id = crypto.randomUUID()
-    if (await unlock(id)) await start(false, 'opened', id)
-    else setDoorFailed(true)
-  }
-
-  async function start(viaQr: boolean, door?: 'opened' | 'failed', id = crypto.randomUUID()) {
+  async function start(viaQr: boolean) {
     if (!room) return
     setError(undefined)
     const c: ActiveCleaning = {
-      id,
+      id: crypto.randomUUID(),
       room_id: room.id,
       room_no: room.room_no,
       property_name: room.properties.name,
@@ -125,7 +96,6 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
       check_started_at: null,
       submitted_at: null,
       via_qr: viaQr,
-      door,
       done: {},
     }
     saveActive(c)
@@ -194,34 +164,9 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
           {othersCleaning && (
             <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">Bu odayı şu an {board?.hk_name} temizliyor.</p>
           )}
-          {qrMatched ? (
-            <button className={primary} onClick={() => start(true)}>
-              Temizliğe başla
-            </button>
-          ) : hasLock ? (
-            <button className={primary} disabled={unlocking} onClick={openAndStart}>
-              {unlocking ? 'Kapı açılıyor…' : 'Kapıyı aç ve temizliğe başla'}
-            </button>
-          ) : (
-            <button className={primary} onClick={() => start(false)}>
-              Temizliğe başla
-            </button>
-          )}
-          {hasLock && doorFailed && (
-            <button
-              className="w-full rounded-2xl border border-slate-300 bg-white py-4 text-base font-semibold text-slate-700"
-              onClick={() => {
-                if (
-                  window.confirm(
-                    'Kapı uygulamadan açılmadan başlatılsın mı? Kayıt raporda "kapı uygulamadan açılmadı" olarak görünür.',
-                  )
-                )
-                  start(false, 'failed')
-              }}
-            >
-              Kapı açılamadı, yine de başla
-            </button>
-          )}
+          <button className={primary} onClick={() => start(qrMatched)}>
+            Temizliğe başla
+          </button>
         </div>
       )}
 
@@ -229,9 +174,7 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
         <div className="space-y-3">
           <div className="rounded-2xl bg-amber-50 p-4 text-amber-900">
             <p className="text-lg font-bold">Temizlik sürüyor · {minutesSince(active.started_at)} dk</p>
-            <p className="text-sm">
-              {fmtTime(active.started_at)}'da başladı{active.door === 'failed' ? ' · kapı uygulamadan açılmadı' : ''}
-            </p>
+            <p className="text-sm">{fmtTime(active.started_at)}'da başladı</p>
           </div>
           <div className="rounded-2xl bg-white p-4 shadow-sm">
             <label className="mb-2 block text-sm font-semibold text-slate-600">Birlikte temizleyen (isteğe bağlı)</label>
@@ -265,21 +208,6 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
         <a href={`#/cek/${active.id}`} className={`${primary} block text-center`}>
           Kontrol çekimine devam et
         </a>
-      )}
-
-      {hasLock && ((me.role === 'hk' && active && !active.submitted_at) || me.role !== 'hk') && (
-        <div className="space-y-2">
-          <button
-            disabled={unlocking}
-            onClick={() => unlock(active?.id)}
-            className="w-full rounded-2xl border border-brand bg-white py-4 text-base font-semibold text-brand disabled:opacity-50"
-          >
-            {unlocking ? 'Kapı açılıyor…' : me.role === 'hk' ? 'Kapıyı tekrar aç' : 'Kapıyı aç'}
-          </button>
-          {opened && (
-            <p className="text-center text-sm font-semibold text-emerald-700">Kapı açıldı · {fmtTime(opened.toISOString())}</p>
-          )}
-        </div>
       )}
     </div>
   )

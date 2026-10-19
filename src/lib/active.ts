@@ -13,8 +13,6 @@ export interface ActiveCleaning {
   check_started_at: string | null
   submitted_at: string | null
   via_qr: boolean
-  // TTLock: kapı uygulamadan açıldı / açılamadı (başka yolla girildi)
-  door?: 'opened' | 'failed'
   // "adımId:kare" → çekildi / uygulanamıyor
   done: Record<string, 'photo' | 'skip'>
 }

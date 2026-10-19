@@ -37,3 +37,12 @@ jobs:
             echo "yayınlanıyor: $name"
             supabase functions deploy "$name" --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt --use-api
           done
+      # Depodan silinen fonksiyon Supabase'den de silinir (ör. ttlock-unlock: kapı uygulamadan açılmaz)
+      - name: Silinenler
+        run: |
+          for name in $(supabase functions list --project-ref "$SUPABASE_PROJECT_REF" -o json | jq -r '.[].slug'); do
+            if [ ! -d "supabase/functions/$name" ]; then
+              echo "siliniyor: $name"
+              supabase functions delete "$name" --project-ref "$SUPABASE_PROJECT_REF"
+            fi
+          done
