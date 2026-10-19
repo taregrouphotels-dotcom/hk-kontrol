@@ -63,7 +63,11 @@ async function fetchPage(c: Connection, since: string, page: number) {
   for (let attempt = 1; ; attempt++) {
     const res = await fetch(`${API}?${qs}`)
     if (res.ok) return await res.json()
-    if (attempt >= 3) throw new Error(`HotelRunner ${res.status}: ${(await res.text()).slice(0, 200)}`)
+    if (attempt >= 3) {
+      // HotelRunner hata mesajında anahtarı geri yazıyor; ekrana ve kayda gitmesin
+      const text = (await res.text()).split(c.token).join('***').slice(0, 200)
+      throw new Error(`HotelRunner ${res.status}: ${text}`)
+    }
     await sleep(5000 * attempt)
   }
 }
@@ -116,7 +120,12 @@ async function run(trigger: string) {
   const summary: Record<string, unknown> = {}
   let ok = true
   try {
-    const connections = JSON.parse(Deno.env.get('HOTELRUNNER_CONNECTIONS') || '[]') as Connection[]
+    // Yapıştırırken kalan boşluklar temizlenir
+    const connections = (JSON.parse(Deno.env.get('HOTELRUNNER_CONNECTIONS') || '[]') as Connection[]).map((c) => ({
+      pms_name: String(c.pms_name ?? '').trim(),
+      hr_id: String(c.hr_id ?? '').trim(),
+      token: String(c.token ?? '').trim(),
+    }))
     if (connections.length === 0) throw new Error('HOTELRUNNER_CONNECTIONS tanımlı değil')
 
     // İlk senkronda geçmişe uzun bak; her gece 03:00'te 60 gün; diğer saatlerde son 2 gün (n8n akışıyla aynı)
