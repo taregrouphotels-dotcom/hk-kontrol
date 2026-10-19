@@ -7,8 +7,8 @@
 // Bağlantılar: HOTELRUNNER_CONNECTIONS = [{"pms_name":"Tare Houses Hotel","hr_id":"...","token":"..."}, ...]
 // pms_name, Excel'deki "PMS'teki Adı" (properties.pms_name) ile aynı olmalı.
 //
-// Süre sınırı: HotelRunner sayfaları arasında 6 sn beklenir; ilk senkron (6 ay) tek çağrıya sığmaz. Her çağrı en fazla
-// ~100 sn çalışır, ilerlemeyi pms_sync_runs.progress'e yazar ve devamı için kendini yeniden çağırır.
+// Süre sınırı: HotelRunner sayfaları arasında 6 sn beklenir. Her çağrı en fazla ~100 sn çalışır; sığmazsa ilerlemeyi
+// pms_sync_runs.progress'e yazar ve devamı için kendini yeniden çağırır (2 günlük pencerede normalde gerekmez).
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4'
 
 interface Connection {
@@ -181,10 +181,9 @@ async function startRun(trigger: string): Promise<number | null> {
     })
     return null
   }
-  // İlk başarılı senkrona kadar 6 ay; her gece 03:00'te 60 gün; diğer saatlerde son 2 gün (n8n akışıyla aynı)
-  const { count } = await admin.from('pms_sync_runs').select('id', { count: 'exact', head: true }).eq('ok', true)
-  const sinceDays = !count ? 180 : istanbulNow().hour === 3 ? 60 : 2
-  const since = minusDays(istanbulNow().date, sinceDays)
+  // Sadece son 2 günde değişen rezervasyonlar (n8n akışıyla aynı yük). Daha önce yapılıp değişmemiş rezervasyonlar
+  // pms_reservations'ta zaten durur; ilk dolum Airtable'daki HotelRunner kayıtlarından yapıldı (0009).
+  const since = minusDays(istanbulNow().date, 2)
   const progress: Record<string, Progress> = {}
   for (const c of conns) progress[c.pms_name] = { since, next_page: 1, pages: null, lines: 0, done: false }
   const { data, error } = await admin.from('pms_sync_runs')
