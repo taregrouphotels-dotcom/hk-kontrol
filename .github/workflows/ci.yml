@@ -39,6 +39,8 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Tip kontrolü ve derleme
         run: npm run build
+      - name: Excel ayrıştırma testi
+        run: node test/excel_import_test.mjs
 
   fonksiyonlar:
     runs-on: ubuntu-latest

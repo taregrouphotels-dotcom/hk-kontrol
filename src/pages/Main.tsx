@@ -3,6 +3,7 @@ import { supabase, type Profile } from '../lib/supabase'
 import { regionLabel, roleLabel } from '../lib/format'
 import Today from './Today'
 import Staff from './Staff'
+import DataImport from './DataImport'
 
 interface Tab {
   path: string
@@ -14,6 +15,7 @@ interface Tab {
 const TABS: Tab[] = [
   { path: '', label: 'Bugün', roles: ['hk', 'supervisor', 'admin'] },
   { path: 'personel', label: 'Personel', roles: ['admin'] },
+  { path: 'veri', label: 'Veri', roles: ['admin'] },
 ]
 
 function currentPath(): string {
@@ -53,6 +55,7 @@ export default function Main({ profile }: { profile: Profile }) {
 
       {active.path === '' && <Today />}
       {active.path === 'personel' && <Staff me={profile} />}
+      {active.path === 'veri' && <DataImport />}
 
       {tabs.length > 1 && (
         <nav className="fixed inset-x-0 bottom-0 z-10 border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)]">
