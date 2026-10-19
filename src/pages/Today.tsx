@@ -3,6 +3,7 @@ import { callFunction } from '../lib/api'
 import { errorText, supabase, type CleaningStatus, type DayStatus, type Profile } from '../lib/supabase'
 import { dayStatusLabel, fmtDate, fmtTime, minutesSince } from '../lib/format'
 import Sheet from '../components/Sheet'
+import { openCleanings } from '../lib/active'
 
 interface BoardRow {
   room_id: string
@@ -287,6 +288,9 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
             {dayStatusLabel[s]}
           </button>
         ))}
+        <a href={`#/oda/${room.room_id}`} className="block w-full rounded-xl bg-white py-3 text-center text-sm font-semibold text-brand shadow-sm">
+          Oda sayfasını aç
+        </a>
         <BlockEditor room={room} me={me} onSaved={() => { onSaved(); onClose() }} />
         {room.day_status_source === 'manual' && (
           <button disabled={busy} onClick={() => save(null)} className="w-full py-3 text-sm text-slate-500">
@@ -392,6 +396,16 @@ export default function Today({ me }: { me: Profile }) {
       </div>
 
       {canEdit && <SyncBar me={me} onSynced={load} />}
+      {me.role === 'hk' &&
+        openCleanings().map((c) => (
+          <a
+            key={c.id}
+            href={c.check_started_at ? `#/cek/${c.id}` : `#/oda/${c.room_id}`}
+            className="mx-4 mb-2 block rounded-xl bg-amber-400 px-4 py-3 font-semibold text-amber-950 shadow-sm active:scale-[0.99]"
+          >
+            Oda {c.room_no}: {c.check_started_at ? 'kontrol çekimine devam et' : `temizlik sürüyor · ${minutesSince(c.started_at)} dk`} →
+          </a>
+        ))}
       {error && <p className="mx-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
       {!rows && !error && <p className="px-4 text-slate-500">Yükleniyor…</p>}
       {rows && rows.length === 0 && (
@@ -430,8 +444,7 @@ export default function Today({ me }: { me: Profile }) {
                   return (
                     <button
                       key={r.room_id}
-                      disabled={!canEdit}
-                      onClick={() => setEditing(r)}
+                      onClick={() => (canEdit ? setEditing(r) : (window.location.hash = `#/oda/${r.room_id}`))}
                       className={`relative flex h-[60px] flex-col justify-between rounded-xl px-2 py-1.5 text-left shadow-sm ${t.cls} enabled:active:scale-95`}
                     >
                       <div className="flex items-start justify-between gap-1">

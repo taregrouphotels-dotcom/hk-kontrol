@@ -4,6 +4,10 @@ import { regionLabel, roleLabel } from '../lib/format'
 import Today from './Today'
 import Staff from './Staff'
 import DataImport from './DataImport'
+import RoomPage from './RoomPage'
+import Capture from './Capture'
+import QueueBar from '../components/QueueBar'
+import { pendingOps } from '../lib/queue'
 
 interface Tab {
   path: string
@@ -33,10 +37,17 @@ export default function Main({ profile }: { profile: Profile }) {
 
   const tabs = TABS.filter((t) => t.roles.includes(profile.role))
   const active = tabs.find((t) => t.path === path) ?? tabs[0]
+  // Sekme dışı sayfalar: oda (#/oda/<id>), kapı QR'ı (#/qr/<token>), kontrol çekimi (#/cek/<temizlik id>)
+  const [route, arg] = path.split('/')
+  const page = ['oda', 'qr', 'cek'].includes(route) && arg ? route : null
 
-  function logout() {
-    // Çevrimdışı kuyruk geldiğinde: bekleyen yükleme varsa burada uyarılacak (spec 4)
-    if (window.confirm('Çıkış yapılsın mı?')) supabase.auth.signOut()
+  async function logout() {
+    // Gönderilmemiş fotoğraf/işlem varsa uyar: çıkışta cihazdaki kuyruk silinmez ama başka kullanıcı giremez (spec 4)
+    const n = (await pendingOps()).length
+    const msg = n
+      ? `Bu telefonda henüz gönderilmemiş ${n} işlem var. Çıkış yaparsanız internet gelince gönderilemez. Yine de çıkılsın mı?`
+      : 'Çıkış yapılsın mı?'
+    if (window.confirm(msg)) supabase.auth.signOut()
   }
 
   const subtitle = [roleLabel[profile.role], profile.region && regionLabel[profile.region]].filter(Boolean).join(' · ')
@@ -53,11 +64,16 @@ export default function Main({ profile }: { profile: Profile }) {
         </button>
       </header>
 
-      {active.path === '' && <Today me={profile} />}
-      {active.path === 'personel' && <Staff me={profile} />}
-      {active.path === 'veri' && <DataImport />}
+      <QueueBar />
 
-      {tabs.length > 1 && (
+      {page === 'oda' && <RoomPage key={arg} roomId={arg} me={profile} />}
+      {page === 'qr' && <QrRoom token={arg} me={profile} />}
+      {page === 'cek' && <Capture key={arg} cleaningId={arg} me={profile} />}
+      {!page && active.path === '' && <Today me={profile} />}
+      {!page && active.path === 'personel' && <Staff me={profile} />}
+      {!page && active.path === 'veri' && <DataImport />}
+
+      {tabs.length > 1 && !page && (
         <nav className="fixed inset-x-0 bottom-0 z-10 border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)]">
           <div className="mx-auto flex max-w-2xl">
             {tabs.map((t) => (
@@ -76,4 +92,23 @@ export default function Main({ profile }: { profile: Profile }) {
       )}
     </div>
   )
+}
+
+// Kapıdaki QR telefonun kendi kamerasıyla okutulunca uygulama #/qr/<token> ile açılır → ilgili oda sayfası
+function QrRoom({ token, me }: { token: string; me: Profile }) {
+  const [roomId, setRoomId] = useState<string | null>()
+
+  useEffect(() => {
+    supabase
+      .from('rooms')
+      .select('id')
+      .eq('qr_token', token.toLowerCase())
+      .maybeSingle()
+      .then(({ data }) => setRoomId(data?.id ?? null))
+  }, [token])
+
+  if (roomId === undefined) return <p className="p-4 text-slate-500">Yükleniyor…</p>
+  if (roomId === null)
+    return <p className="m-4 rounded-xl bg-white p-4 text-slate-600">Bu QR tanınmadı ya da bu oda sizin bölgenizde değil.</p>
+  return <RoomPage roomId={roomId} me={me} viaQr={token.toLowerCase()} />
 }
