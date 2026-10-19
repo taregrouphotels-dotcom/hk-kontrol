@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { callFunction } from '../lib/api'
 import { errorText, supabase, type CleaningStatus, type DayStatus, type Profile } from '../lib/supabase'
-import { dayGroups, dayStatusLabel, fmtDate, fmtTime, minutesSince } from '../lib/format'
+import { dayStatusLabel, fmtDate, fmtTime, minutesSince } from '../lib/format'
 import Sheet from '../components/Sheet'
 
 interface BoardRow {
@@ -40,6 +40,8 @@ interface Unmatched {
   hr_number: string
   pms_name: string
   room_no: string | null
+  guest_name?: string | null
+  room_type?: string | null
   checkin: string
   checkout: string
 }
@@ -142,7 +144,7 @@ function SyncBar({ me, onSynced }: { me: Profile; onSynced: () => void }) {
               <p className="font-semibold text-amber-800">Odası eşleşmeyen rezervasyonlar (HotelRunner'da oda atayın):</p>
               {unmatched.map((u) => (
                 <p key={u.hr_number + (u.room_no ?? '')} className="text-amber-800">
-                  {u.pms_name} · {u.room_no ?? 'oda yok'} · {fmtDate(u.checkin)}–{fmtDate(u.checkout)} · {u.hr_number}
+                  {u.guest_name ?? u.hr_number} · {u.room_type ?? 'oda tipi?'} · {u.pms_name} · {fmtDate(u.checkin)}–{fmtDate(u.checkout)}
                 </p>
               ))}
             </>
@@ -181,6 +183,12 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
   return (
     <Sheet title={`Oda ${room.room_no} · bugünkü durum`} onClose={onClose}>
       <div className="space-y-3">
+        {room.cleaning_status && (
+          <p className="rounded-lg bg-white px-4 py-3 text-sm text-slate-700 shadow-sm">
+            Temizlik: <b>{[room.hk_name, ...(room.members ?? [])].filter(Boolean).join(', ')}</b>
+            {room.started_at && ` · ${fmtTime(room.started_at)}'da başladı`}
+          </p>
+        )}
         <p className="text-sm text-slate-600">
           Şu an: <b>{room.day_status ? dayStatusLabel[room.day_status] : 'bilinmiyor'}</b>
           {room.day_status_source === 'manual' ? ' (elle girildi)' : room.day_status ? ' (HotelRunner)' : ''}. Elle seçilen durum
@@ -209,28 +217,59 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
   )
 }
 
-// Odanın temizlik durumu: bekliyor / temizleniyor – kim / tamamlandı / sorunlu (spec 5.1)
-function cleaningBadge(r: BoardRow): { text: string; cls: string } {
-  const who = [r.hk_name, ...(r.members ?? [])].filter(Boolean).join(', ')
+// Oda kutusunun rengi: önce temizlik durumu, temizlik yoksa günlük durum (spec 5.1)
+type Tile = 'todo' | 'cleaning' | 'done' | 'occupied' | 'vacant' | 'unknown'
+const TILES: { key: Tile; label: string; cls: string; dot: string }[] = [
+  { key: 'todo', label: 'Temizlenecek', cls: 'bg-red-100 text-red-900 ring-red-200', dot: 'bg-red-500' },
+  { key: 'cleaning', label: 'Temizleniyor', cls: 'bg-amber-100 text-amber-900 ring-amber-200', dot: 'bg-amber-500' },
+  { key: 'done', label: 'Temizlendi', cls: 'bg-green-100 text-green-900 ring-green-200', dot: 'bg-green-500' },
+  { key: 'occupied', label: 'Dolu', cls: 'bg-blue-100 text-blue-900 ring-blue-200', dot: 'bg-blue-500' },
+  { key: 'vacant', label: 'Boş', cls: 'bg-white text-slate-700 ring-slate-200', dot: 'bg-slate-300' },
+  { key: 'unknown', label: 'Bilinmiyor', cls: 'bg-slate-100 text-slate-500 ring-slate-200 ring-dashed', dot: 'bg-slate-200' },
+]
+
+function tileOf(r: BoardRow): Tile {
   switch (r.cleaning_status) {
-    case null:
-      return { text: 'Bekliyor', cls: 'bg-slate-100 text-slate-600' }
-    case 'in_progress':
-      return r.check_started_at
-        ? { text: `Kontrol – ${who}`, cls: 'bg-blue-100 text-blue-800' }
-        : { text: `Temizleniyor – ${who} · ${minutesSince(r.started_at!)} dk`, cls: 'bg-amber-100 text-amber-800' }
+    case 'approved':
     case 'submitted':
     case 'analyzing':
-      return { text: `Onay bekliyor – ${who}`, cls: 'bg-indigo-100 text-indigo-800' }
+      return 'done'
+    case 'in_progress':
     case 'fixing':
-      return { text: `Düzeltiliyor – ${who}`, cls: 'bg-orange-100 text-orange-800' }
     case 'escalated':
-      return { text: `Sorunlu – ${who}`, cls: 'bg-red-100 text-red-800' }
-    case 'approved':
-      return { text: `Tamamlandı – ${who}`, cls: 'bg-green-100 text-green-800' }
-    case 'cancelled':
-      return { text: 'İptal', cls: 'bg-slate-100 text-slate-500' }
+      return 'cleaning'
   }
+  switch (r.day_status) {
+    case 'checkout':
+    case 'checkout_checkin':
+    case 'checkin':
+      return 'todo'
+    case 'stayover':
+      return 'occupied'
+    case 'vacant':
+      return 'vacant'
+    default:
+      return 'unknown'
+  }
+}
+
+const SHORT: Record<DayStatus, string> = {
+  checkout: 'Çıkış',
+  checkout_checkin: 'Çık+Gir',
+  stayover: 'Konak.',
+  checkin: 'Giriş',
+  vacant: 'Boş',
+}
+
+// Kutunun alt satırı: temizlik sürüyorsa kim ve kaç dakikadır, bittiyse kim, yoksa günlük durum
+function tileNote(r: BoardRow): string {
+  const who = r.hk_name?.split(' ')[0] ?? ''
+  if (r.cleaning_status === 'in_progress' || r.cleaning_status === 'fixing')
+    return `${who} ${r.check_started_at ? 'kontrol' : minutesSince(r.started_at!) + 'dk'}`
+  if (r.cleaning_status === 'submitted' || r.cleaning_status === 'analyzing') return `${who} · onay`
+  if (r.cleaning_status === 'approved') return who
+  if (r.cleaning_status === 'escalated') return `${who} · sorun`
+  return r.day_status ? SHORT[r.day_status] : '?'
 }
 
 export default function Today({ me }: { me: Profile }) {
@@ -276,45 +315,49 @@ export default function Today({ me }: { me: Profile }) {
         </p>
       )}
 
+      {rows && rows.length > 0 && (
+        <div className="mx-4 mb-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-600">
+          {TILES.map((t) => {
+            const n = rows.filter((r) => tileOf(r) === t.key).length
+            if (n === 0) return null
+            return (
+              <span key={t.key} className="flex items-center gap-1">
+                <span className={`h-2.5 w-2.5 rounded-full ${t.dot}`} />
+                {t.label} {n}
+              </span>
+            )
+          })}
+        </div>
+      )}
+
       {rows &&
         properties.map((p) => {
-          const own = rows.filter((r) => r.property_id === p.id)
+          const own = rows
+            .filter((r) => r.property_id === p.id)
+            .sort((a, b) => a.room_no.localeCompare(b.room_no, 'tr', { numeric: true }))
           if (own.length === 0) return null
           return (
             <section key={p.id} className="mt-3 px-4">
-              <h2 className="mb-2 text-base font-semibold text-brand">{p.name}</h2>
-              {dayGroups.map((g) => {
-                const list = own.filter((r) => g.statuses.includes(r.day_status))
-                if (list.length === 0) return null
-                return (
-                  <div key={g.key} className="mb-3">
-                    <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      {g.label} ({list.length})
-                    </div>
-                    <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl bg-white shadow-sm">
-                      {list.map((r) => {
-                        const b = cleaningBadge(r)
-                        return (
-                          <li key={r.room_id}>
-                            <button
-                              disabled={!canEdit}
-                              onClick={() => setEditing(r)}
-                              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left enabled:active:bg-slate-50"
-                            >
-                              <div>
-                                <span className="text-lg font-semibold text-slate-800">{r.room_no}</span>
-                                <span className="ml-2 text-xs text-slate-400">{r.room_type_code}</span>
-                                {r.day_status_source === 'manual' && <span className="ml-2 text-xs text-amber-700">elle</span>}
-                              </div>
-                              <span className={`rounded-full px-3 py-1 text-right text-xs font-medium ${b.cls}`}>{b.text}</span>
-                            </button>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </div>
-                )
-              })}
+              <h2 className="mb-1.5 text-sm font-semibold text-brand">{p.name}</h2>
+              <div className="grid grid-cols-4 gap-1.5">
+                {own.map((r) => {
+                  const t = TILES.find((x) => x.key === tileOf(r))!
+                  return (
+                    <button
+                      key={r.room_id}
+                      disabled={!canEdit}
+                      onClick={() => setEditing(r)}
+                      className={`relative rounded-lg px-1 py-1.5 text-center ring-1 ${t.cls} enabled:active:opacity-70`}
+                    >
+                      <div className="text-base font-bold leading-tight">{r.room_no}</div>
+                      <div className="truncate text-[10px] leading-tight opacity-80">{tileNote(r)}</div>
+                      {r.day_status_source === 'manual' && (
+                        <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-amber-600" title="elle" />
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
             </section>
           )
         })}

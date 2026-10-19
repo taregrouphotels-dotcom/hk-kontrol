@@ -1,7 +1,7 @@
 // HotelRunner senkronu (spec 3): tesis başına son değişen rezervasyonları çeker, oda satırlarını pms_reservations'a
 // yazar ve bugünün + yarının oda durumlarını hesaplatır (pms_apply_day_status).
 // HotelRunner'a sadece okuma isteği gider (undelivered=false: rezervasyonlar "teslim edildi" işaretlenmez).
-// Misafir bilgisi alınmaz/saklanmaz: sadece oda no, tarih, durum.
+// Saklananlar: oda no, tarih, durum; odası atanmamış rezervasyon uyarısı için misafir adı ve oda tipi adı (sadece admin görür).
 //
 // Çağıranlar: saatlik Supabase cron (x-cron-key başlığı) veya admin ("Şimdi senkronla", oturum token'ı).
 // Bağlantılar: HOTELRUNNER_CONNECTIONS = [{"pms_name":"Tare Houses Hotel","hr_id":"...","token":"..."}, ...]
@@ -85,7 +85,7 @@ async function fetchPage(c: Connection, since: string, page: number) {
   }
 }
 
-// Bir sayfanın rezervasyonları → oda satırları (sadece oda no, tarih, durum)
+// Bir sayfanın rezervasyonları → oda satırları
 async function savePage(c: Connection, body: { reservations?: Record<string, any>[] }): Promise<number> {
   const lines = new Map<number, Record<string, unknown>>()
   const synced_at = new Date().toISOString()
@@ -103,6 +103,8 @@ async function savePage(c: Connection, body: { reservations?: Record<string, any
         checkin,
         checkout,
         hr_updated_at: o.updated_at || r.updated_at || null,
+        guest_name: r.guest ? String(r.guest).trim() : null,
+        room_type_name: o.name ? String(o.name).trim() : null,
         synced_at,
       })
     }
