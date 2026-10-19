@@ -21,16 +21,19 @@ Supabase projesi: `ihwyfllcvkcpjsouhsel` (Frankfurt). Kimlik iş akışına yaz�
 Bundan sonra `main`'e gelen her veritabanı değişikliği ve Edge Function testler geçtikten sonra Supabase'e otomatik yüklenir.
 
 ## 3. Cloudflare (yayın)
-Workers & Pages → Create → Import a repository → `hk-kontrol`. Worker olarak yayınlanır; ayarlar repodaki `wrangler.jsonc`'de.
-- Project name: `hk-kontrol` (`wrangler.jsonc`'deki `name` ile aynı olmalı)
-- Build command: boş bırakılabilir (`wrangler.jsonc` derlemeyi kendisi yapar)
-- Deploy command: `npx wrangler deploy`
+Arayüz Cloudflare'de `hk-kontrol` adlı Worker olarak yayında; ayarlar repodaki `wrangler.jsonc`'de.
+Yayını GitHub Actions yapar (`.github/workflows/deploy.yml`): `main`'e gelen her değişiklikten sonra testler geçerse yayınlanır.
 
-Pages olarak kurulursa: Build command `npm run build`, output `dist`, ortam değişkeni `NODE_VERSION=22`.
+1. Cloudflare → sağ üstte profil simgesi → **My Profile** → **API Tokens** → **Create Token** → **Edit Cloudflare Workers** şablonunda **Use template**.
+2. Account Resources: kendi hesabın. Zone Resources: All zones. → **Continue to summary** → **Create Token** → çıkan değeri kopyala.
+3. GitHub → hk-kontrol → Settings → Secrets and variables → Actions → **New repository secret**:
+   - `CLOUDFLARE_API_TOKEN` = kopyaladığın değer
+   - `CLOUDFLARE_ACCOUNT_ID` = Cloudflare → Workers & Pages sayfasının sağındaki **Account ID**
+4. Cloudflare'in kendi Git derlemesi kapatılabilir (Worker → Settings → Build → Disconnect); iki yayın birbirini ezmez ama gereksizdir.
 
 Supabase adresi ve publishable key koda yazılı; tarayıcıya giden değerlerdir, gizli değildir. Başka bir Supabase projesine geçilirse `VITE_SUPABASE_URL` ve `VITE_SUPABASE_ANON_KEY` ortam değişkenleriyle değiştirilir.
 
-Yayın bitince verilen adresi (`https://hk-kontrol.….workers.dev`) Supabase → Authentication → URL Configuration → Site URL'e yaz.
+Yayın adresi Supabase → Authentication → URL Configuration → Site URL'e yazılır.
 
 ## 4. Cloudflare R2 (fotoğraflar)
 1. R2'yi etkinleştir, `hk-media` adlı bucket aç (public erişim kapalı).

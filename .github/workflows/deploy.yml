@@ -1,0 +1,48 @@
+# main'e gelen her değişiklikten sonra (testler geçerse) arayüzü Cloudflare'e yayınlar.
+# Gerekli: GitHub → Settings → Secrets and variables → Actions
+#   CLOUDFLARE_API_TOKEN   (Cloudflare → My Profile → API Tokens → "Edit Cloudflare Workers" şablonu)
+#   CLOUDFLARE_ACCOUNT_ID  (Cloudflare → Workers & Pages sayfasının sağındaki Account ID)
+name: Cloudflare yayınla
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: cloudflare-yayinla
+  cancel-in-progress: true
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  yayinla:
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Ayar kontrolü
+        id: ayar
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN veya CLOUDFLARE_ACCOUNT_ID tanımlı değil; Cloudflare yayını atlandı."
+            echo "var=hayir" >> "$GITHUB_OUTPUT"
+          else
+            echo "var=evet" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.ayar.outputs.var == 'evet'
+      - uses: actions/setup-node@v4
+        if: steps.ayar.outputs.var == 'evet'
+        with:
+          node-version: 22
+      - name: Paketler
+        if: steps.ayar.outputs.var == 'evet'
+        run: npm ci --no-audit --no-fund
+      # wrangler.jsonc derlemeyi (npm run build) kendisi yapar
+      - name: Yayınla
+        if: steps.ayar.outputs.var == 'evet'
+        run: npx --yes wrangler@4.40.0 deploy
