@@ -22,6 +22,16 @@ Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulamas
 | Hasar ve kayıp eşya | Başlıktaki **+** (ya da oda sayfası): "Hasar bildir" (oda, kategori, açıklama, 1–3 canlı fotoğraf) / "Eşya buldum" (oda, açıklama, teslim yeri, 1–3 fotoğraf). Kayıt ve fotoğraflar çevrimdışı kuyruğa girer. **Hasar & Eşya** sekmesi: herkes bölgesindekini görür; süpervizör/admin hasarı işleme alır / giderildi (not), eşyayı sahibine teslim (kime) / imha-bağış olarak kapatır, kim/ne zaman sunucuda yazılır. Kayıp eşyada oda no, açıklama ve tarih aralığıyla arama. Yeni kayıtta bölge süpervizörüne ve adminlere bildirim (`0018`) |
 | Bildirimler | Başlıktaki zil: okunmamış sayısı, `#/bildirim` listesi; dokununca okundu olur ve ilgili kayda gider |
 | Süpervizör onayı | Süpervizör/admin → **Onay** sekmesi: gönderilmiş kontroller (en eski üstte) ve bugün onaylananlar. Kayıt ekranı (`#/kayit/<id>`): kim, ne zaman, kaç dakika, adım adım fotoğraflar (dokununca tam ekran, referansla karşılaştırma, adımlar arasında gezinme), uygulanamayan adımlar ve nedenleri, yüklenmemiş kareler. Onayla, not, şikayet işaretle, kaydı iptal et. Fotoğraf adresleri `media-sign` (`cleaning`) ile tek çağrıda, kullanıcının yetkisiyle |
+| Raporlar | **Raporlar** sekmesi (süpervizör/admin): Personel (oda sayısı, ortalama süre, süre aşımı, AI uyarısı), Şikayet arama, Hasar/Eşya; her biri Excel'e indirilir |
+| Yönetim | Ayarlar (otomatik onay, fotoğraf saklama, AI maliyet ve doğruluk, AI anahtarı, depo testi) · Adımlar (oda tipi min/max süre, adım ekle/sil/sırala, Excel) · Excel içe aktarma |
+| Referans çekim modu | Süpervizör/admin oda sayfasında "Referans çek": adımları sırayla çeker, her kare o oda tipinin referansı olur |
+| Telefon bildirimi | Web Push (VAPID, `push-send` dakikada bir). Bildirim ekranından açılır; iPhone'da uygulama ana ekrana eklenmiş olmalı |
+| Fotoğraf saklama | `retention` her gece: temizlik 15 gün, hasar 90 gün, kayıp eşya 365 gün; şikayetli kayıtlar saklanır |
+| Demirbaş eksiği | AI tam temizlikte kalemleri sayar; eksik varsa Hasar & Eşya → Eksikler + bildirim |
+| Otomatik onay | Kapalıyken her temizlik süpervizöre gider. Açılınca AI'ın hepsine "ok" dediği temizlik kendiliğinden onaylanır |
+| Süre uyarısı | Max süre aktif oda tipinde süreyi aşan temizlik Bugün ekranında "⚠ dk" ile işaretlenir |
+| Telegram özeti | n8n akışı "HK Kontrol Günlük Özet (Telegram)": 08:00 otel durumu, 20:00 kim ne yaptı (`daily_summary_auth`) |
+| HotelRunner'a yazma | Kurulmadı: API'de oda temizlik durumu uç noktası yok (karar 21) |
 
 ## Yapı
 
