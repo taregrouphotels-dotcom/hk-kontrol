@@ -129,7 +129,7 @@ function Settings() {
             <div className="grid grid-cols-2 gap-2 text-center">
               {[
                 ['Fotoğraf', String(stats.photos)],
-                ['Maliyet', `$${Number(stats.cost_usd).toFixed(2)}`],
+                ['Maliyet', `$${Number(stats.cost_usd).toFixed(Number(stats.cost_usd) < 1 ? 3 : 2)}`],
                 ['Sorun buldu', pct(stats.flagged, judged)],
                 ['Yanlış alarm', pct(stats.false_alarms, stats.flagged)],
                 ['Tekrar çekim', String(stats.retakes)],

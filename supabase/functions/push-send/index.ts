@@ -21,18 +21,20 @@ Deno.serve(async (req) => {
   let gone = 0
   for (const r of (rows ?? []) as { title: string; body: string | null; link: string | null; endpoint: string; keys: { p256dh: string; auth: string }; sub_id: number }[]) {
     try {
-      await webpush.sendNotification(
+      // web-push sadece şifreli isteği hazırlar; gönderim Deno fetch ile (Node https katmanına güvenmeden)
+      const d = webpush.generateRequestDetails(
         { endpoint: r.endpoint, keys: r.keys },
         JSON.stringify({ title: r.title, body: r.body ?? '', link: r.link ?? '#/' }),
         { TTL: 3600, urgency: 'high' },
       )
-      sent++
-    } catch (e) {
-      const status = (e as { statusCode?: number }).statusCode
-      if (status === 404 || status === 410) {
+      const res = await fetch(d.endpoint, { method: d.method, headers: d.headers as Record<string, string>, body: d.body as unknown as BodyInit })
+      if (res.status === 404 || res.status === 410) {
         await admin.from('push_subscriptions').delete().eq('id', r.sub_id)
         gone++
-      } else console.error('push hatası', status, String(e).slice(0, 200))
+      } else if (!res.ok) console.error('push hatası', res.status, (await res.text()).slice(0, 200))
+      else sent++
+    } catch (e) {
+      console.error('push hatası', String(e).slice(0, 200))
     }
   }
   return new Response(JSON.stringify({ sent, gone }), { headers: { 'Content-Type': 'application/json' } })
