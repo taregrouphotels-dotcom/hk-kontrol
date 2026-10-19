@@ -27,7 +27,20 @@ insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000a3', 'hkizm@hk.tare.local'),
   ('00000000-0000-0000-0000-0000000000b1', 'sup.ist@x'),
   ('00000000-0000-0000-0000-0000000000b2', 'sup.izm@x'),
-  ('00000000-0000-0000-0000-0000000000c1', 'admin@x');
+  ('00000000-0000-0000-0000-0000000000c1', 'admin@x'),
+  ('00000000-0000-0000-0000-0000000000d1', 'GokcerCakir@gmail.com'),
+  ('00000000-0000-0000-0000-0000000000d2', 'yabanci@x');
+
+-- ---------- İlk admin (henüz hiç profil yokken) ----------
+set role authenticated;
+select t.as_user('00000000-0000-0000-0000-0000000000d2');
+select t.fails($$ select claim_first_admin() $$, 'tanımsız e-posta ilk admin olamaz');
+select t.as_user('00000000-0000-0000-0000-0000000000d1');
+select t.eq((select role from claim_first_admin()), 'admin'::user_role, 'ilk admin e-postası admin profilini alır');
+select t.eq((select role from claim_first_admin()), 'admin'::user_role, 'ilk admin tekrar girince aynı profil döner');
+select t.as_user('00000000-0000-0000-0000-0000000000d2');
+select t.fails($$ select claim_first_admin() $$, 'admin varken başka hesap profil alamaz');
+reset role;
 insert into profiles (id, full_name, username, role, region) values
   ('00000000-0000-0000-0000-0000000000a1', 'HK Bir',    'hk1',   'hk',         'istanbul'),
   ('00000000-0000-0000-0000-0000000000a2', 'HK İki',    'hk2',   'hk',         'istanbul'),

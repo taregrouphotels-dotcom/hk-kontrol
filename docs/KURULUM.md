@@ -8,7 +8,7 @@ Hepsi ücretsiz paketle çalışır. Gizli anahtarlar (service role, R2, HotelRu
    - "Confirm email" **kapalı**
    - "Allow new users to sign up" **kapalı** (kullanıcıları admin açar)
 3. Authentication → URL Configuration → Site URL: Cloudflare Pages adresi.
-4. İlk admin: Authentication → Users → Add user → `gokcercakir@gmail.com`, şifre, "Auto confirm" işaretli. Rolü uygulamanın giriş adımında verilir.
+4. İlk admin: Authentication → Users → Add user → `gokcercakir@gmail.com`, şifre, "Auto confirm" işaretli. Bu hesap uygulamaya ilk girdiğinde admin profilini kendisi alır (sadece hiç admin yokken ve sadece bu e-postayla). Diğer kullanıcıları adminler uygulamadan açar.
 
 ## 2. GitHub: Supabase token'ı
 Supabase projesi: `ihwyfllcvkcpjsouhsel` (Frankfurt). Kimlik iş akışına yazılı; GitHub'a sadece token girilir.
@@ -22,11 +22,14 @@ Bundan sonra `main`'e gelen her veritabanı değişikliği testler geçtikten so
 
 ## 3. Cloudflare Pages
 Workers & Pages → Create → Pages → Connect to Git → `hk-kontrol`.
-Build command `npm run build`, output `dist`. Ortam değişkenleri:
-- `VITE_SUPABASE_URL` = `https://ihwyfllcvkcpjsouhsel.supabase.co`
-- `VITE_SUPABASE_ANON_KEY` = publishable key (`sb_publishable_...`)
+- Framework preset: **Vite** (ya da None)
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Ortam değişkeni: `NODE_VERSION` = `22`
 
-Bu ikisi tarayıcıya gider, gizli değildir.
+Supabase adresi ve publishable key koda yazılı; tarayıcıya giden değerlerdir, gizli değildir. Başka bir Supabase projesine geçilirse `VITE_SUPABASE_URL` ve `VITE_SUPABASE_ANON_KEY` ortam değişkenleriyle değiştirilir.
+
+Yayın bitince verilen `https://….pages.dev` adresini Supabase → Authentication → URL Configuration → Site URL'e yaz.
 
 ## 4. Cloudflare R2 (fotoğraflar)
 1. R2'yi etkinleştir, `hk-media` adlı bucket aç (public erişim kapalı).

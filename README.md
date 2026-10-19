@@ -10,11 +10,14 @@ Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulamas
 | Adım | Ne çalışıyor |
 |---|---|
 | Veritabanı | Şema, bölge bazlı yetki (RLS), temizlik başlatma/kontrol/gönderme/onay/iptal fonksiyonları, Bugün ekranı sorgusu. Testler: `test/veritabani_test.sh` |
+| Arayüz iskeleti | Giriş (personel: kullanıcı adı + 6 haneli PIN; yönetici: e-posta + şifre), ilk girişte KVKK onayı, ilk adminin kendi profilini alması, Bugün ekranı (otel → Çıkış/Konaklama/Giriş/Boş, kim temizliyor), ana ekrana eklenebilir (PWA) |
 
 ## Yapı
 
 | Klasör | İçerik |
 |---|---|
+| `src/` | Arayüz (Vite + React + TypeScript + Tailwind): `pages/` ekranlar, `lib/` Supabase bağlantısı ve biçimlendirme |
+| `public/` | PWA manifest, service worker, simgeler, Cloudflare Pages yönlendirmesi |
 | `supabase/migrations/` | Veritabanı: `0001_init` (başlangıç şeması), sonraki her değişiklik yeni dosya |
 | `test/` | Veritabanı yetki testleri (yerel Postgres'te Supabase taklidiyle) |
 | `scripts/apply_migrations.sh` | Migration'ları Supabase'e uygular (GitHub Actions çalıştırır) |
@@ -25,7 +28,9 @@ Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulamas
 ```
 PGHOST=/tmp PGPORT=5432 PGUSER=postgres test/veritabani_test.sh
 ```
-GitHub'da her push'ta otomatik çalışır. `main`'e gelen veritabanı değişiklikleri testler geçerse Supabase'e uygulanır.
+Arayüz: `npm install && npm run build` (tip kontrolü + derleme), geliştirme için `npm run dev`.
+
+İkisi de GitHub'da her push'ta otomatik çalışır. `main`'e gelen veritabanı değişiklikleri testler geçerse Supabase'e uygulanır.
 
 ## Yeni oda tipi eklemek
 Excel'de Oda Tipleri, Odalar, Kontrol Adımları ve Envanter sayfalarına satır ekle, admin panelinden tekrar içe aktar. Her oda tipi için bir kez referans fotoğrafları çekilip adımlara eklenmeli.
