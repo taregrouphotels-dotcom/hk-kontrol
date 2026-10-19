@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent } from 'react'
 import readXlsxFile from 'read-excel-file/browser'
 import { errorText, supabase } from '../lib/supabase'
+import { callFunction } from '../lib/api'
 import { parseWorkbook, type ImportPayload, type Issue, type Template } from '../lib/excelImport'
 
 // Excel'den temel veri içe aktarma (spec 3): yükle → önizleme + hata listesi → onayla.
@@ -203,6 +204,39 @@ export default function DataImport() {
           )}
         </>
       )}
+
+      <StorageTest />
+    </div>
+  )
+}
+
+// Fotoğraf deposu (R2) testi: sunucu anahtarları, sonra bu tarayıcıdan yükleme/okuma (CORS)
+function StorageTest() {
+  const [state, setState] = useState<{ busy?: boolean; ok?: string; error?: string }>({})
+
+  async function test() {
+    setState({ busy: true })
+    try {
+      const t = await callFunction<{ key: string; put_url: string; get_url: string }>('media-sign', { action: 'selftest' })
+      const put = await fetch(t.put_url, { method: 'PUT', body: 'ok', headers: { 'Content-Type': 'text/plain' } }).catch(() => null)
+      if (!put?.ok) throw new Error(`Sunucu tarafı tamam, ama tarayıcıdan yükleme engellendi${put ? ` (${put.status})` : ''}. R2 CORS ayarını kontrol edin.`)
+      const get = await fetch(t.get_url).catch(() => null)
+      if (!get?.ok) throw new Error('Yükleme tamam, ama tarayıcıdan okuma engellendi. R2 CORS ayarında GET olmalı.')
+      await callFunction('media-sign', { action: 'selftest_cleanup', key: t.key }).catch(() => {})
+      setState({ ok: 'Fotoğraf deposu çalışıyor: yükleme ve görüntüleme tamam.' })
+    } catch (e) {
+      setState({ error: e instanceof Error ? e.message : errorText(e) })
+    }
+  }
+
+  return (
+    <div className="mt-6 space-y-2 border-t border-slate-200 pt-4">
+      <h2 className="font-semibold text-slate-800">Fotoğraf deposu</h2>
+      <button onClick={test} disabled={state.busy} className="w-full rounded-xl bg-white py-3 text-sm font-semibold text-brand shadow-sm disabled:opacity-50">
+        {state.busy ? 'Deneniyor…' : 'Depoyu test et'}
+      </button>
+      {state.ok && <p className="rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{state.ok}</p>}
+      {state.error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{state.error}</p>}
     </div>
   )
 }

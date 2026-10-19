@@ -98,5 +98,25 @@ Deno.serve(async (req) => {
     return json({ url: await presign('GET', key) })
   }
 
+  // Admin: depo testi. Sunucu R2'ye yazıp okur (anahtarlar doğru mu), tarayıcı için de PUT/GET adresi verir (CORS doğru mu).
+  if (body.action === 'selftest' || body.action === 'selftest_cleanup') {
+    const { data: me } = await admin.from('profiles').select('role').eq('id', who.user.id).maybeSingle()
+    if (me?.role !== 'admin') return json({ error: 'Yetkiniz yok.' }, 403)
+    const store = r2()!
+    if (body.action === 'selftest_cleanup') {
+      const key = String(body.key ?? '')
+      if (!/^_test\/[0-9a-f-]+\.txt$/.test(key)) return json({ error: 'Geçersiz anahtar.' }, 400)
+      await store.client.fetch(`${store.base}/${key}`, { method: 'DELETE' })
+      return json({ ok: true })
+    }
+    const key = `_test/${crypto.randomUUID()}.txt`
+    const put = await store.client.fetch(`${store.base}/${key}`, { method: 'PUT', body: 'ok', headers: { 'Content-Type': 'text/plain' } })
+    if (!put.ok) return json({ error: `Sunucu R2'ye yazamadı (${put.status}): ${(await put.text()).slice(0, 300)}` }, 502)
+    const get = await store.client.fetch(`${store.base}/${key}`)
+    const text = await get.text()
+    if (!get.ok || text !== 'ok') return json({ error: `Sunucu R2'den okuyamadı (${get.status}).` }, 502)
+    return json({ key, put_url: await presign('PUT', key, 'text/plain'), get_url: await presign('GET', key) })
+  }
+
   return json({ error: 'Bilinmeyen işlem.' }, 400)
 })
