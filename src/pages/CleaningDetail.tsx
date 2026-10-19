@@ -33,6 +33,18 @@ interface Photo {
   skip_reason: string | null
   captured_at: string | null
   url: string | null
+  ai_status: 'pending' | 'ok' | 'warn' | 'fail' | 'unclear'
+  ai_result: { note?: string; problems?: { check: string; problem: string }[] } | null
+  ai_false_alarm: boolean
+}
+
+// AI sonucunun rozeti (yanlış alarm işaretliyse gri)
+const AI_BADGE: Record<Photo['ai_status'], [string, string]> = {
+  ok: ['AI ✓', 'bg-emerald-600'],
+  warn: ['AI !', 'bg-amber-500'],
+  fail: ['AI ✗', 'bg-red-600'],
+  unclear: ['AI ?', 'bg-slate-500'],
+  pending: ['AI …', 'bg-slate-400'],
 }
 
 interface Item {
@@ -163,7 +175,16 @@ export default function CleaningDetail({ cleaningId }: { cleaningId: string }) {
             onClick={() => it.photo?.url && setOpen(i)}
             className="overflow-hidden rounded-xl bg-white text-left shadow-sm"
           >
-            <div className="flex aspect-[4/3] items-center justify-center bg-slate-200">
+            <div className="relative flex aspect-[4/3] items-center justify-center bg-slate-200">
+              {it.photo && !it.photo.skipped && (
+                <span
+                  className={`absolute right-1.5 top-1.5 rounded px-1.5 py-0.5 text-[10px] font-bold text-white ${
+                    it.photo.ai_false_alarm ? 'bg-slate-400 line-through' : AI_BADGE[it.photo.ai_status][1]
+                  }`}
+                >
+                  {AI_BADGE[it.photo.ai_status][0]}
+                </span>
+              )}
               {it.photo?.url ? (
                 <img src={it.photo.url} alt="" loading="lazy" className="h-full w-full object-cover" />
               ) : it.photo?.skipped ? (
@@ -177,7 +198,15 @@ export default function CleaningDetail({ cleaningId }: { cleaningId: string }) {
                 {it.step.step_order}. {it.step.title}
                 {it.step.shots > 1 && ` (${it.shot}/${it.step.shots})`}
               </p>
-              {it.photo?.captured_at && <p className="text-[11px] text-slate-500">{fmtTime(it.photo.captured_at)}</p>}
+              {it.photo?.captured_at && (
+                <p className="text-[11px] text-slate-500">
+                  {fmtTime(it.photo.captured_at)}
+                  {it.photo.attempt > 1 && ` · ${it.photo.attempt}. deneme`}
+                </p>
+              )}
+              {it.photo?.ai_result?.note && ['warn', 'fail', 'unclear'].includes(it.photo.ai_status) && !it.photo.ai_false_alarm && (
+                <p className="mt-0.5 line-clamp-2 text-[11px] text-slate-700">{it.photo.ai_result.note}</p>
+              )}
             </div>
           </button>
         ))}
@@ -239,7 +268,9 @@ export default function CleaningDetail({ cleaningId }: { cleaningId: string }) {
         {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
       </div>
 
-      {open !== undefined && <Viewer items={items} index={open} refs={refs} onIndex={setOpen} onClose={() => setOpen(undefined)} />}
+      {open !== undefined && (
+        <Viewer items={items} index={open} refs={refs} onIndex={setOpen} onClose={() => setOpen(undefined)} onChanged={load} />
+      )}
     </div>
   )
 }
@@ -251,18 +282,47 @@ function Viewer({
   refs,
   onIndex,
   onClose,
+  onChanged,
 }: {
   items: Item[]
   index: number
   refs: Record<string, string>
   onIndex: (i: number) => void
   onClose: () => void
+  onChanged: () => void
 }) {
   const [showRef, setShowRef] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<string>()
   const withPhoto = items.map((it, i) => (it.photo?.url ? i : -1)).filter((i) => i >= 0)
   const pos = withPhoto.indexOf(index)
   const it = items[index]
   const ref = refs[it.step.id]
+  const p = it.photo!
+
+  // AI'ın yanlış uyarısı: kaydın genel AI sonucundan düşer, raporda "yanlış alarm" sayılır
+  async function falseAlarm() {
+    setBusy(true)
+    const { error } = await supabase.from('step_results').update({ ai_false_alarm: !p.ai_false_alarm }).eq('id', p.id)
+    setBusy(false)
+    if (error) setMsg(errorText(error))
+    else onChanged()
+  }
+
+  // Bu fotoğraf oda tipinin bu adımı için referans olsun (HK kamerasında transparan görünür)
+  async function makeReference() {
+    if (!window.confirm('Bu fotoğraf, bu oda tipindeki tüm odalarda bu adımın referansı olsun mu?')) return
+    setBusy(true)
+    try {
+      await callFunction('media-sign', { action: 'set_reference', step_result_id: p.id })
+      setMsg('Referans yapıldı.')
+      onChanged()
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : errorText(e))
+    } finally {
+      setBusy(false)
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-30 flex flex-col bg-black text-white">
@@ -282,6 +342,30 @@ function Viewer({
         <img src={showRef && ref ? ref : it.photo!.url!} alt="" className="h-full w-full object-contain" />
         {showRef && <span className="absolute left-3 top-3 rounded bg-amber-400 px-2 py-1 text-xs font-bold text-black">REFERANS</span>}
       </div>
+      {!showRef && p.ai_status !== 'pending' && (
+        <div className={`mx-4 mt-2 rounded-lg px-3 py-2 text-xs ${p.ai_false_alarm ? 'bg-white/10' : AI_BADGE[p.ai_status][1]}`}>
+          <p className="font-semibold">
+            {AI_BADGE[p.ai_status][0]} {p.ai_false_alarm && '· yanlış alarm işaretli'}
+          </p>
+          {p.ai_result?.note && <p>{p.ai_result.note}</p>}
+          {p.ai_result?.problems?.map((x) => (
+            <p key={x.check}>
+              • {x.check}: {x.problem}
+            </p>
+          ))}
+        </div>
+      )}
+      <div className="flex gap-2 px-4 pt-2">
+        {['warn', 'fail', 'unclear'].includes(p.ai_status) && (
+          <button disabled={busy} onClick={falseAlarm} className="flex-1 rounded-lg bg-white/15 py-2 text-xs disabled:opacity-50">
+            {p.ai_false_alarm ? 'Yanlış alarmı geri al' : 'Yanlış alarm'}
+          </button>
+        )}
+        <button disabled={busy} onClick={makeReference} className="flex-1 rounded-lg bg-white/15 py-2 text-xs disabled:opacity-50">
+          Referans yap
+        </button>
+      </div>
+      {msg && <p className="px-4 pt-1 text-xs text-amber-300">{msg}</p>}
       {it.step.checks.length > 0 && (
         <ul className="list-disc px-8 pt-2 text-xs text-white/80">
           {it.step.checks.map((x) => (

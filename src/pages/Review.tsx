@@ -14,6 +14,7 @@ export interface CleaningRow {
   finished_at: string | null
   started_via_qr: boolean
   complaint: boolean
+  ai_overall: 'pending' | 'ok' | 'warn' | 'fail' | 'unclear'
   rooms: { room_no: string; properties: { name: string } }
   hk: { full_name: string } | null
   cleaning_members: { profiles: { full_name: string } | null }[]
@@ -21,9 +22,18 @@ export interface CleaningRow {
 }
 
 export const CLEANING_SELECT =
-  'id, status, type, started_at, check_started_at, finished_at, started_via_qr, complaint, ' +
+  'id, status, type, started_at, check_started_at, finished_at, started_via_qr, complaint, ai_overall, ' +
   'rooms(room_no, properties(name)), hk:profiles!cleanings_hk_id_fkey(full_name), ' +
   'cleaning_members(profiles(full_name)), step_results(skipped)'
+
+// Kaydın genel AI sonucu (en kötü adım)
+const AI_OVERALL: Record<CleaningRow['ai_overall'], [string, string]> = {
+  ok: ['AI: sorun yok', 'bg-emerald-100 text-emerald-800'],
+  warn: ['AI: küçük uyarı', 'bg-amber-100 text-amber-800'],
+  fail: ['AI: sorun var', 'bg-red-100 text-red-800'],
+  unclear: ['AI: net değil', 'bg-slate-200 text-slate-700'],
+  pending: ['AI kontrol ediyor', 'bg-slate-100 text-slate-500'],
+}
 
 export const typeLabel = { full: 'Tam kontrol', stayover: 'Konaklama kontrolü' }
 
@@ -103,6 +113,9 @@ function Card({ c }: { c: CleaningRow }) {
       </p>
       <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-semibold">
         {c.status === 'approved' && <span className="rounded bg-emerald-100 px-2 py-0.5 text-emerald-800">Onaylandı</span>}
+        {c.status !== 'approved' && (
+          <span className={`rounded px-2 py-0.5 ${AI_OVERALL[c.ai_overall][1]}`}>{AI_OVERALL[c.ai_overall][0]}</span>
+        )}
         {skipped > 0 && <span className="rounded bg-amber-100 px-2 py-0.5 text-amber-800">{skipped} uygulanamıyor</span>}
         {c.complaint && <span className="rounded bg-red-100 px-2 py-0.5 text-red-800">Şikayet</span>}
       </div>

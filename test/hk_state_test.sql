@@ -83,11 +83,31 @@ select t.eq(pg_temp.occ('402', 0, '10:00'), 't/f/f', 'konaklama: dolu');
 select pg_temp.clean('402', 0, '10:00', '10:20', 'stayover');
 select t.eq(pg_temp.s('402', 0, '11:00'), 'clean', 'konaklama temizliği de temiz sayılır');
 
+-- AI: fotoğraf kuyruğa girer, kaydın genel sonucu en kötü adımdır, yanlış alarm düşer (0015)
+create temp table ai_c as select c.id, c.room_id from cleanings c where c.room_id = pg_temp.room('301') limit 1;
+create temp table ai_s as select s.id from check_steps s join rooms r on r.room_type_id = s.room_type_id
+  where r.id = pg_temp.room('301') order by s.step_order limit 2;
+insert into step_results (cleaning_id, step_id, shot, attempt, media_key)
+  select (select id from ai_c), id, 1, 1, 'k/' || id from ai_s;
+select t.eq((select count(*) from ai_queue q join step_results r on r.id = q.step_result_id where r.cleaning_id = (select id from ai_c)),
+            2::bigint, 'yüklenen fotoğraflar AI kuyruğuna girer');
+update step_results set ai_status = 'ok' where cleaning_id = (select id from ai_c);
+update step_results set ai_status = 'fail' where cleaning_id = (select id from ai_c) and step_id = (select min(id::text)::uuid from ai_s);
+select refresh_cleaning_ai((select id from ai_c));
+select t.eq((select ai_overall::text from cleanings where id = (select id from ai_c)), 'fail', 'kaydın AI sonucu en kötü adım');
+update step_results set ai_false_alarm = true where cleaning_id = (select id from ai_c) and step_id = (select min(id::text)::uuid from ai_s);
+select t.eq((select ai_overall::text from cleanings where id = (select id from ai_c)), 'ok', 'yanlış alarm işaretlenince sorun düşer');
+insert into step_results (cleaning_id, step_id, shot, attempt, media_key, ai_status)
+  values ((select id from ai_c), (select min(id::text)::uuid from ai_s), 1, 2, 'k/x2', 'warn');
+select refresh_cleaning_ai((select id from ai_c));
+select t.eq((select ai_overall::text from cleanings where id = (select id from ai_c)), 'warn', 'tekrar çekilen karenin son denemesi sayılır');
+
 -- Bugün ekranı yeni sütunlarla çalışır
 set role authenticated;
 select t.as_user('00000000-0000-0000-0000-00000000aa01');
 select t.eq((select count(*) > 0 from today_board() where hk_state is not null), true, 'Bugün ekranı temiz/kirli durumunu döner');
 select t.fails($$ select * from room_hk_state(gen_random_uuid()) $$, 'room_hk_state doğrudan çağrılamaz');
+select t.fails($$ select refresh_cleaning_ai(gen_random_uuid()) $$, 'refresh_cleaning_ai doğrudan çağrılamaz');
 select t.fails($$ insert into room_hk_marks (room_id, clean) values ((select id from rooms limit 1), true) $$, 'HK temiz/kirli işaretleyemez');
 reset role;
 \echo 'ODA DURUMU TESTLERİ GEÇTİ'

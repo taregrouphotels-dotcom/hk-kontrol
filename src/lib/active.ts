@@ -15,6 +15,8 @@ export interface ActiveCleaning {
   via_qr: boolean
   // "adımId:kare" → çekildi / uygulanamıyor
   done: Record<string, 'photo' | 'skip'>
+  // "adımId:kare" → AI'ın uyarısıyla tekrar çekildiyse deneme numarası (yoksa 1)
+  attempts?: Record<string, number>
 }
 
 const KEY = 'hk-active'

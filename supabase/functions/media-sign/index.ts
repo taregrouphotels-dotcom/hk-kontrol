@@ -1,6 +1,7 @@
 // Cloudflare R2 için süreli imzalı adres (spec 9). Anahtarlar sadece burada; tarayıcı R2'ye doğrudan yükler/okur.
 // upload: kaydı başlatan HK, açık (in_progress/fixing) temizliğin adım fotoğrafı için PUT adresi alır.
 // view:   kullanıcı, RLS'e göre görebildiği bir fotoğrafın GET adresini alır.
+// set_reference: süpervizör/admin bir adım fotoğrafını o oda tipinin referansı yapar (kalıcı kopya: ref/...).
 // cleaning: bir temizlik kaydının tüm adım fotoğrafları ve adımların referans fotoğrafları (onay ekranı), tek çağrıda.
 // Anahtar biçimi: {bölge}/{otel}/{oda}/{gün}/{temizlik}/{adım}-{kare}-{deneme}.jpg
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4'
@@ -108,7 +109,7 @@ Deno.serve(async (req) => {
     const { data: c } = await userDb.from('cleanings').select('id, room_id, rooms(room_type_id)').eq('id', body.cleaning_id).maybeSingle()
     if (!c) return json({ error: 'Kayıt bulunamadı.' }, 404)
     const { data: results } = await userDb.from('step_results')
-      .select('id, step_id, shot, attempt, media_key, media_deleted_at, skipped, skip_reason, captured_at')
+      .select('id, step_id, shot, attempt, media_key, media_deleted_at, skipped, skip_reason, captured_at, ai_status, ai_result, ai_false_alarm')
       .eq('cleaning_id', c.id)
     const { data: steps } = await userDb.from('check_steps').select('id, reference_key')
       .eq('room_type_id', (c as any).rooms.room_type_id).not('reference_key', 'is', null)
@@ -119,6 +120,28 @@ Deno.serve(async (req) => {
     const references: Record<string, string> = {}
     for (const st of steps ?? []) references[st.id] = await presign('GET', st.reference_key!)
     return json({ photos, references })
+  }
+
+  if (body.action === 'set_reference') {
+    const { data: me } = await admin.from('profiles').select('role, region, active').eq('id', who.user.id).maybeSingle()
+    if (!me?.active || (me.role !== 'admin' && me.role !== 'supervisor')) return json({ error: 'Yetkiniz yok.' }, 403)
+    const { data: sr } = await admin.from('step_results')
+      .select('media_key, step_id, cleanings(rooms(properties(region))), check_steps(room_types(code))')
+      .eq('id', body.step_result_id).maybeSingle()
+    if (!sr?.media_key) return json({ error: 'Fotoğraf bulunamadı.' }, 404)
+    if (me.role !== 'admin' && (sr as any).cleanings.rooms.properties.region !== me.region) return json({ error: 'Yetkiniz yok.' }, 403)
+    // Temizlik fotoğrafları 15 gün sonra silinir; referans ayrı ve kalıcı bir kopyadır
+    const store = r2()!
+    const bucket = (Deno.env.get('R2_BUCKET') || 'hk-media').trim()
+    const key = `ref/${slug((sr as any).check_steps.room_types.code)}/${sr.step_id}-${Date.now()}.jpg`
+    const copy = await store.client.fetch(`${store.base}/${key}`, {
+      method: 'PUT', headers: { 'x-amz-copy-source': `/${bucket}/${sr.media_key.split('/').map(encodeURIComponent).join('/')}` },
+    })
+    if (!copy.ok) return json({ error: `Referans kopyalanamadı (${copy.status}).` }, 502)
+    const { data: old } = await admin.from('check_steps').select('reference_key').eq('id', sr.step_id).single()
+    await admin.from('check_steps').update({ reference_key: key }).eq('id', sr.step_id)
+    if (old?.reference_key?.startsWith('ref/')) await store.client.fetch(`${store.base}/${old.reference_key}`, { method: 'DELETE' })
+    return json({ reference_key: key })
   }
 
   // Admin: depo testi. Sunucu R2'ye yazıp okur (anahtarlar doğru mu), tarayıcı için de PUT/GET adresi verir (CORS doğru mu).

@@ -30,6 +30,21 @@ interface Item {
   key: string
 }
 
+// AI sonucu (analyze-step yazar)
+interface Ai {
+  status: 'pending' | 'ok' | 'warn' | 'fail' | 'unclear'
+  note?: string
+  problems?: { check: string; problem: string }[]
+}
+
+const AI_STYLE = {
+  ok: 'bg-emerald-500',
+  warn: 'bg-amber-400',
+  fail: 'bg-red-500',
+  unclear: 'bg-slate-400',
+  pending: 'bg-white/30',
+}
+
 const STEPS_CACHE = (rt: string) => `hk-steps-${rt}`
 
 export default function Capture({ cleaningId, me }: { cleaningId: string; me: Profile }) {
@@ -43,6 +58,8 @@ export default function Capture({ cleaningId, me }: { cleaningId: string; me: Pr
   const [refUrl, setRefUrl] = useState<string>()
   const [showRef, setShowRef] = useState(true)
   const [showChecks, setShowChecks] = useState(false)
+  const [ai, setAi] = useState<Record<string, Ai>>({})
+  const [dismissed, setDismissed] = useState<Record<string, boolean>>({})
   const video = useRef<HTMLVideoElement>(null)
   const stream = useRef<MediaStream>()
 
@@ -68,6 +85,47 @@ export default function Capture({ cleaningId, me }: { cleaningId: string; me: Pr
         .flatMap((s) => Array.from({ length: s.shots }, (_, i) => ({ step: s, shot: i + 1, key: `${s.id}:${i + 1}` }))),
     [steps, active],
   )
+  const attemptOf = useCallback((key: string) => active?.attempts?.[key] ?? 1, [active])
+
+  // AI sonuçları: çekilen her kare için son denemenin sonucu, birkaç saniyede bir
+  useEffect(() => {
+    let stop = false
+    const poll = async () => {
+      const { data } = await supabase
+        .from('step_results')
+        .select('step_id, shot, attempt, ai_status, ai_result')
+        .eq('cleaning_id', cleaningId)
+        .eq('skipped', false)
+      if (stop || !data) return
+      const map: Record<string, Ai> = {}
+      for (const r of data as { step_id: string; shot: number; attempt: number; ai_status: Ai['status']; ai_result: Ai | null }[]) {
+        const key = `${r.step_id}:${r.shot}`
+        if (r.attempt !== attemptOf(key)) continue
+        map[key] = { status: r.ai_status, note: r.ai_result?.note, problems: r.ai_result?.problems }
+      }
+      setAi(map)
+    }
+    poll()
+    const t = setInterval(() => navigator.onLine && poll(), 4000)
+    return () => {
+      stop = true
+      clearInterval(t)
+    }
+  }, [cleaningId, attemptOf])
+
+  // AI'ın sorun bulduğu, HK'nın "sonra" demediği ilk kare
+  const flagged = items.find(
+    (i) => active?.done[i.key] === 'photo' && ['fail', 'warn', 'unclear'].includes(ai[i.key]?.status ?? '') && !dismissed[i.key],
+  )
+
+  // AI uyarısından sonra: kare tekrar çekilecekler listesine döner, yeni deneme numarasıyla
+  function retake(key: string) {
+    if (!active) return
+    const done = { ...active.done }
+    delete done[key]
+    setActive(updateActive(active.id, { done, attempts: { ...active.attempts, [key]: attemptOf(key) + 1 } }))
+  }
+
   const current = items.find((i) => !active?.done[i.key])
   const doneCount = items.filter((i) => active?.done[i.key]).length
   const stepCount = new Set(items.map((i) => i.step.id)).size
@@ -139,7 +197,7 @@ export default function Capture({ cleaningId, me }: { cleaningId: string; me: Pr
   async function keep(shot: Shot) {
     if (!current) return
     await enqueue({
-      kind: 'photo', cleaning_id: cleaningId, step_id: current.step.id, shot: current.shot, attempt: 1,
+      kind: 'photo', cleaning_id: cleaningId, step_id: current.step.id, shot: current.shot, attempt: attemptOf(current.key),
       captured_at: new Date().toISOString(), blob: shot.blob,
     })
     markDone(current.key, 'photo')
@@ -180,20 +238,45 @@ export default function Capture({ cleaningId, me }: { cleaningId: string; me: Pr
   if (error && !current) return <p className="m-4 rounded-xl bg-red-50 p-4 text-red-700">{error}</p>
   if (!steps) return <p className="p-4 text-slate-500">Adımlar yükleniyor…</p>
 
-  // Hepsi çekildi: gönder
+  // Hepsi çekildi: AI'ın bulduklarını göster, gönder
   if (!current) {
+    const pending = items.filter((i) => active.done[i.key] === 'photo' && (ai[i.key]?.status ?? 'pending') === 'pending').length
+    const issues = items.filter((i) => active.done[i.key] === 'photo' && ['fail', 'warn', 'unclear'].includes(ai[i.key]?.status ?? ''))
     return (
       <div className="m-4 space-y-4">
         <div className="rounded-2xl bg-emerald-50 p-5 text-emerald-900">
-          <p className="text-xl font-bold">Tüm adımlar tamam</p>
+          <p className="text-xl font-bold">Tüm adımlar çekildi</p>
           <p className="text-sm">
             Oda {active.room_no} · {doneCount} kare · {Object.values(active.done).filter((d) => d === 'skip').length} uygulanamıyor
           </p>
+          {pending > 0 && <p className="mt-1 text-sm">AI {pending} kareyi kontrol ediyor…</p>}
         </div>
+        {issues.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-slate-700">AI şunları gördü. Düzeltip tekrar çekebilirsiniz:</p>
+            {issues.map((i) => (
+              <div
+                key={i.key}
+                className={`rounded-xl p-3 text-sm ${ai[i.key].status === 'fail' ? 'bg-red-50 text-red-900' : 'bg-amber-50 text-amber-900'}`}
+              >
+                <p className="font-semibold">
+                  {i.step.step_order}. {i.step.title}
+                </p>
+                <p>{ai[i.key].note}</p>
+                <button onClick={() => retake(i.key)} className="mt-2 rounded-lg bg-white px-3 py-2 text-xs font-bold shadow-sm">
+                  Tekrar çek
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
         <button onClick={submit} className="w-full rounded-2xl bg-brand py-5 text-lg font-bold text-white shadow">
           Kontrolü gönder
         </button>
-        <p className="text-center text-xs text-slate-500">İnternet yoksa da gönderebilirsiniz; bağlantı gelince yüklenir.</p>
+        <p className="text-center text-xs text-slate-500">
+          {issues.length > 0 ? 'Düzeltmeden gönderirseniz AI notları süpervizöre gider. ' : ''}
+          İnternet yoksa da gönderebilirsiniz; bağlantı gelince yüklenir.
+        </p>
       </div>
     )
   }
@@ -229,9 +312,38 @@ export default function Capture({ cleaningId, me }: { cleaningId: string; me: Pr
           </ul>
         )}
         {s.needs_flash && !torch && <p className="mt-2 inline-block rounded bg-amber-500 px-2 py-1 text-xs font-semibold text-black">Feneri açın</p>}
-        <div className="mt-2 h-1 overflow-hidden rounded bg-white/20">
-          <div className="h-full bg-emerald-400" style={{ width: `${(doneCount / items.length) * 100}%` }} />
+        <div className="mt-2 flex gap-0.5">
+          {items.map((i) => (
+            <div
+              key={i.key}
+              className={`h-1.5 flex-1 rounded-full ${
+                i.key === current.key
+                  ? 'bg-white'
+                  : active.done[i.key] === 'skip'
+                    ? 'bg-white/60'
+                    : active.done[i.key]
+                      ? AI_STYLE[ai[i.key]?.status ?? 'pending']
+                      : 'bg-white/15'
+              }`}
+            />
+          ))}
         </div>
+        {flagged && !preview && (
+          <div className={`mt-2 rounded-xl p-3 text-sm ${ai[flagged.key].status === 'fail' ? 'bg-red-600' : 'bg-amber-500 text-black'}`}>
+            <p className="font-semibold">
+              AI · {flagged.step.step_order}. {flagged.step.title}
+            </p>
+            <p>{ai[flagged.key].note}</p>
+            <div className="mt-2 flex gap-2">
+              <button onClick={() => retake(flagged.key)} className="rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-slate-900">
+                Düzelt ve tekrar çek
+              </button>
+              <button onClick={() => setDismissed({ ...dismissed, [flagged.key]: true })} className="rounded-lg px-3 py-1.5 text-xs underline">
+                Sonra
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Alt: düğmeler */}

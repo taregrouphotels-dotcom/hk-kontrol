@@ -115,14 +115,16 @@ async function run(op: QueueOp) {
   }
   const put = await fetch(signed.url, { method: 'PUT', body: op.blob, headers: { 'Content-Type': 'image/jpeg' } })
   if (!put.ok) throw new Error(`Yükleme hatası (${put.status})`)
-  const { error } = await supabase.from('step_results').insert({
+  const { data, error } = await supabase.from('step_results').insert({
     cleaning_id: op.cleaning_id, step_id: op.step_id, shot: op.shot, attempt: op.attempt,
     media_key: signed.key, captured_at: op.captured_at,
-  })
+  }).select('id').single()
   if (error && error.code !== '23505') {
     if (isNetwork(error)) throw error
     throw new Permanent(errorText(error))
   }
+  // AI kontrolünü hemen iste; sonucu çekim ekranı okur. Olmazsa sunucudaki dakikalık tarama yapar.
+  if (data) void callFunction('analyze-step', { step_result_id: data.id }).catch(() => {})
 }
 
 let running = false
