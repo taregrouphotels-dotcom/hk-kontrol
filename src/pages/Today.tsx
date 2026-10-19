@@ -269,7 +269,7 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
     }
   }
 
-  // Müşteri temizlik istedi (konaklayan oda): talep gir / kaldır
+  // Temizlik talebi (konaklayan odada müşteri isterse): gir / kaldır
   async function request(on: boolean) {
     setBusy(true)
     setError(undefined)
@@ -333,7 +333,7 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
         >
           {room.cleaning_requested_at
             ? `Temizlik talebi var (${fmtTime(room.cleaning_requested_at)}) · kaldır`
-            : 'Müşteri temizlik istedi'}
+            : 'Temizlik talebi gir'}
         </button>
         <p className="text-sm text-slate-600">
           Bugün: <b>{room.day_status ? dayStatusLabel[room.day_status] : 'bilinmiyor'}</b>
@@ -380,7 +380,7 @@ type Tile = 'urgent' | 'todo' | 'requested' | 'cleaning' | 'clean' | 'departing'
 const TILES: { key: Tile; label: string; cls: string; dot: string }[] = [
   { key: 'urgent', label: 'Giriş var, kirli', cls: 'bg-rose-900 text-white', dot: 'bg-rose-900' },
   { key: 'todo', label: 'Temizlenecek', cls: 'bg-red-500 text-white', dot: 'bg-red-500' },
-  { key: 'requested', label: 'Temizlik istendi', cls: 'bg-orange-500 text-white', dot: 'bg-orange-500' },
+  { key: 'requested', label: 'Temizlik talebi', cls: 'bg-orange-500 text-white', dot: 'bg-orange-500' },
   { key: 'cleaning', label: 'Temizleniyor', cls: 'bg-sky-500 text-white', dot: 'bg-sky-500' },
   { key: 'clean', label: 'Boş · temiz', cls: 'bg-emerald-500 text-white', dot: 'bg-emerald-500' },
   { key: 'departing', label: 'Çıkış', cls: 'bg-violet-500 text-white', dot: 'bg-violet-500' },
@@ -421,7 +421,7 @@ function tileNote(r: BoardRow): string {
     case 'urgent':
       return 'Giriş var!'
     case 'requested':
-      return `İstek ${fmtTime(r.cleaning_requested_at!)}`
+      return `Talep ${fmtTime(r.cleaning_requested_at!)}`
     case 'departing':
       return r.arriving ? 'Çıkış + giriş' : 'Çıkış'
     case 'stay':

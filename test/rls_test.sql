@@ -195,8 +195,16 @@ set role authenticated;
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.fails($$ select * from ttlock_token $$, 'TTLock anahtarı okunamaz');
 
+-- Uygulama gizli bilgileri (0017)
+select t.fails($$ select set_app_secret('ANTHROPIC_API_KEY', 'x') $$, 'süpervizör AI anahtarı giremez');
+select t.fails($$ select get_app_secret('ANTHROPIC_API_KEY') $$, 'kullanıcı AI anahtarını okuyamaz');
+
 -- ---------- Admin ----------
 select t.as_user('00000000-0000-0000-0000-0000000000c1');
+select t.eq((select set_app_secret('ANTHROPIC_API_KEY', ' sk-test ') is not null), true, 'admin AI anahtarı girer');
+select t.fails($$ select set_app_secret('BASKA', 'x') $$, 'listede olmayan ad girilemez');
+select t.fails($$ select get_app_secret('ANTHROPIC_API_KEY') $$, 'admin de anahtarı geri okuyamaz');
+select t.eq((select count(*) from app_secret_status()), 1::bigint, 'admin sadece girildiğini görür');
 select t.fails($$ select * from ttlock_token $$, 'admin de TTLock anahtarını okuyamaz');
 select t.eq((select count(*) from cleanings), 2::bigint, 'admin tüm kayıtları görür');
 select t.eq((select count(*) from today_board()), 3::bigint, 'admin Bugün ekranında tüm odaları görür');

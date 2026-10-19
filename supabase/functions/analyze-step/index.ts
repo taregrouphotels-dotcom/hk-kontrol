@@ -1,7 +1,8 @@
 // Adım fotoğrafının AI kontrolü (karar 18). Fotoğraf R2'den okunur, oda tipinin referans fotoğrafı varsa
 // onunla birlikte Claude'a gönderilir; sonuç step_results.ai_status / ai_result'a yazılır.
 // Çağrı: HK fotoğrafı yükleyince (kullanıcı oturumuyla, {step_result_id}) ya da dakikalık tarama (x-cron-key).
-// Gizli değişkenler: ANTHROPIC_API_KEY, CLAUDE_MODEL (varsayılan claude-haiku-5-5), R2_*.
+// Gizli bilgiler: ANTHROPIC_API_KEY, CLAUDE_MODEL (varsayılan claude-haiku-5-5) — Edge Function secrets'ta ya da
+// admin'in Veri ekranından girdiği ops.app_secrets'ta (0017); R2_*.
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4'
 import { AwsClient } from 'npm:aws4fetch@1.0.20'
 import Anthropic from 'npm:@anthropic-ai/sdk@0.135.0'
@@ -18,7 +19,13 @@ const admin = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY
   auth: { persistSession: false, autoRefreshToken: false },
 })
 const env = (k: string) => (Deno.env.get(k) ?? '').trim()
-const MODEL = env('CLAUDE_MODEL') || 'claude-haiku-5-5'
+
+// Önce ortam değişkeni, yoksa veritabanındaki uygulama bilgisi
+async function secret(name: string): Promise<string> {
+  if (env(name)) return env(name)
+  const { data } = await admin.rpc('get_app_secret', { p_name: name })
+  return (data ?? '').trim()
+}
 const MAX_TRIES = 3
 
 function json(body: unknown, status = 200): Response {
@@ -108,9 +115,9 @@ async function analyze(id: string) {
     ].filter(Boolean).join('\n'),
   })
 
-  const client = new Anthropic({ apiKey: env('ANTHROPIC_API_KEY') })
+  const client = new Anthropic({ apiKey: await secret('ANTHROPIC_API_KEY') })
   const res = await client.messages.create({
-    model: MODEL,
+    model: (await secret('CLAUDE_MODEL')) || 'claude-haiku-5-5',
     max_tokens: 4000,
     system: SYSTEM,
     output_config: { effort: 'low', format: { type: 'json_schema', schema: SCHEMA } },
@@ -156,7 +163,7 @@ async function claimAndAnalyze(id: string) {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
   if (req.method !== 'POST') return json({ error: 'Yalnızca POST' }, 405)
-  if (!env('ANTHROPIC_API_KEY')) return json({ error: 'AI anahtarı henüz girilmedi.', code: 'no_ai' }, 503)
+  if (!(await secret('ANTHROPIC_API_KEY'))) return json({ error: 'AI anahtarı henüz girilmedi.', code: 'no_ai' }, 503)
 
   // Dakikalık tarama
   const cronKey = req.headers.get('x-cron-key')

@@ -108,7 +108,7 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
     })
   }
 
-  // Konaklayan odada müşteri temizlik isterse (karar 19)
+  // Temizlik talebi: konaklayan odada müşteri temizlik isterse (karar 19)
   async function requestCleaning() {
     if (!room) return
     const { error } = await supabase.from('cleaning_requests').insert({ room_id: room.id })
@@ -160,12 +160,12 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
         )}
         {board?.cleaning_requested_at && (
           <p className="mt-2 rounded-lg bg-orange-500 px-3 py-2 text-sm text-white">
-            Müşteri temizlik istedi · {fmtTime(board.cleaning_requested_at)}
+            Temizlik talebi · {fmtTime(board.cleaning_requested_at)}
           </p>
         )}
         {board?.day_status === 'stayover' && !board.cleaning_requested_at && !active && (
           <button onClick={requestCleaning} className="mt-2 w-full rounded-lg border border-orange-300 py-2 text-sm font-semibold text-orange-700">
-            Müşteri temizlik istedi
+            Temizlik talebi gir
           </button>
         )}
         {board?.cleaning_status && board.hk_name && !active && (

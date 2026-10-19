@@ -1,7 +1,8 @@
-import { useState, type ChangeEvent } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 import readXlsxFile from 'read-excel-file/browser'
 import { errorText, supabase } from '../lib/supabase'
 import { callFunction } from '../lib/api'
+import { fmtDate, fmtTime } from '../lib/format'
 import { parseWorkbook, type ImportPayload, type Issue, type Template } from '../lib/excelImport'
 
 // Excel'den temel veri içe aktarma (spec 3): yükle → önizleme + hata listesi → onayla.
@@ -206,6 +207,7 @@ export default function DataImport() {
       )}
 
       <StorageTest />
+      <AiKey />
     </div>
   )
 }
@@ -241,3 +243,57 @@ function StorageTest() {
   )
 }
 
+
+// AI anahtarı (karar 20): admin girer, değer geri okunamaz; sadece ne zaman girildiği görünür
+function AiKey() {
+  const [at, setAt] = useState<string | null>()
+  const [value, setValue] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<string>()
+
+  const load = () =>
+    supabase.rpc('app_secret_status').then(({ data }) => {
+      const row = (data as { name: string; updated_at: string }[] | null)?.find((r) => r.name === 'ANTHROPIC_API_KEY')
+      setAt(row?.updated_at ?? null)
+    })
+
+  useEffect(() => {
+    load()
+  }, [])
+
+  async function save() {
+    setBusy(true)
+    setMsg(undefined)
+    const { error } = await supabase.rpc('set_app_secret', { p_name: 'ANTHROPIC_API_KEY', p_value: value })
+    setBusy(false)
+    if (error) return setMsg(errorText(error))
+    setValue('')
+    setMsg('Kaydedildi.')
+    load()
+  }
+
+  return (
+    <div className="mt-6 space-y-2 border-t border-slate-200 pt-4 pb-6">
+      <h2 className="font-semibold text-slate-800">AI anahtarı (Anthropic)</h2>
+      <p className="text-sm text-slate-600">
+        {at === undefined ? '…' : at ? `Girildi: ${fmtDate(at)} ${fmtTime(at)}. Değiştirmek için yenisini yazın.` : 'Henüz girilmedi.'}
+      </p>
+      <input
+        type="password"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="sk-ant-..."
+        autoComplete="off"
+        className="w-full rounded-xl border border-slate-300 px-3 py-3 text-base"
+      />
+      <button
+        onClick={save}
+        disabled={busy || value.trim().length < 20}
+        className="w-full rounded-xl bg-brand py-3 text-sm font-semibold text-white disabled:opacity-50"
+      >
+        Kaydet
+      </button>
+      {msg && <p className="text-sm text-slate-600">{msg}</p>}
+    </div>
+  )
+}
