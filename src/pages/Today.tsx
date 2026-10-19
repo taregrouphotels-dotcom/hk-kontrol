@@ -405,6 +405,23 @@ const SHORT: Record<DayStatus, string> = {
   vacant: 'Boş',
 }
 
+// Otel başlığındaki sayılar: dolu odalar "çıkacak" ve "konaklama" diye ayrılır
+function summary(rows: BoardRow[]): [string, number, string][] {
+  const dot = (k: Tile) => TILES.find((t) => t.key === k)!.dot
+  const count = (f: (r: BoardRow) => boolean) => rows.filter(f).length
+  const occ = (r: BoardRow) => tileOf(r) === 'occupied'
+  const items: [string, number, string][] = [
+    ['temizlenecek', count((r) => tileOf(r) === 'todo'), dot('todo')],
+    ['temizleniyor', count((r) => tileOf(r) === 'cleaning'), dot('cleaning')],
+    ['temiz', count((r) => tileOf(r) === 'clean'), dot('clean')],
+    ['çıkacak', count((r) => occ(r) && r.departing), dot('occupied')],
+    ['konaklama', count((r) => occ(r) && !r.departing), dot('occupied')],
+    ['kullanım dışı', count((r) => tileOf(r) === 'blocked'), dot('blocked')],
+    ['bilinmiyor', count((r) => tileOf(r) === 'unknown'), dot('unknown')],
+  ]
+  return items.filter(([, n]) => n > 0)
+}
+
 const hkStateLabel = { clean: 'Temiz', dirty: 'Kirli (temizlenecek)', unknown: 'Bilinmiyor' }
 
 export default function Today({ me }: { me: Profile }) {
@@ -491,7 +508,15 @@ export default function Today({ me }: { me: Profile }) {
           if (own.length === 0) return null
           return (
             <section key={p.id} className="mt-3 px-4">
-              <h2 className="mb-1.5 text-sm font-semibold text-brand">{p.name}</h2>
+              <div className="mb-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <h2 className="text-sm font-semibold text-brand">{p.name}</h2>
+                {summary(own).map(([label, n, dot]) => (
+                  <span key={label} className="flex items-center gap-1 text-[11px] text-slate-600">
+                    <span className={`h-2 w-2 rounded-full ${dot}`} />
+                    {n} {label}
+                  </span>
+                ))}
+              </div>
               <div className="grid grid-cols-4 gap-2">
                 {own.map((r) => {
                   const t = TILES.find((x) => x.key === tileOf(r))!
