@@ -42,8 +42,8 @@ select t.eq((select count(*) from properties), 0::bigint, 'önizlemeden sonra ot
 select t.eq((select (v->'counts'->'inventory'->>'skipped')::int > 0 from t.res where k = 'preview'), true,
             'adedi boş envanter satırları atlanıyor');
 select t.eq((select count(*) from jsonb_array_elements((select v->'warnings' from t.res where k = 'preview')) w
-             where w->>'message' like '17 oda tipinin adımı yok (BGS, BSA, %genel şablon%'), 1::bigint,
-            'adımı olmayan 17 oda tipi için tek genel şablon uyarısı');
+             where w->>'message' like '%genel şablon%'), 0::bigint,
+            'tüm oda tiplerinin adımı Excel''de, genel şablon uyarısı yok');
 
 -- ---------- Uygulama ----------
 insert into t.res values ('apply1', import_master_data(:'payload'::jsonb, true));
@@ -58,7 +58,11 @@ select t.eq((select shots from check_steps s join room_types r on r.id = s.room_
             'yatak adımı 2 kare');
 select t.eq((select applies_to from check_steps s join room_types r on r.id = s.room_type_id where r.code = 'X3' and step_order = 5),
             '{full}'::cleaning_type[], 'gardırop sadece tam kontrolde');
-select t.eq((select count(*) from check_steps where generic), 85::bigint, 'diğer 17 oda tipine 5 adımlık genel şablon');
+select t.eq((select count(*) from check_steps where generic), 0::bigint, 'genel şablon kullanılmadı');
+select t.eq((select count(*) from room_types t where not exists (select 1 from check_steps s where s.room_type_id = t.id)), 0::bigint,
+            'her oda tipinin adımı var');
+select t.eq((select count(*) from check_steps s join room_types r on r.id = s.room_type_id where r.code = 'TNY'), 17::bigint,
+            'Tiny House: balkon, teras, bahçe, barbekü dahil 17 adım');
 select t.eq((select min_minutes_full from room_types where code = 'X1'), 25, 'boş min. süre varsayılan 25 dk');
 select t.eq((select count(*) from item_catalog), (select jsonb_array_length(:'payload'::jsonb->'catalog'))::bigint, 'katalog tam');
 select t.eq((select count(*) from expected_items),
@@ -69,7 +73,7 @@ select t.eq((select count(*) from expected_items e join room_types r on r.id = e
 -- ---------- Tekrar yükleme: kopya oluşmaz ----------
 insert into t.res values ('apply2', import_master_data(:'payload'::jsonb, true));
 select t.eq((select count(*) from rooms), 40::bigint, 'tekrar yükleyince oda kopyalanmaz');
-select t.eq((select count(*) from check_steps), 102::bigint, 'tekrar yükleyince adım kopyalanmaz');
+select t.eq((select count(*) from check_steps), 244::bigint, 'tekrar yükleyince adım kopyalanmaz');
 select t.eq((select count(*) from expected_items),
             (select (v->'counts'->'inventory'->>'total')::bigint from t.res where k = 'apply1'), 'tekrar yükleyince envanter kopyalanmaz');
 select t.eq((select (v->'counts'->'rooms'->>'new')::int from t.res where k = 'apply2'), 0, 'ikinci yüklemede yeni oda sayısı 0');

@@ -1103,6 +1103,4508 @@
    "required": true,
    "shots": 1,
    "ai_prompt": "Zeminde kir veya çöp var mı? Açıkta kablo var mı? Duvarda iz veya sıyrık görünüyor mu? Genel düzen nasıl? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)"
+  },
+  {
+   "row": 19,
+   "room_type": "X1",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 20,
+   "room_type": "X1",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 21,
+   "room_type": "X1",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 22,
+   "room_type": "X1",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 23,
+   "room_type": "X1",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 24,
+   "room_type": "X1",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 25,
+   "room_type": "X1",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 26,
+   "room_type": "X1",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 27,
+   "room_type": "X1",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 28,
+   "room_type": "X1",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 29,
+   "room_type": "X1",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün",
+    "Sofa yatak toplanmış"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 30,
+   "room_type": "X1",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 31,
+   "room_type": "X1",
+   "step_order": 13,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 32,
+   "room_type": "X2",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 33,
+   "room_type": "X2",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 34,
+   "room_type": "X2",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 35,
+   "room_type": "X2",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 36,
+   "room_type": "X2",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 37,
+   "room_type": "X2",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 38,
+   "room_type": "X2",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 39,
+   "room_type": "X2",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 40,
+   "room_type": "X2",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 41,
+   "room_type": "X2",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 42,
+   "room_type": "X2",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün",
+    "Sofa yatak toplanmış"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 43,
+   "room_type": "X2",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 44,
+   "room_type": "X2",
+   "step_order": 13,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 45,
+   "room_type": "X4",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 46,
+   "room_type": "X4",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 47,
+   "room_type": "X4",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 48,
+   "room_type": "X4",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 49,
+   "room_type": "X4",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 50,
+   "room_type": "X4",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 51,
+   "room_type": "X4",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 52,
+   "room_type": "X4",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 53,
+   "room_type": "X4",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 54,
+   "room_type": "X4",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 55,
+   "room_type": "X4",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 56,
+   "room_type": "X4",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 57,
+   "room_type": "X4",
+   "step_order": 13,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 58,
+   "room_type": "PH",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 59,
+   "room_type": "PH",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam",
+    "Bornozlar asılı"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 60,
+   "room_type": "PH",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 61,
+   "room_type": "PH",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 62,
+   "room_type": "PH",
+   "step_order": 5,
+   "zone": "Banyo",
+   "title": "Küvet",
+   "instruction": "Küveti üstten, gider ve batarya görünecek şekilde çek.",
+   "checks": [
+    "Küvet içi temiz, kireç halkası yok",
+    "Giderde saç yok",
+    "Batarya parlak"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Küvette kir halkası, saç, kireç var mı?"
+  },
+  {
+   "row": 63,
+   "room_type": "PH",
+   "step_order": 6,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 64,
+   "room_type": "PH",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 65,
+   "room_type": "PH",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 66,
+   "room_type": "PH",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 67,
+   "room_type": "PH",
+   "step_order": 10,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 68,
+   "room_type": "PH",
+   "step_order": 11,
+   "zone": "Mutfak",
+   "title": "Fırın ve mikrodalga",
+   "instruction": "Fırın ve mikrodalga kapağını açıp içini çek.",
+   "checks": [
+    "İçi temiz, yağ ve yemek kalıntısı yok",
+    "Tabla yerinde"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "İçeride yağ, yanık, yemek kalıntısı var mı?"
+  },
+  {
+   "row": 69,
+   "room_type": "PH",
+   "step_order": 12,
+   "zone": "Mutfak",
+   "title": "Kahve makinesi ve bulaşık makinesi",
+   "instruction": "Kahve makinesi ve bulaşık makinesi görünsün; bulaşık makinesinin kapağını açıp çek.",
+   "checks": [
+    "Kahve makinesi temiz, haznesi boş",
+    "Bulaşık makinesi boş ve temiz"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Makinede kirli bulaşık veya kahve kalıntısı var mı?"
+  },
+  {
+   "row": 70,
+   "room_type": "PH",
+   "step_order": 13,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 71,
+   "room_type": "PH",
+   "step_order": 14,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 72,
+   "room_type": "PH",
+   "step_order": 15,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 73,
+   "room_type": "PH",
+   "step_order": 16,
+   "zone": "Dış alan",
+   "title": "Teras",
+   "instruction": "Terasın tamamını geniş açıyla çek.",
+   "checks": [
+    "Zemin süpürülmüş",
+    "Oturma grubu temiz",
+    "Çöp yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Terasta çöp, yaprak, kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 74,
+   "room_type": "PH",
+   "step_order": 17,
+   "zone": "Dış alan",
+   "title": "Barbekü",
+   "instruction": "Barbeküyü kapağı açık çek.",
+   "checks": [
+    "Izgara temiz",
+    "Kül boşaltılmış"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Izgarada yağ/yemek kalıntısı veya kül var mı?"
+  },
+  {
+   "row": 75,
+   "room_type": "PH",
+   "step_order": 18,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 76,
+   "room_type": "BGS",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 77,
+   "room_type": "BGS",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 78,
+   "room_type": "BGS",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 79,
+   "room_type": "BGS",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 80,
+   "room_type": "BGS",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 81,
+   "room_type": "BGS",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 82,
+   "room_type": "BGS",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 83,
+   "room_type": "BGS",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 84,
+   "room_type": "BGS",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 85,
+   "room_type": "BGS",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 86,
+   "room_type": "BGS",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün",
+    "Sofa yatak toplanmış"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 87,
+   "room_type": "BGS",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 88,
+   "room_type": "BGS",
+   "step_order": 13,
+   "zone": "Dış alan",
+   "title": "Balkon",
+   "instruction": "Balkon kapısından balkonun tamamını çek.",
+   "checks": [
+    "Zemin süpürülmüş",
+    "Masa ve sandalyeler temiz",
+    "Kül tablası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Balkonda çöp, izmarit, kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 89,
+   "room_type": "BGS",
+   "step_order": 14,
+   "zone": "Dış alan",
+   "title": "Bahçe",
+   "instruction": "Bahçeyi kapıdan geniş açıyla çek.",
+   "checks": [
+    "Çöp yok",
+    "Bahçe mobilyaları düzenli"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Bahçede çöp var mı, mobilyalar dağınık mı?"
+  },
+  {
+   "row": 90,
+   "room_type": "BGS",
+   "step_order": 15,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 91,
+   "room_type": "BSAB",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 92,
+   "room_type": "BSAB",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 93,
+   "room_type": "BSAB",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 94,
+   "room_type": "BSAB",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 95,
+   "room_type": "BSAB",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 96,
+   "room_type": "BSAB",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 97,
+   "room_type": "BSAB",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 98,
+   "room_type": "BSAB",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 99,
+   "room_type": "BSAB",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 100,
+   "room_type": "BSAB",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 101,
+   "room_type": "BSAB",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 102,
+   "room_type": "BSAB",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 103,
+   "room_type": "BSAB",
+   "step_order": 13,
+   "zone": "Dış alan",
+   "title": "Balkon",
+   "instruction": "Balkon kapısından balkonun tamamını çek.",
+   "checks": [
+    "Zemin süpürülmüş",
+    "Masa ve sandalyeler temiz",
+    "Kül tablası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Balkonda çöp, izmarit, kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 104,
+   "room_type": "BSAB",
+   "step_order": 14,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 105,
+   "room_type": "BSA",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 106,
+   "room_type": "BSA",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 107,
+   "room_type": "BSA",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 108,
+   "room_type": "BSA",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 109,
+   "room_type": "BSA",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 110,
+   "room_type": "BSA",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 111,
+   "room_type": "BSA",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 112,
+   "room_type": "BSA",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 113,
+   "room_type": "BSA",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 114,
+   "room_type": "BSA",
+   "step_order": 10,
+   "zone": "Mutfak",
+   "title": "Mikrodalga",
+   "instruction": "Mikrodalga kapağını açıp içini çek.",
+   "checks": [
+    "İçi temiz, yağ ve yemek kalıntısı yok",
+    "Tabla yerinde"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "İçeride yağ, yanık, yemek kalıntısı var mı?"
+  },
+  {
+   "row": 115,
+   "room_type": "BSA",
+   "step_order": 11,
+   "zone": "Mutfak",
+   "title": "Çamaşır makinesi",
+   "instruction": "Kapağını açıp tamburu çek.",
+   "checks": [
+    "Tambur boş",
+    "Kapak lastiği temiz"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tamburda unutulmuş çamaşır var mı?"
+  },
+  {
+   "row": 116,
+   "room_type": "BSA",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 117,
+   "room_type": "BSA",
+   "step_order": 13,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 118,
+   "room_type": "BSA",
+   "step_order": 14,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 119,
+   "room_type": "BSA",
+   "step_order": 15,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 120,
+   "room_type": "EDR",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 121,
+   "room_type": "EDR",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 122,
+   "room_type": "EDR",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 123,
+   "room_type": "EDR",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 124,
+   "room_type": "EDR",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 125,
+   "room_type": "EDR",
+   "step_order": 6,
+   "zone": "Oda",
+   "title": "Kasa",
+   "instruction": "Kasa kapağını açıp içini çek.",
+   "checks": [
+    "Kasa boş",
+    "Kasa açık bırakılmış, kilitli değil"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Kasanın içinde eşya var mı? Kapak açık mı?"
+  },
+  {
+   "row": 126,
+   "room_type": "EDR",
+   "step_order": 7,
+   "zone": "Oda",
+   "title": "Kettle ve ikram",
+   "instruction": "Kettle, bardaklar ve ikram tepsisini tek karede çek.",
+   "checks": [
+    "Kettle boş ve temiz",
+    "Bardaklar lekesiz",
+    "İkram tepsisi tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Bardaklarda leke, kettle içinde su/kireç var mı? İkram eksik mi?"
+  },
+  {
+   "row": 127,
+   "room_type": "EDR",
+   "step_order": 8,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 128,
+   "room_type": "EDR",
+   "step_order": 9,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 129,
+   "room_type": "EDR",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 130,
+   "room_type": "DSSW",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 131,
+   "room_type": "DSSW",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 132,
+   "room_type": "DSSW",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 133,
+   "room_type": "DSSW",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 134,
+   "room_type": "DSSW",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 135,
+   "room_type": "DSSW",
+   "step_order": 6,
+   "zone": "Oda",
+   "title": "Kasa",
+   "instruction": "Kasa kapağını açıp içini çek.",
+   "checks": [
+    "Kasa boş",
+    "Kasa açık bırakılmış, kilitli değil"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Kasanın içinde eşya var mı? Kapak açık mı?"
+  },
+  {
+   "row": 136,
+   "room_type": "DSSW",
+   "step_order": 7,
+   "zone": "Oda",
+   "title": "Kettle ve ikram",
+   "instruction": "Kettle, bardaklar ve ikram tepsisini tek karede çek.",
+   "checks": [
+    "Kettle boş ve temiz",
+    "Bardaklar lekesiz",
+    "İkram tepsisi tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Bardaklarda leke, kettle içinde su/kireç var mı? İkram eksik mi?"
+  },
+  {
+   "row": 137,
+   "room_type": "DSSW",
+   "step_order": 8,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 138,
+   "room_type": "DSSW",
+   "step_order": 9,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 139,
+   "room_type": "DSSW",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 140,
+   "room_type": "DSSW",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 141,
+   "room_type": "EXSB",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 142,
+   "room_type": "EXSB",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 143,
+   "room_type": "EXSB",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 144,
+   "room_type": "EXSB",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 145,
+   "room_type": "EXSB",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 146,
+   "room_type": "EXSB",
+   "step_order": 6,
+   "zone": "Oda",
+   "title": "Kasa",
+   "instruction": "Kasa kapağını açıp içini çek.",
+   "checks": [
+    "Kasa boş",
+    "Kasa açık bırakılmış, kilitli değil"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Kasanın içinde eşya var mı? Kapak açık mı?"
+  },
+  {
+   "row": 147,
+   "room_type": "EXSB",
+   "step_order": 7,
+   "zone": "Oda",
+   "title": "Kettle ve ikram",
+   "instruction": "Kettle, bardaklar ve ikram tepsisini tek karede çek.",
+   "checks": [
+    "Kettle boş ve temiz",
+    "Bardaklar lekesiz",
+    "İkram tepsisi tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Bardaklarda leke, kettle içinde su/kireç var mı? İkram eksik mi?"
+  },
+  {
+   "row": 148,
+   "room_type": "EXSB",
+   "step_order": 8,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 149,
+   "room_type": "EXSB",
+   "step_order": 9,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 150,
+   "room_type": "EXSB",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 151,
+   "room_type": "EXSB",
+   "step_order": 11,
+   "zone": "Dış alan",
+   "title": "Balkon",
+   "instruction": "Balkon kapısından balkonun tamamını çek.",
+   "checks": [
+    "Zemin süpürülmüş",
+    "Masa ve sandalyeler temiz",
+    "Kül tablası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Balkonda çöp, izmarit, kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 152,
+   "room_type": "EXSB",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 153,
+   "room_type": "DS",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 154,
+   "room_type": "DS",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 155,
+   "room_type": "DS",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 156,
+   "room_type": "DS",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 157,
+   "room_type": "DS",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 158,
+   "room_type": "DS",
+   "step_order": 6,
+   "zone": "Oda",
+   "title": "Kasa",
+   "instruction": "Kasa kapağını açıp içini çek.",
+   "checks": [
+    "Kasa boş",
+    "Kasa açık bırakılmış, kilitli değil"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Kasanın içinde eşya var mı? Kapak açık mı?"
+  },
+  {
+   "row": 159,
+   "room_type": "DS",
+   "step_order": 7,
+   "zone": "Oda",
+   "title": "Kettle ve ikram",
+   "instruction": "Kettle, bardaklar ve ikram tepsisini tek karede çek.",
+   "checks": [
+    "Kettle boş ve temiz",
+    "Bardaklar lekesiz",
+    "İkram tepsisi tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Bardaklarda leke, kettle içinde su/kireç var mı? İkram eksik mi?"
+  },
+  {
+   "row": 160,
+   "room_type": "DS",
+   "step_order": 8,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 161,
+   "room_type": "DS",
+   "step_order": 9,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 162,
+   "room_type": "DS",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 163,
+   "room_type": "DS",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 164,
+   "room_type": "DFS",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 165,
+   "room_type": "DFS",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 166,
+   "room_type": "DFS",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 167,
+   "room_type": "DFS",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 168,
+   "room_type": "DFS",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 169,
+   "room_type": "DFS",
+   "step_order": 6,
+   "zone": "Oda",
+   "title": "Kasa",
+   "instruction": "Kasa kapağını açıp içini çek.",
+   "checks": [
+    "Kasa boş",
+    "Kasa açık bırakılmış, kilitli değil"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Kasanın içinde eşya var mı? Kapak açık mı?"
+  },
+  {
+   "row": 170,
+   "room_type": "DFS",
+   "step_order": 7,
+   "zone": "Oda",
+   "title": "Kettle ve ikram",
+   "instruction": "Kettle, bardaklar ve ikram tepsisini tek karede çek.",
+   "checks": [
+    "Kettle boş ve temiz",
+    "Bardaklar lekesiz",
+    "İkram tepsisi tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Bardaklarda leke, kettle içinde su/kireç var mı? İkram eksik mi?"
+  },
+  {
+   "row": 171,
+   "room_type": "DFS",
+   "step_order": 8,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 172,
+   "room_type": "DFS",
+   "step_order": 9,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 173,
+   "room_type": "DFS",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek. Dubleks: üst ve alt kattaki yatakların her biri için ayrı kare.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 3,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 174,
+   "room_type": "DFS",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 175,
+   "room_type": "VGS",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 176,
+   "room_type": "VGS",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 177,
+   "room_type": "VGS",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 178,
+   "room_type": "VGS",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 179,
+   "room_type": "VGS",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 180,
+   "room_type": "VGS",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 181,
+   "room_type": "VGS",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 182,
+   "room_type": "VGS",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 183,
+   "room_type": "VGS",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 184,
+   "room_type": "VGS",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 185,
+   "room_type": "VGS",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün",
+    "Sofa yatak toplanmış"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 186,
+   "room_type": "VGS",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 187,
+   "room_type": "VGS",
+   "step_order": 13,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 188,
+   "room_type": "VBS",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 189,
+   "room_type": "VBS",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 190,
+   "room_type": "VBS",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 191,
+   "room_type": "VBS",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 192,
+   "room_type": "VBS",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 193,
+   "room_type": "VBS",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 194,
+   "room_type": "VBS",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 195,
+   "room_type": "VBS",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 196,
+   "room_type": "VBS",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 197,
+   "room_type": "VBS",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 198,
+   "room_type": "VBS",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün",
+    "Sofa yatak toplanmış"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 199,
+   "room_type": "VBS",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 200,
+   "room_type": "VBS",
+   "step_order": 13,
+   "zone": "Dış alan",
+   "title": "Balkon",
+   "instruction": "Balkon kapısından balkonun tamamını çek.",
+   "checks": [
+    "Zemin süpürülmüş",
+    "Masa ve sandalyeler temiz",
+    "Kül tablası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Balkonda çöp, izmarit, kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 201,
+   "room_type": "VBS",
+   "step_order": 14,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 202,
+   "room_type": "VSS",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 203,
+   "room_type": "VSS",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 204,
+   "room_type": "VSS",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 205,
+   "room_type": "VSS",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 206,
+   "room_type": "VSS",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 207,
+   "room_type": "VSS",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 208,
+   "room_type": "VSS",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 209,
+   "room_type": "VSS",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 210,
+   "room_type": "VSS",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 211,
+   "room_type": "VSS",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 212,
+   "room_type": "VSS",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 213,
+   "room_type": "VSS",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 214,
+   "room_type": "VSS",
+   "step_order": 13,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 215,
+   "room_type": "VTS",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 216,
+   "room_type": "VTS",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 217,
+   "room_type": "VTS",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 218,
+   "room_type": "VTS",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 219,
+   "room_type": "VTS",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 220,
+   "room_type": "VTS",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Ocak temiz",
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 221,
+   "room_type": "VTS",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 222,
+   "room_type": "VTS",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 223,
+   "room_type": "VTS",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 224,
+   "room_type": "VTS",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 225,
+   "room_type": "VTS",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün",
+    "Sofa yatak toplanmış"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 226,
+   "room_type": "VTS",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 227,
+   "room_type": "VTS",
+   "step_order": 13,
+   "zone": "Dış alan",
+   "title": "Teras",
+   "instruction": "Terasın tamamını geniş açıyla çek.",
+   "checks": [
+    "Zemin süpürülmüş",
+    "Oturma grubu temiz",
+    "Çöp yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Terasta çöp, yaprak, kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 228,
+   "room_type": "VTS",
+   "step_order": 14,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 229,
+   "room_type": "TNY",
+   "step_order": 1,
+   "zone": "Giriş",
+   "title": "Giriş ve kapı",
+   "instruction": "Kapıdan girip girişi ve koridoru tek karede çek. Tüm ışıklar açık olsun.",
+   "checks": [
+    "Kapı ve şifreli kilit çalışıyor",
+    "Süpürgelik ve duvar dipleri tozsuz",
+    "Aplikler yanıyor",
+    "Zeminde leke, saç, kum yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde görünür kir, saç, çöp var mı? Yanmayan lamba var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 230,
+   "room_type": "TNY",
+   "step_order": 2,
+   "zone": "Banyo",
+   "title": "Lavabo ve ayna",
+   "instruction": "Lavabo, batarya, ayna ve havlu rafı aynı karede olacak şekilde çek.",
+   "checks": [
+    "Lavabo içi ve gider temiz",
+    "Batarya parlak, su lekesi yok",
+    "Sıvı sabun dolu",
+    "Ayna lekesiz",
+    "Havlular katlı ve tam"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Lavaboda kıl, sabun kalıntısı, su lekesi var mı? Aynada leke var mı? Havlular düzgün katlı mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 231,
+   "room_type": "TNY",
+   "step_order": 3,
+   "zone": "Banyo",
+   "title": "WC",
+   "instruction": "Klozet kapağı açık, tuvalet kağıdı ve yedek rulo görünecek şekilde çek.",
+   "checks": [
+    "Klozet içi, kapak altı ve dış yüzey temiz",
+    "WC fırçası temiz",
+    "Tuvalet kağıdı takılı + yedek rulo",
+    "Çöp kovası boş, poşet yeni"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Klozet içinde veya kapakta leke/kir var mı? Tuvalet kağıdı ve yedek rulo var mı? Çöp kovası boş mu?"
+  },
+  {
+   "row": 232,
+   "room_type": "TNY",
+   "step_order": 4,
+   "zone": "Banyo",
+   "title": "Duş",
+   "instruction": "Duş camını ışığa karşı çek (kireç böyle görünür); dispenserler ve gider görünsün.",
+   "checks": [
+    "Camda kireç ve su lekesi yok",
+    "Duş seti askıda",
+    "Şampuan/duş jeli dolu",
+    "Giderde saç yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Duş camında kireç/su lekesi, giderde saç, zeminde kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 233,
+   "room_type": "TNY",
+   "step_order": 5,
+   "zone": "Oda",
+   "title": "Gardırop",
+   "instruction": "Kapakları aç, askıları ve rafları tek karede çek. İçerisi karanlıksa feneri aç.",
+   "checks": [
+    "Askılar tam",
+    "Yedek battaniye/yastık katlı",
+    "Unutulmuş eşya yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Gardıropta unutulmuş eşya, çöp var mı? Askılar düzenli mi?"
+  },
+  {
+   "row": 234,
+   "room_type": "TNY",
+   "step_order": 6,
+   "zone": "Mutfak",
+   "title": "Mutfak tezgahı",
+   "instruction": "Tezgahın karşısından ocak, evye, kettle ve bulaşıklık tek karede olacak şekilde çek.",
+   "checks": [
+    "Evye ve batarya temiz",
+    "Sünger ve fırça temiz",
+    "Bulaşıklık boş ve kuru",
+    "Kettle boş, kablosu toplanmış",
+    "Tuz-biber-yağ dolu",
+    "Çöp kovası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Tezgahta, ocakta, evyede kir, yağ, kırıntı veya bulaşık var mı? Çöp dolu mu? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 235,
+   "room_type": "TNY",
+   "step_order": 7,
+   "zone": "Mutfak",
+   "title": "Çekmeceler",
+   "instruction": "Çekmeceleri sırayla aç, feneri aç ve her birini tam üstten çek.",
+   "checks": [
+    "Çatal, kaşık, bıçak tam",
+    "Servis gereçleri yerinde",
+    "Çekmece içleri kırıntısız"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çekmece içinde kırıntı, kir, yerinden oynamış eşya var mı?"
+  },
+  {
+   "row": 236,
+   "room_type": "TNY",
+   "step_order": 8,
+   "zone": "Mutfak",
+   "title": "Dolaplar: tabak, bardak, tencere",
+   "instruction": "Üst ve alt dolapların kapaklarını aç, feneri aç; tabak, bardak ve tencereler görünsün.",
+   "checks": [
+    "Tabak, kase, bardak, kupa sayısı tam",
+    "Bardaklarda su lekesi, kupalarda çay/kahve izi yok",
+    "Tencere ve tavalar temiz, kapaklı",
+    "Evye altında sızıntı yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": true,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Bardaklarda leke, tabaklarda iz/çatlak, tencerelerde yemek kalıntısı var mı?"
+  },
+  {
+   "row": 237,
+   "room_type": "TNY",
+   "step_order": 9,
+   "zone": "Mutfak",
+   "title": "Buzdolabı",
+   "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+   "checks": [
+    "Raflar temiz",
+    "Unutulmuş yiyecek yok",
+    "Koku ve buzlanma yok"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Buzdolabında yiyecek kalıntısı, leke, buzlanma var mı?"
+  },
+  {
+   "row": 238,
+   "room_type": "TNY",
+   "step_order": 10,
+   "zone": "Oda",
+   "title": "TV ve ünite",
+   "instruction": "TV ve ünite raflarını önden çek.",
+   "checks": [
+    "TV ekranı tozsuz",
+    "Ünite rafları tozsuz",
+    "Kumandalar yerinde"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "TV ve raflarda toz, leke var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 239,
+   "room_type": "TNY",
+   "step_order": 11,
+   "zone": "Oda",
+   "title": "Oturma alanı ve masa",
+   "instruction": "Pencereye doğru geniş açıyla çek; masa, koltuklar ve kanepe görünsün.",
+   "checks": [
+    "Perde ve tül düzgün",
+    "Masa temiz",
+    "Koltuk/kanepe temiz, minderler düzgün"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Masada, koltuklarda kir, leke, unutulmuş eşya var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 240,
+   "room_type": "TNY",
+   "step_order": 12,
+   "zone": "Oda",
+   "title": "Yatak ve komodinler",
+   "instruction": "Yatağı ayak ucundan tamamı görünecek şekilde çek; ikinci karede yatak altını ve komodinleri çek.",
+   "checks": [
+    "Çarşaf dört köşeden gergin",
+    "Yastıklar tam, kılıflar lekesiz",
+    "Yatak altında eşya/toz yok",
+    "Komodinler boş ve tozsuz"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 2,
+   "ai_prompt": "Çarşafta kırışık, leke, saç var mı? Yastıklar düzgün mü? Yatak altında eşya/toz var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 241,
+   "room_type": "TNY",
+   "step_order": 13,
+   "zone": "Dış alan",
+   "title": "Balkon",
+   "instruction": "Balkon kapısından balkonun tamamını çek.",
+   "checks": [
+    "Zemin süpürülmüş",
+    "Masa ve sandalyeler temiz",
+    "Kül tablası boş"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Balkonda çöp, izmarit, kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 242,
+   "room_type": "TNY",
+   "step_order": 14,
+   "zone": "Dış alan",
+   "title": "Teras",
+   "instruction": "Terasın tamamını geniş açıyla çek.",
+   "checks": [
+    "Zemin süpürülmüş",
+    "Oturma grubu temiz",
+    "Çöp yok"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Terasta çöp, yaprak, kir var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
+  },
+  {
+   "row": 243,
+   "room_type": "TNY",
+   "step_order": 15,
+   "zone": "Dış alan",
+   "title": "Barbekü",
+   "instruction": "Barbeküyü kapağı açık çek.",
+   "checks": [
+    "Izgara temiz",
+    "Kül boşaltılmış"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Izgarada yağ/yemek kalıntısı veya kül var mı?"
+  },
+  {
+   "row": 244,
+   "room_type": "TNY",
+   "step_order": 16,
+   "zone": "Dış alan",
+   "title": "Bahçe",
+   "instruction": "Bahçeyi kapıdan geniş açıyla çek.",
+   "checks": [
+    "Çöp yok",
+    "Bahçe mobilyaları düzenli"
+   ],
+   "full": true,
+   "stayover": false,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Bahçede çöp var mı, mobilyalar dağınık mı?"
+  },
+  {
+   "row": 245,
+   "room_type": "TNY",
+   "step_order": 17,
+   "zone": "Oda",
+   "title": "Genel oda",
+   "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+   "checks": [
+    "Klima çalışıyor",
+    "Çöp kovaları boş",
+    "Zemin temiz",
+    "Duvarda iz yok",
+    "Tüm aydınlatma yanıyor"
+   ],
+   "full": true,
+   "stayover": true,
+   "needs_flash": false,
+   "required": null,
+   "shots": 1,
+   "ai_prompt": "Zeminde kir, çöp; yanmayan lamba; dağınıklık var mı? Konaklama kontrolündeysen misafir eşyalarını değerlendirme."
   }
  ],
  "catalog": [
