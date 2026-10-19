@@ -3,6 +3,7 @@ import { errorText, supabase, type Profile } from '../lib/supabase'
 import { fmtDate, fmtTime } from '../lib/format'
 import { callFunction } from '../lib/api'
 import Sheet from '../components/Sheet'
+import { subscribe } from '../lib/queue'
 
 // Hasar ve kayıp eşya listeleri (spec 5.5, 5.6). Herkes bölgesindekini görür (RLS);
 // süpervizör/admin durumu değiştirir. Adres: #/kayitlar/hasar[/<id>] , #/kayitlar/esya[/<id>]
@@ -71,6 +72,15 @@ export default function Records({ me, kind, openId }: { me: Profile; kind: 'hasa
 
   useEffect(() => {
     load()
+  }, [load])
+
+  // Yeni kaydın fotoğrafları kuyruktan gidince liste yenilensin
+  useEffect(() => {
+    let prev = 0
+    return subscribe((q) => {
+      if (prev > 0 && q.pending === 0) load()
+      prev = q.pending
+    })
   }, [load])
 
   // Arama: açıklama ya da oda numarası (spec 5.6)

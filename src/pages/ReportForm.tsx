@@ -150,6 +150,7 @@ export default function ReportForm({ kind, roomId, me }: { kind: 'hasar' | 'esya
           <button
             onClick={() => setCamera(true)}
             disabled={!room}
+            aria-label="Fotoğraf çek"
             className="flex h-20 w-16 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-2xl text-slate-400 disabled:opacity-40"
           >
             +

@@ -90,7 +90,8 @@ Deno.serve(async (req) => {
     const room = (rep as any).rooms
     const n = Math.min(Math.max(Number(body.n) || 1, 1), 3)
     const key = [room.properties.region, slug(room.properties.name), slug(room.room_no), isDamage ? 'hasar' : 'esya',
-      String((rep as any).created).slice(0, 10), `${rep.id}-${n}.jpg`].join('/')
+      new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' }).format(new Date((rep as any).created)),
+      `${rep.id}-${n}.jpg`].join('/')
     return json({ key, url: await presign('PUT', key, 'image/jpeg') })
   }
 
