@@ -3,7 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import { errorText, supabase, type Profile } from './lib/supabase'
 import Login from './pages/Login'
 import Consent from './pages/Consent'
-import Home from './pages/Home'
+import Main from './pages/Main'
 
 type State =
   | { kind: 'loading' }
@@ -33,7 +33,7 @@ export default function App() {
       const profile = await loadProfile(session)
       if (!profile.active) {
         await supabase.auth.signOut()
-        setState({ kind: 'signedOut', message: 'Hesabınız pasif. Süpervizörünüze başvurun.' })
+        setState({ kind: 'signedOut', message: 'Hesabınız pasif. Yöneticinize başvurun.' })
         return
       }
       setState(profile.consent_at ? { kind: 'ready', profile } : { kind: 'consent', profile })
@@ -69,6 +69,6 @@ export default function App() {
         />
       )
     case 'ready':
-      return <Home profile={state.profile} />
+      return <Main profile={state.profile} />
   }
 }

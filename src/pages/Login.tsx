@@ -69,7 +69,7 @@ export default function Login({ message }: { message?: string }) {
               required
             />
             <input
-              className={`${input} tracking-[0.5em]`}
+              className={`${input} ${secret ? 'tracking-[0.5em]' : ''}`}
               placeholder="PIN (6 hane)"
               type="password"
               inputMode="numeric"
@@ -117,7 +117,7 @@ export default function Login({ message }: { message?: string }) {
       </form>
 
       {mode === 'hk' && (
-        <p className="mt-6 text-center text-sm text-slate-500">PIN'inizi unuttuysanız süpervizörünüz sıfırlayabilir.</p>
+        <p className="mt-6 text-center text-sm text-slate-500">PIN'inizi unuttuysanız yöneticiniz sıfırlayabilir.</p>
       )}
     </div>
   )

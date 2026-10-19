@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { errorText, supabase, type CleaningStatus, type DayStatus, type Profile } from '../lib/supabase'
-import { dayGroups, fmtDate, minutesSince, regionLabel, roleLabel } from '../lib/format'
+import { errorText, supabase, type CleaningStatus, type DayStatus } from '../lib/supabase'
+import { dayGroups, fmtDate, minutesSince } from '../lib/format'
 
 interface BoardRow {
   room_id: string
@@ -45,7 +45,7 @@ function cleaningBadge(r: BoardRow): { text: string; cls: string } {
   }
 }
 
-export default function Home({ profile }: { profile: Profile }) {
+export default function Today() {
   const [rows, setRows] = useState<BoardRow[]>()
   const [properties, setProperties] = useState<Property[]>([])
   const [error, setError] = useState<string>()
@@ -68,25 +68,8 @@ export default function Home({ profile }: { profile: Profile }) {
     load()
   }, [load])
 
-  function logout() {
-    // Çevrimdışı kuyruk geldiğinde: bekleyen yükleme varsa burada uyarılacak (spec 4)
-    if (window.confirm('Çıkış yapılsın mı?')) supabase.auth.signOut()
-  }
-
-  const subtitle = [roleLabel[profile.role], profile.region && regionLabel[profile.region]].filter(Boolean).join(' · ')
-
   return (
-    <div className="mx-auto min-h-screen max-w-2xl pb-10">
-      <header className="sticky top-0 z-10 flex items-center justify-between bg-brand px-4 py-3 text-white shadow">
-        <div>
-          <div className="font-semibold">{profile.full_name}</div>
-          <div className="text-xs text-white/70">{subtitle}</div>
-        </div>
-        <button onClick={logout} className="rounded-lg px-3 py-2 text-sm text-white/90 active:bg-white/10">
-          Çıkış
-        </button>
-      </header>
-
+    <div>
       <div className="flex items-center justify-between px-4 pb-2 pt-4">
         <h1 className="text-lg font-bold text-slate-800">Bugün · {fmtDate(new Date())}</h1>
         <button onClick={load} className="rounded-lg px-3 py-2 text-sm text-brand active:bg-slate-200">

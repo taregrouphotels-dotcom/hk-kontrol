@@ -11,6 +11,7 @@ Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulamas
 |---|---|
 | Veritabanı | Şema, bölge bazlı yetki (RLS), temizlik başlatma/kontrol/gönderme/onay/iptal fonksiyonları, Bugün ekranı sorgusu. Testler: `test/veritabani_test.sh` |
 | Arayüz iskeleti | Giriş (personel: kullanıcı adı + 6 haneli PIN; yönetici: e-posta + şifre), ilk girişte KVKK onayı, ilk adminin kendi profilini alması, Bugün ekranı (otel → Çıkış/Konaklama/Giriş/Boş, kim temizliyor), ana ekrana eklenebilir (PWA) |
+| Personel yönetimi | Admin → Personel: HK (kullanıcı adı + PIN) ve süpervizör/admin (e-posta + şifre) hesabı açma, ad/rol/bölge düzenleme, PIN/şifre sıfırlama, pasife alma. Hesap işlemleri `admin-users` Edge Function'ında |
 
 ## Yapı
 
@@ -19,6 +20,7 @@ Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulamas
 | `src/` | Arayüz (Vite + React + TypeScript + Tailwind): `pages/` ekranlar, `lib/` Supabase bağlantısı ve biçimlendirme |
 | `public/` | PWA manifest, service worker, simgeler |
 | `wrangler.jsonc` | Cloudflare yayın ayarı (derle, `dist/`i yayınla) |
+| `supabase/functions/` | Edge Function'lar (Deno). `main`'e gelince GitHub Actions yayınlar |
 | `supabase/migrations/` | Veritabanı: `0001_init` (başlangıç şeması), sonraki her değişiklik yeni dosya |
 | `test/` | Veritabanı yetki testleri (yerel Postgres'te Supabase taklidiyle) |
 | `scripts/apply_migrations.sh` | Migration'ları Supabase'e uygular (GitHub Actions çalıştırır) |

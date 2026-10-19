@@ -1,5 +1,5 @@
 # Her push ve PR'da: migration'lar boş Postgres'e kurulur, yetki (RLS) testleri çalışır;
-# arayüz tip kontrolünden geçip derlenir.
+# arayüz ve Edge Function'lar tip kontrolünden geçer, arayüz derlenir.
 name: Test
 
 on:
@@ -39,3 +39,13 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Tip kontrolü ve derleme
         run: npm run build
+
+  fonksiyonlar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.9.x
+      - name: Edge Function tip kontrolü
+        run: deno check supabase/functions/*/index.ts

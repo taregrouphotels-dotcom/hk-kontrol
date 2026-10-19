@@ -40,6 +40,7 @@ export function errorText(err: unknown): string {
   const msg = err instanceof Error ? err.message : typeof err === 'object' && err && 'message' in err ? String((err as { message: unknown }).message) : String(err)
   if (/invalid login credentials/i.test(msg)) return 'Kullanıcı adı / e-posta veya şifre hatalı.'
   if (/failed to fetch|network/i.test(msg)) return 'İnternet bağlantısı yok. Bağlantıyı kontrol edip tekrar deneyin.'
+  if (/banned/i.test(msg)) return 'Hesabınız pasif. Yöneticinize başvurun.'
   if (/rate limit|too many/i.test(msg)) return 'Çok fazla deneme yapıldı. Birkaç dakika sonra tekrar deneyin.'
   return msg
 }

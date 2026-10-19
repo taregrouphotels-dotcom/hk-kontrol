@@ -1,0 +1,39 @@
+# main'e gelen Edge Function değişikliklerini Supabase'e yayınlar (önce testler geçmeli).
+# Token: GitHub → Settings → Secrets and variables → Actions → SUPBASE_ACCESS_TOKEN
+name: Edge Function yayınla
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/functions/**'
+      - '.github/workflows/functions.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: edge-functions
+  cancel-in-progress: false
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  yayinla:
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPBASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ihwyfllcvkcpjsouhsel
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.119.0
+      # Oturum kontrolünü fonksiyon kendisi yapar (admin.auth.getUser); bu yüzden --no-verify-jwt
+      - name: Fonksiyonlar
+        run: |
+          for dir in supabase/functions/*/; do
+            name=$(basename "$dir")
+            echo "yayınlanıyor: $name"
+            supabase functions deploy "$name" --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt --use-api
+          done
