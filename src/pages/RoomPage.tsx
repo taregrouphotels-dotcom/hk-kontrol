@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { supabase, type CleaningStatus, type DayStatus, type Profile } from '../lib/supabase'
+import { errorText, supabase, type CleaningStatus, type DayStatus, type Profile } from '../lib/supabase'
 import { dayStatusLabel, fmtTime, minutesSince } from '../lib/format'
 import { activeForRoom, cleaningTypeFor, saveActive, updateActive, type ActiveCleaning } from '../lib/active'
 import { enqueue } from '../lib/queue'
@@ -25,6 +25,7 @@ interface Board {
   hk_id: string | null
   hk_name: string | null
   started_at: string | null
+  cleaning_requested_at: string | null
 }
 
 interface Member {
@@ -107,6 +108,14 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
     })
   }
 
+  // Konaklayan odada müşteri temizlik isterse (karar 19)
+  async function requestCleaning() {
+    if (!room) return
+    const { error } = await supabase.from('cleaning_requests').insert({ room_id: room.id })
+    if (error) setError(errorText(error))
+    else load()
+  }
+
   async function addMember(id: string) {
     if (!active || !id || members.includes(id)) return
     setMembers([...members, id])
@@ -148,6 +157,16 @@ export default function RoomPage({ roomId, me, viaQr }: { roomId: string; me: Pr
         </p>
         {board?.block_reason && (
           <p className="mt-2 rounded-lg bg-slate-800 px-3 py-2 text-sm text-white">Kullanım dışı: {board.block_reason}</p>
+        )}
+        {board?.cleaning_requested_at && (
+          <p className="mt-2 rounded-lg bg-orange-500 px-3 py-2 text-sm text-white">
+            Müşteri temizlik istedi · {fmtTime(board.cleaning_requested_at)}
+          </p>
+        )}
+        {board?.day_status === 'stayover' && !board.cleaning_requested_at && !active && (
+          <button onClick={requestCleaning} className="mt-2 w-full rounded-lg border border-orange-300 py-2 text-sm font-semibold text-orange-700">
+            Müşteri temizlik istedi
+          </button>
         )}
         {board?.cleaning_status && board.hk_name && !active && (
           <p className="mt-2 text-sm text-slate-600">

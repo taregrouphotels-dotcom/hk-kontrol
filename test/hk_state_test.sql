@@ -102,9 +102,29 @@ insert into step_results (cleaning_id, step_id, shot, attempt, media_key, ai_sta
 select refresh_cleaning_ai((select id from ai_c));
 select t.eq((select ai_overall::text from cleanings where id = (select id from ai_c)), 'warn', 'tekrar çekilen karenin son denemesi sayılır');
 
+-- Müşteri temizlik talebi (0016): bugün girilen talep görünür, sonradan gönderilen temizlik kapatır
+insert into cleaning_requests (room_id, requested_at) values (pg_temp.room('402'), now() - interval '1 minute');
+create temp table rid as select pg_temp.room('402') r402, pg_temp.room('403') r403;
+grant select on rid to authenticated;
+
 -- Bugün ekranı yeni sütunlarla çalışır
 set role authenticated;
 select t.as_user('00000000-0000-0000-0000-00000000aa01');
+select t.eq((select cleaning_requested_at is not null from today_board() where room_id = (select r402 from rid)), true,
+            'müşteri temizlik talebi Bugün ekranında görünür');
+select t.eq((select count(*) from cleaning_requests), 1::bigint, 'HK bölgesindeki talebi görür');
+insert into cleaning_requests (room_id) values ((select r403 from rid));
+select t.eq((select count(*) from cleaning_requests), 2::bigint, 'HK talep girebilir');
+create temp table del_hk as with d as (delete from cleaning_requests returning 1) select count(*) n from d;
+select t.eq((select n from del_hk), 0::bigint, 'HK talebi silemez');
+reset role;
+insert into cleanings (room_id, day, hk_id, type, status, started_at, finished_at)
+  values (pg_temp.room('402'), (now() at time zone 'Europe/Istanbul')::date, '00000000-0000-0000-0000-00000000aa01', 'stayover',
+          'submitted', now() - interval '30 seconds', now() - interval '10 seconds');
+set role authenticated;
+select t.as_user('00000000-0000-0000-0000-00000000aa01');
+select t.eq((select cleaning_requested_at is null from today_board() where room_id = (select r402 from rid)), true,
+            'talepten sonra temizlik gönderilince talep kapanır');
 select t.eq((select count(*) > 0 from today_board() where hk_state is not null), true, 'Bugün ekranı temiz/kirli durumunu döner');
 select t.fails($$ select * from room_hk_state(gen_random_uuid()) $$, 'room_hk_state doğrudan çağrılamaz');
 select t.fails($$ select refresh_cleaning_ai(gen_random_uuid()) $$, 'refresh_cleaning_ai doğrudan çağrılamaz');
