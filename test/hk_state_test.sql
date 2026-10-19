@@ -1,0 +1,93 @@
+-- Oda temiz/kirli ve doluluk hesabı (room_hk_state). İçe aktarma testinden sonra aynı veritabanında çalışır.
+-- Sabit bir gün (10.05.2026) ve saatlerle: çıkış 12:00, giriş 14:00.
+\set ON_ERROR_STOP 1
+set client_min_messages = notice;
+
+create or replace function t.fails(sql text, msg text) returns void language plpgsql as $$
+begin
+  begin execute sql; exception when others then raise notice 'tamam: % (%)', msg, sqlerrm; return; end;
+  raise exception 'BAŞARISIZ: % hata vermeliydi', msg;
+end $$;
+grant execute on all functions in schema t to authenticated;
+
+delete from pms_reservations;
+delete from room_day_status;
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-00000000aa01', 'hk@test');
+insert into profiles (id, full_name, username, role, region) values
+  ('00000000-0000-0000-0000-00000000aa01', 'HK Test', 'hktest', 'hk', 'istanbul');
+
+create function pg_temp.room(no text) returns uuid language sql as $$
+  select r.id from rooms r join properties p on p.id = r.property_id where p.name = 'Tare Houses Hotel' and r.room_no = no $$;
+create function pg_temp.at(day int, hm text) returns timestamptz language sql as $$
+  select (('2026-05-10'::date + day) + hm::time) at time zone 'Europe/Istanbul' $$;
+create function pg_temp.ds(no text, day int, s day_status) returns void language sql as $$
+  insert into room_day_status (room_id, day, status, source) values (pg_temp.room(no), '2026-05-10'::date + day, s, 'hotelrunner_api') $$;
+create function pg_temp.clean(no text, day int, start_hm text, end_hm text, typ cleaning_type default 'full') returns void language sql as $$
+  insert into cleanings (room_id, day, hk_id, type, status, started_at, check_started_at, finished_at)
+  values (pg_temp.room(no), '2026-05-10'::date + day, '00000000-0000-0000-0000-00000000aa01', typ, 'submitted',
+          pg_temp.at(day, start_hm), pg_temp.at(day, start_hm), pg_temp.at(day, end_hm)) $$;
+create function pg_temp.s(no text, day int, hm text) returns text language sql as $$
+  select hk_state from room_hk_state(pg_temp.room(no), pg_temp.at(day, hm)) $$;
+create function pg_temp.occ(no text, day int, hm text) returns text language sql as $$
+  select concat_ws('/', occupied, departing, arriving) from room_hk_state(pg_temp.room(no), pg_temp.at(day, hm)) $$;
+
+-- 301: bugün çıkış, temizlik 13:00–13:40
+select pg_temp.ds('301', 0, 'checkout');
+select t.eq(pg_temp.s('301', 0, '11:00'), 'unknown', 'çıkıştan önce kayıt yoksa bilinmiyor');
+select t.eq(pg_temp.occ('301', 0, '11:00'), 't/t/f', '12:00 öncesi misafir içeride, çıkış bekleniyor');
+select t.eq(pg_temp.s('301', 0, '12:30'), 'dirty', '12:00 sonrası çıkış odası kirli');
+select t.eq(pg_temp.occ('301', 0, '12:30'), 'f/f/f', '12:00 sonrası çıkış odası boş');
+select pg_temp.clean('301', 0, '13:00', '13:40');
+select t.eq(pg_temp.s('301', 0, '13:20'), 'dirty', 'temizlik bitmeden kirli');
+select t.eq(pg_temp.s('301', 0, '13:50'), 'clean', 'temizlik gönderilince temiz');
+select pg_temp.ds('301', 1, 'vacant');
+select t.eq(pg_temp.s('301', 1, '09:00'), 'clean', 'ertesi gün boş oda temiz kalır');
+
+-- 302: erken çıkış, 10:00'da temizlendi
+select pg_temp.ds('302', 0, 'checkout');
+select pg_temp.clean('302', 0, '10:00', '10:45');
+select t.eq(pg_temp.s('302', 0, '12:30'), 'clean', '12:00 öncesi temizlenen çıkış odası 12:00 sonra da temiz');
+
+-- 303: aynı gün çıkış + giriş
+select pg_temp.ds('303', 0, 'checkout_checkin');
+select t.eq(pg_temp.occ('303', 0, '11:00'), 't/t/t', 'çık+gir: 12:00 öncesi dolu, çıkış ve giriş bekleniyor');
+select t.eq(pg_temp.s('303', 0, '12:30'), 'dirty', 'çık+gir: 12:00 sonrası kirli');
+select pg_temp.clean('303', 0, '12:30', '13:10');
+select t.eq(pg_temp.s('303', 0, '13:30'), 'clean', 'çık+gir: temizlendi');
+select t.eq(pg_temp.occ('303', 0, '13:30'), 'f/f/t', 'çık+gir: 12–14 arası boş, giriş bekleniyor');
+select t.eq(pg_temp.occ('303', 0, '14:30'), 't/f/f', 'çık+gir: 14:00 sonrası dolu');
+
+-- 304: rezervasyon geçmişinden (günlük durum kaydı olmayan eski günler)
+insert into pms_reservations (line_id, hr_number, pms_name, room_no, state, checkin, checkout) values
+  (901, 'X', 'Tare Houses Hotel', '304', 'confirmed', '2026-05-01', '2026-05-07');
+select pg_temp.ds('304', 0, 'vacant');
+select t.eq(pg_temp.s('304', 0, '09:00'), 'dirty', 'eski çıkıştan sonra temizlenmemiş boş oda kirli');
+select pg_temp.clean('304', -3, '12:10', '12:50');
+select t.eq(pg_temp.s('304', 0, '09:00'), 'clean', 'eski çıkıştan sonra temizlenmiş oda temiz');
+insert into pms_reservations (line_id, hr_number, pms_name, room_no, state, checkin, checkout) values
+  (902, 'Y', 'Tare Houses Hotel', '304', 'canceled', '2026-05-08', '2026-05-09');
+select t.eq(pg_temp.s('304', 0, '09:00'), 'clean', 'iptal rezervasyonun çıkışı sayılmaz');
+
+-- 401: giriş günü, oda temiz işaretli
+select pg_temp.ds('401', 0, 'checkin');
+insert into room_hk_marks (room_id, clean, at) values (pg_temp.room('401'), true, pg_temp.at(-1, '18:00'));
+select t.eq(pg_temp.s('401', 0, '10:00'), 'clean', 'elle temiz işaretlenen oda temiz');
+select t.eq(pg_temp.occ('401', 0, '10:00'), 'f/f/t', 'giriş: 14:00 öncesi boş, giriş bekleniyor');
+select t.eq(pg_temp.occ('401', 0, '15:00'), 't/f/f', 'giriş: 14:00 sonrası dolu');
+insert into room_hk_marks (room_id, clean, at) values (pg_temp.room('401'), false, pg_temp.at(0, '09:00'));
+select t.eq(pg_temp.s('401', 0, '10:00'), 'dirty', 'sonradan kirli işaretlenirse kirli');
+
+-- 402: konaklama
+select pg_temp.ds('402', 0, 'stayover');
+select t.eq(pg_temp.occ('402', 0, '10:00'), 't/f/f', 'konaklama: dolu');
+select pg_temp.clean('402', 0, '10:00', '10:20', 'stayover');
+select t.eq(pg_temp.s('402', 0, '11:00'), 'clean', 'konaklama temizliği de temiz sayılır');
+
+-- Bugün ekranı yeni sütunlarla çalışır
+set role authenticated;
+select t.as_user('00000000-0000-0000-0000-00000000aa01');
+select t.eq((select count(*) > 0 from today_board() where hk_state is not null), true, 'Bugün ekranı temiz/kirli durumunu döner');
+select t.fails($$ select * from room_hk_state(gen_random_uuid()) $$, 'room_hk_state doğrudan çağrılamaz');
+select t.fails($$ insert into room_hk_marks (room_id, clean) values ((select id from rooms limit 1), true) $$, 'HK temiz/kirli işaretleyemez');
+reset role;
+\echo 'ODA DURUMU TESTLERİ GEÇTİ'

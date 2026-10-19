@@ -21,6 +21,12 @@ interface BoardRow {
   members: string[] | null
   started_at: string | null
   check_started_at: string | null
+  cleaning_type: 'full' | 'stayover' | null
+  hk_state: 'clean' | 'dirty' | 'unknown'
+  hk_state_at: string | null
+  occupied: boolean | null
+  departing: boolean
+  arriving: boolean
 }
 
 interface Property {
@@ -262,6 +268,18 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
     }
   }
 
+  async function mark(clean: boolean) {
+    setBusy(true)
+    setError(undefined)
+    const { error } = await supabase.from('room_hk_marks').insert({ room_id: room.room_id, clean })
+    setBusy(false)
+    if (error) setError(errorText(error))
+    else {
+      onSaved()
+      onClose()
+    }
+  }
+
   return (
     <Sheet title={`Oda ${room.room_no} · bugünkü durum`} onClose={onClose}>
       <div className="space-y-3">
@@ -271,8 +289,26 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
             {room.started_at && ` · ${fmtTime(room.started_at)}'da başladı`}
           </p>
         )}
+        <div className="rounded-lg bg-white px-4 py-3 shadow-sm">
+          <p className="text-sm text-slate-700">
+            Oda: <b>{hkStateLabel[room.hk_state]}</b>
+            {room.hk_state_at && ` · ${fmtDate(room.hk_state_at)} ${fmtTime(room.hk_state_at)}'dan beri`}
+          </p>
+          <div className="mt-2 flex gap-2">
+            {(['clean', 'dirty'] as const).map((k) => (
+              <button
+                key={k}
+                disabled={busy || room.hk_state === k}
+                onClick={() => mark(k === 'clean')}
+                className="flex-1 rounded-lg border border-slate-300 py-2 text-sm font-semibold text-slate-700 disabled:opacity-40"
+              >
+                {k === 'clean' ? 'Temiz işaretle' : 'Kirli işaretle'}
+              </button>
+            ))}
+          </div>
+        </div>
         <p className="text-sm text-slate-600">
-          Şu an: <b>{room.day_status ? dayStatusLabel[room.day_status] : 'bilinmiyor'}</b>
+          Bugün: <b>{room.day_status ? dayStatusLabel[room.day_status] : 'bilinmiyor'}</b>
           {room.day_status_source === 'manual' ? ' (elle girildi)' : room.day_status ? ' (HotelRunner)' : ''}. Elle seçilen durum
           bugün HotelRunner senkronuyla değişmez.
         </p>
@@ -310,42 +346,51 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
   )
 }
 
-// Oda kutusunun rengi: önce temizlik durumu, temizlik yoksa günlük durum (spec 5.1)
-type Tile = 'todo' | 'cleaning' | 'done' | 'occupied' | 'vacant' | 'blocked' | 'unknown'
+// Oda kutusunun rengi (karar 17): temizlik sürüyorsa sarı; değilse şu an dolu mu ve oda temiz mi.
+// Çıkış saati (12:00) gelince çıkış odası kirli, giriş saati (14:00) gelince giriş odası dolu sayılır (sunucu hesaplar).
+type Tile = 'todo' | 'cleaning' | 'clean' | 'occupied' | 'blocked' | 'unknown'
 const TILES: { key: Tile; label: string; cls: string; dot: string }[] = [
   { key: 'todo', label: 'Temizlenecek', cls: 'bg-red-500 text-white', dot: 'bg-red-500' },
   { key: 'cleaning', label: 'Temizleniyor', cls: 'bg-amber-400 text-amber-950', dot: 'bg-amber-400' },
-  { key: 'done', label: 'Temizlendi', cls: 'bg-emerald-500 text-white', dot: 'bg-emerald-500' },
+  { key: 'clean', label: 'Temiz', cls: 'bg-emerald-500 text-white', dot: 'bg-emerald-500' },
   { key: 'occupied', label: 'Dolu', cls: 'bg-sky-600 text-white', dot: 'bg-sky-600' },
-  { key: 'vacant', label: 'Boş', cls: 'bg-white text-slate-700 ring-1 ring-slate-200', dot: 'bg-white ring-1 ring-slate-300' },
   { key: 'blocked', label: 'Kullanım dışı', cls: 'bg-slate-800 text-white', dot: 'bg-slate-800' },
   { key: 'unknown', label: 'Bilinmiyor', cls: 'bg-slate-200 text-slate-500', dot: 'bg-slate-300' },
 ]
 
+const inProgress = (r: BoardRow) => r.cleaning_status === 'in_progress' || r.cleaning_status === 'fixing'
+// Giriş yapılmış ama oda temizlenmemiş: acil
+const dirtyArrival = (r: BoardRow) =>
+  r.occupied === true && r.hk_state === 'dirty' && (r.day_status === 'checkin' || r.day_status === 'checkout_checkin')
+
 function tileOf(r: BoardRow): Tile {
-  if (r.block_id && !r.cleaning_status) return 'blocked'
-  switch (r.cleaning_status) {
-    case 'approved':
-    case 'submitted':
-    case 'analyzing':
-      return 'done'
-    case 'in_progress':
-    case 'fixing':
-    case 'escalated':
-      return 'cleaning'
+  if (inProgress(r)) return 'cleaning'
+  if (r.block_id) return 'blocked'
+  if (dirtyArrival(r)) return 'todo'
+  if (r.occupied) return 'occupied'
+  if (r.hk_state === 'dirty') return 'todo'
+  if (r.hk_state === 'clean') return 'clean'
+  return 'unknown'
+}
+
+// Kutunun alt satırı
+function tileNote(r: BoardRow): string {
+  const who = r.hk_name?.split(' ')[0] ?? ''
+  if (inProgress(r)) return `${who} ${r.check_started_at ? 'kontrol' : minutesSince(r.started_at!) + 'dk'}`
+  if (r.block_id) return r.block_reason ?? 'Kullanım dışı'
+  if (dirtyArrival(r)) return 'Giriş · kirli!'
+  const cleanedToday = r.cleaning_status && r.cleaning_status !== 'cancelled' && r.hk_state === 'clean'
+  if (r.occupied) {
+    if (r.departing) return 'Çıkacak'
+    if (r.day_status === 'stayover') return cleanedToday ? `Konak. ✓ ${who}` : 'Konak.'
+    return 'Giriş yaptı'
   }
-  switch (r.day_status) {
-    case 'checkout':
-    case 'checkout_checkin':
-    case 'checkin':
-      return 'todo'
-    case 'stayover':
-      return 'occupied'
-    case 'vacant':
-      return 'vacant'
-    default:
-      return 'unknown'
+  if (r.hk_state === 'dirty') return r.arriving ? 'Giriş var' : r.day_status === 'checkout' || r.day_status === 'checkout_checkin' ? 'Çıktı' : 'Kirli'
+  if (r.hk_state === 'clean') {
+    if (cleanedToday) return `${who}${r.cleaning_status === 'approved' ? ' ✓' : ' · onay'}${r.arriving ? ' · giriş' : ''}`
+    return r.arriving ? 'Hazır · giriş' : 'Boş'
   }
+  return r.arriving ? 'Giriş · ?' : r.day_status ? SHORT[r.day_status] : '?'
 }
 
 const SHORT: Record<DayStatus, string> = {
@@ -356,17 +401,7 @@ const SHORT: Record<DayStatus, string> = {
   vacant: 'Boş',
 }
 
-// Kutunun alt satırı: temizlik sürüyorsa kim ve kaç dakikadır, bittiyse kim, yoksa günlük durum
-function tileNote(r: BoardRow): string {
-  if (r.block_id && !r.cleaning_status) return r.block_reason ?? 'Kullanım dışı'
-  const who = r.hk_name?.split(' ')[0] ?? ''
-  if (r.cleaning_status === 'in_progress' || r.cleaning_status === 'fixing')
-    return `${who} ${r.check_started_at ? 'kontrol' : minutesSince(r.started_at!) + 'dk'}`
-  if (r.cleaning_status === 'submitted' || r.cleaning_status === 'analyzing') return `${who} · onay`
-  if (r.cleaning_status === 'approved') return who
-  if (r.cleaning_status === 'escalated') return `${who} · sorun`
-  return r.day_status ? SHORT[r.day_status] : '?'
-}
+const hkStateLabel = { clean: 'Temiz', dirty: 'Kirli (temizlenecek)', unknown: 'Bilinmiyor' }
 
 export default function Today({ me }: { me: Profile }) {
   const canEdit = me.role === 'supervisor' || me.role === 'admin'
@@ -389,8 +424,16 @@ export default function Today({ me }: { me: Profile }) {
     setProperties(props.data as Property[])
   }, [])
 
+  // Saat 12:00 / 14:00 geçişleri ve diğer HK'ların temizlikleri için dakikada bir ve ekrana dönünce yenilenir
   useEffect(() => {
     load()
+    const t = setInterval(load, 60_000)
+    const onVisible = () => document.visibilityState === 'visible' && load()
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      clearInterval(t)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
   }, [load])
 
   return (

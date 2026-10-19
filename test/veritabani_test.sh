@@ -17,3 +17,4 @@ psql -q -v ON_ERROR_STOP=1 -d "$DB" -f test/supabase_taklit.sql
 for f in supabase/migrations/*.sql; do psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$f"; done
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -o /dev/null -f test/import_test.sql 2>&1 | sed "s/^psql:[^ ]* NOTICE:  /  /"
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -o /dev/null -f test/pms_test.sql 2>&1 | sed "s/^psql:[^ ]* NOTICE:  /  /"
+psql -q -v ON_ERROR_STOP=1 -d "$DB" -o /dev/null -f test/hk_state_test.sql 2>&1 | sed "s/^psql:[^ ]* NOTICE:  /  /"
