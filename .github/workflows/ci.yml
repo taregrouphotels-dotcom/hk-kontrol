@@ -48,4 +48,5 @@ jobs:
         with:
           deno-version: v2.9.x
       - name: Edge Function tip kontrolü
-        run: deno check supabase/functions/*/index.ts
+        # Her fonksiyon kendi deno.json'uyla (arayüzün node_modules'ına bakmasın)
+        run: for d in supabase/functions/*/; do deno check --config "$d/deno.json" "$d/index.ts"; done
