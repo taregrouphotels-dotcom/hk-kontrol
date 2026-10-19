@@ -15,7 +15,7 @@ Supabase projesi: `ihwyfllcvkcpjsouhsel` (Frankfurt). Kimlik iş akışına yaz�
 
 1. supabase.com'a gir → sağ üstte profil resmi → **Account preferences** → soldan **Access Tokens** → **Generate new token**. Ad: `hk-kontrol-github`. Çıkan değeri kopyala (bir daha gösterilmez).
 2. github.com/taregrouphotels-dotcom/hk-kontrol → üstte **Settings** (dişli) → solda **Secrets and variables** → **Actions** → yeşil **New repository secret**.
-3. Name: `SUPABASE_ACCESS_TOKEN`, Secret: kopyaladığın değer → **Add secret**.
+3. Name: `SUPBASE_ACCESS_TOKEN` (A harfi eksik; iş akışı bu adı okur), Secret: kopyaladığın değer → **Add secret**.
 4. **Actions** sekmesi → solda "Supabase güncelle" → **Run workflow**. Yeşil biterse veritabanı kurulmuştur.
 
 Bundan sonra `main`'e gelen her veritabanı değişikliği testler geçtikten sonra Supabase'e otomatik uygulanır.
