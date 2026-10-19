@@ -1,0 +1,63 @@
+# Elle çalıştırılan bakım işleri (Actions → Bakım → Run workflow):
+#   secrets:        Edge Function gizli değişkenleri, her satır AD=değer (ör. TTLOCK_CLIENT_ID=...). Boşsa atlanır.
+#   test_password:  claude-test@hk-kontrol.local test admin hesabını açar/şifresini günceller. Boşsa atlanır.
+# Değerler loglarda gizlenir (add-mask). Test hesabı admin panelinden pasife alınabilir.
+name: Bakım
+
+on:
+  workflow_dispatch:
+    inputs:
+      secrets:
+        description: 'Gizli değişkenler (AD=değer, satır satır)'
+        required: false
+        default: ''
+      test_password:
+        description: 'Test admin hesabının şifresi'
+        required: false
+        default: ''
+
+jobs:
+  bakim:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPBASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ihwyfllcvkcpjsouhsel
+      SUPABASE_URL: https://ihwyfllcvkcpjsouhsel.supabase.co
+      IN_SECRETS: ${{ inputs.secrets }}
+      IN_PASSWORD: ${{ inputs.test_password }}
+    steps:
+      - name: Değerleri gizle
+        run: |
+          printf '%s\n' "$IN_SECRETS" | while IFS= read -r line; do
+            v="${line#*=}"; [ -n "$v" ] && [ "$v" != "$line" ] && echo "::add-mask::$v"
+          done
+          [ -n "$IN_PASSWORD" ] && echo "::add-mask::$IN_PASSWORD" || true
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.119.0
+      - name: Gizli değişkenler
+        if: inputs.secrets != ''
+        run: |
+          printf '%s\n' "$IN_SECRETS" | grep -E '^[A-Z][A-Z0-9_]*=.+' > /tmp/secrets.env
+          echo "ayarlanacak: $(cut -d= -f1 /tmp/secrets.env | tr '\n' ' ')"
+          supabase secrets set --project-ref "$SUPABASE_PROJECT_REF" --env-file /tmp/secrets.env
+          rm -f /tmp/secrets.env
+          supabase secrets list --project-ref "$SUPABASE_PROJECT_REF" | cut -c1-60
+      - name: Test admin hesabı
+        if: inputs.test_password != ''
+        run: |
+          KEY=$(supabase projects api-keys --project-ref "$SUPABASE_PROJECT_REF" -o json | jq -r '.[] | select(.name=="service_role") | .api_key')
+          echo "::add-mask::$KEY"
+          EMAIL=claude-test@hk-kontrol.local
+          H=(-H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json")
+          ID=$(curl -sS "${H[@]}" "$SUPABASE_URL/auth/v1/admin/users?per_page=1000" | jq -r --arg e "$EMAIL" '.users[] | select(.email==$e) | .id')
+          BODY=$(jq -n --arg e "$EMAIL" --arg p "$IN_PASSWORD" '{email:$e, password:$p, email_confirm:true}')
+          if [ -z "$ID" ]; then
+            ID=$(curl -sS "${H[@]}" -X POST "$SUPABASE_URL/auth/v1/admin/users" -d "$BODY" | jq -r .id)
+          else
+            curl -sS "${H[@]}" -X PUT "$SUPABASE_URL/auth/v1/admin/users/$ID" -d "$BODY" > /dev/null
+          fi
+          [ -n "$ID" ] && [ "$ID" != null ] || { echo "hesap açılamadı"; exit 1; }
+          curl -sS -f "${H[@]}" -H "Prefer: resolution=merge-duplicates" -X POST "$SUPABASE_URL/rest/v1/profiles" \
+            -d "$(jq -n --arg id "$ID" '{id:$id, full_name:"Claude (test)", role:"admin", region:null, active:true, consent_at:(now|todate)}')"
+          echo "test admin hazır: $EMAIL"
