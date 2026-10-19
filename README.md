@@ -17,6 +17,7 @@ Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulamas
 | Oda kullanım dışı | Süpervizör/admin odaya dokunup "Kullanım dışı" (tadilat vb.) ve bitiş tarihi girer; kutu siyah görünür, süre bitince kendiliğinden kalkar (`0011`) |
 | HK temizlik akışı | HK Bugün ekranında odaya dokunur → oda sayfası → "Temizliğe başla" → isteğe bağlı birlikte temizleyen → "Temizlik bitti · Kontrole başla" → tam ekran rehberli kamera (adım, talimat, kontrol maddeleri, fener, referans hayaleti, karanlık/bulanık uyarısı, filigran) → "Uygulanamıyor" açıklamayla → "Kontrolü gönder". Her işlem ve fotoğraf cihazdaki çevrimdışı kuyruğa (IndexedDB) yazılır, sırayla gönderilir; üstte bekleyen sayısı ve "Tekrar dene" görünür. Fotoğraflar `media-sign` ile R2'ye yüklenir, yüklenince cihazdan silinir. Çıkışta gönderilmemiş işlem varsa uyarır |
 | TTLock | Kapı uygulamadan açılmaz (karar 16). Odaların TTLock kilit numaraları veritabanında (`0012`), ileride kilit kayıtlarını arka planda okumak için |
+| Süpervizör onayı | Süpervizör/admin → **Onay** sekmesi: gönderilmiş kontroller (en eski üstte) ve bugün onaylananlar. Kayıt ekranı (`#/kayit/<id>`): kim, ne zaman, kaç dakika, adım adım fotoğraflar (dokununca tam ekran, referansla karşılaştırma, adımlar arasında gezinme), uygulanamayan adımlar ve nedenleri, yüklenmemiş kareler. Onayla, not, şikayet işaretle, kaydı iptal et. Fotoğraf adresleri `media-sign` (`cleaning`) ile tek çağrıda, kullanıcının yetkisiyle |
 
 ## Yapı
 

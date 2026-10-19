@@ -6,6 +6,8 @@ import Staff from './Staff'
 import DataImport from './DataImport'
 import RoomPage from './RoomPage'
 import Capture from './Capture'
+import Review from './Review'
+import CleaningDetail from './CleaningDetail'
 import QueueBar from '../components/QueueBar'
 import { pendingOps } from '../lib/queue'
 
@@ -18,6 +20,7 @@ interface Tab {
 // Alt menü; adres çubuğundaki #/... ile eşleşir, geri tuşu çalışır
 const TABS: Tab[] = [
   { path: '', label: 'Bugün', roles: ['hk', 'supervisor', 'admin'] },
+  { path: 'onay', label: 'Onay', roles: ['admin', 'supervisor'] },
   { path: 'personel', label: 'Personel', roles: ['admin', 'supervisor'] },
   { path: 'veri', label: 'Veri', roles: ['admin'] },
 ]
@@ -37,9 +40,10 @@ export default function Main({ profile }: { profile: Profile }) {
 
   const tabs = TABS.filter((t) => t.roles.includes(profile.role))
   const active = tabs.find((t) => t.path === path) ?? tabs[0]
-  // Sekme dışı sayfalar: oda (#/oda/<id>), kapı QR'ı (#/qr/<token>), kontrol çekimi (#/cek/<temizlik id>)
+  // Sekme dışı sayfalar: oda (#/oda/<id>), kapı QR'ı (#/qr/<token>), kontrol çekimi (#/cek/<temizlik id>),
+  // kontrol kaydı (#/kayit/<temizlik id>)
   const [route, arg] = path.split('/')
-  const page = ['oda', 'qr', 'cek'].includes(route) && arg ? route : null
+  const page = ['oda', 'qr', 'cek', 'kayit'].includes(route) && arg ? route : null
 
   async function logout() {
     // Gönderilmemiş fotoğraf/işlem varsa uyar: çıkışta cihazdaki kuyruk silinmez ama başka kullanıcı giremez (spec 4)
@@ -69,7 +73,9 @@ export default function Main({ profile }: { profile: Profile }) {
       {page === 'oda' && <RoomPage key={arg} roomId={arg} me={profile} />}
       {page === 'qr' && <QrRoom token={arg} me={profile} />}
       {page === 'cek' && <Capture key={arg} cleaningId={arg} me={profile} />}
+      {page === 'kayit' && profile.role !== 'hk' && <CleaningDetail key={arg} cleaningId={arg} />}
       {!page && active.path === '' && <Today me={profile} />}
+      {!page && active.path === 'onay' && <Review />}
       {!page && active.path === 'personel' && <Staff me={profile} />}
       {!page && active.path === 'veri' && <DataImport />}
 

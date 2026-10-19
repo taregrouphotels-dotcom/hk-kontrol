@@ -1,6 +1,7 @@
 // Cloudflare R2 için süreli imzalı adres (spec 9). Anahtarlar sadece burada; tarayıcı R2'ye doğrudan yükler/okur.
 // upload: kaydı başlatan HK, açık (in_progress/fixing) temizliğin adım fotoğrafı için PUT adresi alır.
 // view:   kullanıcı, RLS'e göre görebildiği bir fotoğrafın GET adresini alır.
+// cleaning: bir temizlik kaydının tüm adım fotoğrafları ve adımların referans fotoğrafları (onay ekranı), tek çağrıda.
 // Anahtar biçimi: {bölge}/{otel}/{oda}/{gün}/{temizlik}/{adım}-{kare}-{deneme}.jpg
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4'
 import { AwsClient } from 'npm:aws4fetch@1.0.20'
@@ -96,6 +97,28 @@ Deno.serve(async (req) => {
     }
     if (!ok) return json({ error: 'Fotoğraf bulunamadı.' }, 404)
     return json({ url: await presign('GET', key) })
+  }
+
+  if (body.action === 'cleaning') {
+    // Kayıt ve fotoğraflar kullanıcının kendi yetkisiyle (RLS) okunur; göremiyorsa boş döner
+    const userDb = createClient(SUPABASE_URL, ANON_KEY, {
+      global: { headers: { Authorization: `Bearer ${token}` } },
+      auth: { persistSession: false },
+    })
+    const { data: c } = await userDb.from('cleanings').select('id, room_id, rooms(room_type_id)').eq('id', body.cleaning_id).maybeSingle()
+    if (!c) return json({ error: 'Kayıt bulunamadı.' }, 404)
+    const { data: results } = await userDb.from('step_results')
+      .select('id, step_id, shot, attempt, media_key, media_deleted_at, skipped, skip_reason, captured_at')
+      .eq('cleaning_id', c.id)
+    const { data: steps } = await userDb.from('check_steps').select('id, reference_key')
+      .eq('room_type_id', (c as any).rooms.room_type_id).not('reference_key', 'is', null)
+    const photos = await Promise.all((results ?? []).map(async (r) => ({
+      ...r,
+      url: r.media_key && !r.media_deleted_at ? await presign('GET', r.media_key) : null,
+    })))
+    const references: Record<string, string> = {}
+    for (const st of steps ?? []) references[st.id] = await presign('GET', st.reference_key!)
+    return json({ photos, references })
   }
 
   // Admin: depo testi. Sunucu R2'ye yazıp okur (anahtarlar doğru mu), tarayıcı için de PUT/GET adresi verir (CORS doğru mu).

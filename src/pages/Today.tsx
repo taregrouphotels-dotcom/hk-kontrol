@@ -288,9 +288,16 @@ function StatusSheet({ room, me, onClose, onSaved }: { room: BoardRow; me: Profi
             {dayStatusLabel[s]}
           </button>
         ))}
-        <a href={`#/oda/${room.room_id}`} className="block w-full rounded-xl bg-white py-3 text-center text-sm font-semibold text-brand shadow-sm">
-          Oda sayfasını aç
-        </a>
+        <div className="flex gap-2">
+          {room.cleaning_id && (
+            <a href={`#/kayit/${room.cleaning_id}`} className="flex-1 rounded-xl bg-white py-3 text-center text-sm font-semibold text-brand shadow-sm">
+              Kontrol kaydı
+            </a>
+          )}
+          <a href={`#/oda/${room.room_id}`} className="flex-1 rounded-xl bg-white py-3 text-center text-sm font-semibold text-brand shadow-sm">
+            Oda sayfası
+          </a>
+        </div>
         <BlockEditor room={room} me={me} onSaved={() => { onSaved(); onClose() }} />
         {room.day_status_source === 'manual' && (
           <button disabled={busy} onClick={() => save(null)} className="w-full py-3 text-sm text-slate-500">
