@@ -5221,7 +5221,8 @@
     "Çekmeceler boş",
     "Başucu aplikleri yanıyor",
     "Priz ve anahtarlar sağlam",
-    "Yatak kenarı ve altı temiz"
+    "Yatak kenarı ve altı temiz",
+    "Yatak odasındaki LED ayna lekesiz, ışığı yanıyor"
    ],
    "full": true,
    "stayover": true,
@@ -5891,7 +5892,8 @@
     "Oda çöp kovası boş",
     "Zemin temiz",
     "Duvarda iz/sıyrık yok",
-    "Tüm aydınlatma yanıyor"
+    "Tüm aydınlatma yanıyor",
+    "Duman dedektörünün ışığı yanıp sönüyor"
    ],
    "full": true,
    "stayover": true,
@@ -7960,6 +7962,26 @@
    "label": "Ayaksız kadeh, yuvarlak",
    "kind": "Mutfak Malzemesi",
    "description": "Yuvarlak gövdeli, ayaksız",
+   "photo_file": null
+  },
+  {
+   "sheet": "Kalem Kataloğu",
+   "row": 208,
+   "property": "Tare Houses Hotel",
+   "item_key": "ceiling_light",
+   "label": "Tavan armatürü (plafonyer)",
+   "kind": "Demirbaş",
+   "description": "Yuvarlak tavan armatürü, açık ampullü",
+   "photo_file": null
+  },
+  {
+   "sheet": "Kalem Kataloğu",
+   "row": 209,
+   "property": "Tare Houses Hotel",
+   "item_key": "led_mirror_room",
+   "label": "Yuvarlak LED ayna (oda)",
+   "kind": "Demirbaş",
+   "description": "Yatak odası duvarında, arkadan aydınlatmalı",
    "photo_file": null
   },
   {
@@ -13345,6 +13367,18 @@
    "row": 440,
    "property": "Tare Houses Hotel",
    "room_type": "X1",
+   "step_order": 7,
+   "item_key": "led_mirror_room",
+   "qty": 1,
+   "verified": true,
+   "location": null,
+   "note": "Yatak odası doğu duvarı (video)"
+  },
+  {
+   "sheet": "Envanter - Demirbaş",
+   "row": 441,
+   "property": "Tare Houses Hotel",
+   "room_type": "X1",
    "step_order": 8,
    "item_key": "wardrobe",
    "qty": 1,
@@ -13354,7 +13388,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 441,
+   "row": 442,
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 8,
@@ -13366,23 +13400,11 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 442,
+   "row": 443,
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 8,
    "item_key": "spare_blanket",
-   "qty": 1,
-   "verified": true,
-   "location": null,
-   "note": null
-  },
-  {
-   "sheet": "Envanter - Demirbaş",
-   "row": 443,
-   "property": "Tare Houses Hotel",
-   "room_type": "X1",
-   "step_order": 9,
-   "item_key": "desk_with_chair",
    "qty": 1,
    "verified": true,
    "location": null,
@@ -13394,7 +13416,7 @@
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 9,
-   "item_key": "amenity_tray",
+   "item_key": "desk_with_chair",
    "qty": 1,
    "verified": true,
    "location": null,
@@ -13406,8 +13428,8 @@
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 9,
-   "item_key": "remote",
-   "qty": 2,
+   "item_key": "amenity_tray",
+   "qty": 1,
    "verified": true,
    "location": null,
    "note": null
@@ -13417,9 +13439,9 @@
    "row": 446,
    "property": "Tare Houses Hotel",
    "room_type": "X1",
-   "step_order": 10,
-   "item_key": "sofa_gray",
-   "qty": 1,
+   "step_order": 9,
+   "item_key": "remote",
+   "qty": 2,
    "verified": true,
    "location": null,
    "note": null
@@ -13430,7 +13452,7 @@
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 10,
-   "item_key": "coffee_table_glass",
+   "item_key": "sofa_gray",
    "qty": 1,
    "verified": true,
    "location": null,
@@ -13442,7 +13464,7 @@
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 10,
-   "item_key": "floor_lamp",
+   "item_key": "coffee_table_glass",
    "qty": 1,
    "verified": true,
    "location": null,
@@ -13454,7 +13476,7 @@
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 10,
-   "item_key": "rug_striped",
+   "item_key": "floor_lamp",
    "qty": 1,
    "verified": true,
    "location": null,
@@ -13466,6 +13488,18 @@
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 10,
+   "item_key": "rug_striped",
+   "qty": 1,
+   "verified": true,
+   "location": null,
+   "note": null
+  },
+  {
+   "sheet": "Envanter - Demirbaş",
+   "row": 451,
+   "property": "Tare Houses Hotel",
+   "room_type": "X1",
+   "step_order": 10,
    "item_key": "round_wall_lamp",
    "qty": 2,
    "verified": true,
@@ -13474,7 +13508,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 451,
+   "row": 452,
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 10,
@@ -13486,23 +13520,11 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 452,
-   "property": "Tare Houses Hotel",
-   "room_type": "X1",
-   "step_order": 11,
-   "item_key": "cooktop",
-   "qty": 1,
-   "verified": true,
-   "location": null,
-   "note": null
-  },
-  {
-   "sheet": "Envanter - Demirbaş",
    "row": 453,
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 11,
-   "item_key": "hanging_bin",
+   "item_key": "cooktop",
    "qty": 1,
    "verified": true,
    "location": null,
@@ -13514,7 +13536,7 @@
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 11,
-   "item_key": "mini_fridge",
+   "item_key": "hanging_bin",
    "qty": 1,
    "verified": true,
    "location": null,
@@ -13526,6 +13548,18 @@
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 11,
+   "item_key": "mini_fridge",
+   "qty": 1,
+   "verified": true,
+   "location": null,
+   "note": null
+  },
+  {
+   "sheet": "Envanter - Demirbaş",
+   "row": 456,
+   "property": "Tare Houses Hotel",
+   "room_type": "X1",
+   "step_order": 11,
    "item_key": "range_hood",
    "qty": 1,
    "verified": false,
@@ -13534,7 +13568,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 456,
+   "row": 457,
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 16,
@@ -13546,7 +13580,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 457,
+   "row": 458,
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 18,
@@ -13558,7 +13592,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 458,
+   "row": 459,
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 20,
@@ -13570,7 +13604,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 459,
+   "row": 460,
    "property": "Tare Houses Hotel",
    "room_type": "X1",
    "step_order": 20,
@@ -13582,7 +13616,19 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 460,
+   "row": 461,
+   "property": "Tare Houses Hotel",
+   "room_type": "X1",
+   "step_order": 20,
+   "item_key": "ceiling_light",
+   "qty": 1,
+   "verified": true,
+   "location": null,
+   "note": "Oturma bölümü, klima yanı (video)"
+  },
+  {
+   "sheet": "Envanter - Demirbaş",
+   "row": 462,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 1,
@@ -13594,7 +13640,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 461,
+   "row": 463,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 2,
@@ -13606,7 +13652,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 462,
+   "row": 464,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 2,
@@ -13618,7 +13664,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 463,
+   "row": 465,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 2,
@@ -13630,7 +13676,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 464,
+   "row": 466,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 2,
@@ -13642,7 +13688,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 465,
+   "row": 467,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 2,
@@ -13654,7 +13700,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 466,
+   "row": 468,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 3,
@@ -13666,7 +13712,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 467,
+   "row": 469,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 3,
@@ -13678,7 +13724,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 468,
+   "row": 470,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 3,
@@ -13690,7 +13736,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 469,
+   "row": 471,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 3,
@@ -13702,7 +13748,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 470,
+   "row": 472,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 3,
@@ -13714,7 +13760,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 471,
+   "row": 473,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 3,
@@ -13726,7 +13772,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 472,
+   "row": 474,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 4,
@@ -13738,7 +13784,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 473,
+   "row": 475,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 4,
@@ -13750,7 +13796,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 474,
+   "row": 476,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 4,
@@ -13762,7 +13808,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 475,
+   "row": 477,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 4,
@@ -13774,7 +13820,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 476,
+   "row": 478,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 4,
@@ -13786,7 +13832,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 477,
+   "row": 479,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 4,
@@ -13798,7 +13844,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 478,
+   "row": 480,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 5,
@@ -13810,7 +13856,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 479,
+   "row": 481,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 5,
@@ -13822,7 +13868,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 480,
+   "row": 482,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 5,
@@ -13834,7 +13880,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 481,
+   "row": 483,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 6,
@@ -13846,7 +13892,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 482,
+   "row": 484,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 6,
@@ -13858,7 +13904,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 483,
+   "row": 485,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 7,
@@ -13870,7 +13916,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 484,
+   "row": 486,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 7,
@@ -13882,7 +13928,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 485,
+   "row": 487,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 8,
@@ -13894,7 +13940,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 486,
+   "row": 488,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 8,
@@ -13906,7 +13952,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 487,
+   "row": 489,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 8,
@@ -13918,7 +13964,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 488,
+   "row": 490,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 9,
@@ -13930,7 +13976,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 489,
+   "row": 491,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 9,
@@ -13942,7 +13988,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 490,
+   "row": 492,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 10,
@@ -13954,7 +14000,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 491,
+   "row": 493,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 10,
@@ -13966,7 +14012,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 492,
+   "row": 494,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 10,
@@ -13978,19 +14024,19 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 493,
+   "row": 495,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 10,
    "item_key": "round_wall_lamp",
-   "qty": 2,
-   "verified": true,
+   "qty": 4,
+   "verified": false,
    "location": null,
-   "note": null
+   "note": "2 kuzey duvarı (kanepe), 2 doğu duvarı (yemek ve TV yanı); teyit et"
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 494,
+   "row": 496,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 10,
@@ -14002,7 +14048,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 495,
+   "row": 497,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 10,
@@ -14014,7 +14060,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 496,
+   "row": 498,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 11,
@@ -14026,7 +14072,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 497,
+   "row": 499,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 11,
@@ -14038,7 +14084,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 498,
+   "row": 500,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 11,
@@ -14050,7 +14096,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 499,
+   "row": 501,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 11,
@@ -14062,7 +14108,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 500,
+   "row": 502,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 12,
@@ -14074,7 +14120,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 501,
+   "row": 503,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 12,
@@ -14086,7 +14132,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 502,
+   "row": 504,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 12,
@@ -14098,7 +14144,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 503,
+   "row": 505,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 12,
@@ -14110,7 +14156,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 504,
+   "row": 506,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 12,
@@ -14122,7 +14168,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 505,
+   "row": 507,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 18,
@@ -14134,7 +14180,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 506,
+   "row": 508,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 20,
@@ -14146,7 +14192,7 @@
   },
   {
    "sheet": "Envanter - Demirbaş",
-   "row": 507,
+   "row": 509,
    "property": "Tare Houses Hotel",
    "room_type": "X2",
    "step_order": 20,
@@ -14155,6 +14201,18 @@
    "verified": false,
    "location": null,
    "note": "Kanepe yanında siyah kova görünüyor"
+  },
+  {
+   "sheet": "Envanter - Demirbaş",
+   "row": 510,
+   "property": "Tare Houses Hotel",
+   "room_type": "X2",
+   "step_order": 20,
+   "item_key": "smoke_detector",
+   "qty": 1,
+   "verified": true,
+   "location": null,
+   "note": null
   },
   {
    "sheet": "Envanter - Mutfak",

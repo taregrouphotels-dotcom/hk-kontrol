@@ -335,7 +335,8 @@
         "Çekmeceler boş",
         "Başucu aplikleri yanıyor",
         "Priz ve anahtarlar sağlam",
-        "Yatak kenarı ve altı temiz"
+        "Yatak kenarı ve altı temiz",
+        "Yatak odasındaki LED ayna lekesiz, ışığı yanıyor"
       ],
       "ai_prompt": "Komodin üstünde toz veya eşya var mı? Çekmecede unutulmuş eşya var mı? Yatak altında eşya var mı? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
       "applies_to": [
@@ -356,6 +357,13 @@
           "label": "Başucu apliği, dikey oval",
           "qty": 2,
           "verified": true
+        },
+        {
+          "key": "led_mirror_room",
+          "label": "Yuvarlak LED ayna (oda)",
+          "qty": 1,
+          "verified": true,
+          "note": "Yatak odası doğu duvarı (video)"
         }
       ],
       "shots": 2,
@@ -1010,6 +1018,13 @@
           "qty": 1,
           "verified": true,
           "note": "Video"
+        },
+        {
+          "key": "ceiling_light",
+          "label": "Tavan armatürü (plafonyer)",
+          "qty": 1,
+          "verified": true,
+          "note": "Oturma bölümü, klima yanı (video)"
         }
       ],
       "shots": 2,
@@ -1130,6 +1145,18 @@
       "label": "Ayaksız kadeh, yuvarlak",
       "kind": "Mutfak Malzemesi",
       "description": "Yuvarlak gövdeli, ayaksız"
+    },
+    {
+      "key": "ceiling_light",
+      "label": "Tavan armatürü (plafonyer)",
+      "kind": "Demirbaş",
+      "description": "Yuvarlak tavan armatürü, açık ampullü"
+    },
+    {
+      "key": "led_mirror_room",
+      "label": "Yuvarlak LED ayna (oda)",
+      "kind": "Demirbaş",
+      "description": "Yatak odası duvarında, arkadan aydınlatmalı"
     }
   ]
 }

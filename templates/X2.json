@@ -493,8 +493,9 @@
         {
           "key": "round_wall_lamp",
           "label": "Yuvarlak duvar apliği",
-          "qty": 2,
-          "verified": true
+          "qty": 4,
+          "verified": false,
+          "note": "2 kuzey duvarı (kanepe), 2 doğu duvarı (yemek ve TV yanı); teyit et"
         },
         {
           "key": "decor_branches",
@@ -1028,7 +1029,8 @@
         "Oda çöp kovası boş",
         "Zemin temiz",
         "Duvarda iz/sıyrık yok",
-        "Tüm aydınlatma yanıyor"
+        "Tüm aydınlatma yanıyor",
+        "Duman dedektörünün ışığı yanıp sönüyor"
       ],
       "ai_prompt": "Zeminde kir veya çöp var mı? Açıkta kablo var mı? Duvarda iz var mı? Yanmayan lamba var mı? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
       "applies_to": [
@@ -1051,6 +1053,12 @@
           "qty": 1,
           "verified": false,
           "note": "Kanepe yanında siyah kova görünüyor"
+        },
+        {
+          "key": "smoke_detector",
+          "label": "Duman dedektörü (tavan)",
+          "qty": 1,
+          "verified": true
         }
       ],
       "shots": 1,
@@ -1171,6 +1179,18 @@
       "label": "Ayaksız kadeh, yuvarlak",
       "kind": "Mutfak Malzemesi",
       "description": "Yuvarlak gövdeli, ayaksız"
+    },
+    {
+      "key": "ceiling_light",
+      "label": "Tavan armatürü (plafonyer)",
+      "kind": "Demirbaş",
+      "description": "Yuvarlak tavan armatürü, açık ampullü"
+    },
+    {
+      "key": "led_mirror_room",
+      "label": "Yuvarlak LED ayna (oda)",
+      "kind": "Demirbaş",
+      "description": "Yatak odası duvarında, arkadan aydınlatmalı"
     }
   ]
 }
