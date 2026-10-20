@@ -1,0 +1,1145 @@
+{
+  "code": "X2",
+  "name": "Deluxe Triple Room",
+  "property": "Tare Houses Hotel",
+  "rooms": [
+    "102",
+    "202",
+    "302",
+    "402"
+  ],
+  "min_minutes_full": 25,
+  "min_minutes_stayover": 10,
+  "_note": "20.10.2026 Drive fotoğraflarından (X2 klasörü, 10 kare) çıkarıldı. Banyo ve ikram fotoğrafı yok: X1 ile aynı varsayıldı. Adetler fotoğraftan sayıldı; verified=false olanlar odada sayılmalı. Ölçüler tahmini. Video (20261020_193651.mp4) 10 MB sınırını aştığı için okunamadı.",
+  "dimensions": {
+    "area_m2": 32,
+    "width_m": 6.4,
+    "depth_m": 5.0,
+    "height_m": 2.7,
+    "estimated": true
+  },
+  "steps": [
+    {
+      "order": 1,
+      "zone": "Giriş",
+      "title": "Giriş ve konsol masa",
+      "instruction": "Kapıdan içeri girince yatağa doğru çek: konsol masa, yatak ve kapı kasası aynı karede.",
+      "checks": [
+        "Kapı, şifreli kilit ve kol çalışıyor",
+        "Konsol masa tozsuz, üstü boş",
+        "Zeminde leke, saç, kum yok",
+        "Tavan ve duvar aplikleri yanıyor"
+      ],
+      "ai_prompt": "Zeminde kir, saç, çöp var mı? Masada eşya veya toz var mı? Yanmayan lamba var mı? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "desk_with_chair",
+          "label": "Konsol masa",
+          "qty": 1,
+          "verified": true
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193946.jpg",
+        "note": "Giriş kapısının iç tarafından odaya doğru dikey kare. Solda konsol masa, ortada yatak, arkada perde ve oturma alanı görünsün."
+      }
+    },
+    {
+      "order": 2,
+      "zone": "Banyo",
+      "title": "Lavabo ve ayna",
+      "instruction": "Lavabo, batarya, LED ayna ve sıvı sabun aynı karede olacak şekilde çek. Ayna ışığı açık olsun.",
+      "checks": [
+        "Taş lavabo içi ve gider temiz",
+        "Batarya parlak, su lekesi yok",
+        "Sıvı sabun dolu",
+        "LED ayna lekesiz, ışığı yanıyor",
+        "Tezgah kuru"
+      ],
+      "ai_prompt": "Lavaboda kıl, sabun kalıntısı veya su lekesi var mı? Aynada leke var mı? Sıvı sabun yerinde mi? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "vessel_sink",
+          "label": "Tezgah üstü lavabo, traverten taş görünümlü",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "basin_faucet",
+          "label": "Lavabo bataryası, mat siyah kuğu boyun",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "led_mirror",
+          "label": "Yuvarlak LED ayna",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "liquid_soap",
+          "label": "Sıvı el sabunu",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": null,
+        "note": "Lavabonun önünden hafif yukarıdan; çanak lavabo tam, üstte yuvarlak LED aynanın alt yarısı ve siyah batarya, tezgahın sol köşesinde sıvı sabun. Ayna ışığı yanık. (X2 fotoğrafı yok; X1 karesi örnek.)"
+      }
+    },
+    {
+      "order": 3,
+      "zone": "Banyo",
+      "title": "Lavabo altı raflar",
+      "instruction": "Lavabo dolabının önünde çömel, iki rafı tam karşıdan çek; havlular, terlikler ve saç kurutma makinesi görünsün.",
+      "checks": [
+        "3 banyo + 3 el havlusu katlı ve lekesiz (3 kişilik)",
+        "3 çift terlik poşetinde",
+        "Yedek tuvalet kağıdı var",
+        "Saç kurutma makinesi yerinde"
+      ],
+      "ai_prompt": "Kaç havlu, kaç çift terlik, kaç yedek rulo var? Saç kurutma makinesi rafta mı? Havlularda leke var mı?",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "bath_towel",
+          "label": "Banyo havlusu",
+          "qty": 3,
+          "verified": false,
+          "note": "3 kişilik oda; teyit et"
+        },
+        {
+          "key": "hand_towel",
+          "label": "El havlusu",
+          "qty": 3,
+          "verified": false,
+          "note": "3 kişilik oda; teyit et"
+        },
+        {
+          "key": "slippers",
+          "label": "Terlik (çift)",
+          "qty": 3,
+          "verified": false,
+          "note": "3 kişilik oda; teyit et"
+        },
+        {
+          "key": "toilet_paper_spare",
+          "label": "Yedek tuvalet kağıdı",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "hair_dryer",
+          "label": "Saç kurutma makinesi",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "vanity_unit",
+          "label": "Lavabo altı ahşap ünite",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": null,
+        "note": "Dolabın tam önünden, raf yüksekliğinde; havlular, terlikler, yedek rulo ve saç kurutma makinesi ayrı görünsün. (X1'deki 20261020_193147.jpg örnek.)"
+      }
+    },
+    {
+      "order": 4,
+      "zone": "Banyo",
+      "title": "WC",
+      "instruction": "Klozet kapağı açık; rezervuar paneli, tuvalet kağıtlığı, WC fırçası ve pedallı çöp kovası aynı karede olsun.",
+      "checks": [
+        "Klozet içi, kapak altı ve dış yüzey temiz",
+        "Rezervuar paneli parmak izsiz",
+        "Tuvalet kağıdı takılı",
+        "WC fırçası temiz",
+        "Çöp kovası boş, poşet yeni"
+      ],
+      "ai_prompt": "Klozet içinde veya kenarında kir var mı? Tuvalet kağıdı takılı mı? Çöp kovası boş mu? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "wc",
+          "label": "Asma klozet, bej",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "flush_plate",
+          "label": "Rezervuar paneli, mat siyah",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "toilet_paper",
+          "label": "Tuvalet kağıdı (takılı)",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "toilet_paper_holder",
+          "label": "Tuvalet kağıtlığı, mat siyah",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "toilet_brush",
+          "label": "WC fırçası",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "bath_bin",
+          "label": "Banyo çöp kovası (pedallı, siyah)",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": null,
+        "note": "Klozetin sol önünden çapraz; asma klozet kapağı açık, duvarda siyah rezervuar paneli, sağda kağıtlık, WC fırçası ve pedallı siyah çöp kovası. (X1 karesi örnek.)"
+      }
+    },
+    {
+      "order": 5,
+      "zone": "Banyo",
+      "title": "Duş",
+      "instruction": "Duşu tam karşıdan çek: tepe duşu, el duşu, 3 dispenser ve köşe sepeti görünsün. Cam varsa ikinci açıyı ışığa karşı al.",
+      "checks": [
+        "Duvar ve zemin kireçsiz, su lekesi yok",
+        "Giderde saç yok",
+        "3 dispenser dolu (şampuan, saç kremi, duş jeli)",
+        "El duşu askıda",
+        "Köşe sepeti boş",
+        "Banyo cam kapısı ve siyah çerçevesi lekesiz"
+      ],
+      "ai_prompt": "Duş duvarında veya zeminde kireç, su lekesi var mı? Giderde saç var mı? Kaç dispenser var? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "shower_set",
+          "label": "Tepe duşlu duş seti + el duşu, mat siyah",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "dispenser",
+          "label": "Duvar dispenseri",
+          "qty": 3,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "shower_basket",
+          "label": "Köşe sepeti, siyah tel",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 banyo fotoğrafı yok; X1 ile aynı varsayıldı"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": null,
+        "note": "Duşun girişinden dikey kare. Ortada siyah tepe duşu ve el duşu, solda yan yana 3 siyah dispenser, sağda köşe sepeti, altta gider ve zemin görünsün. (X1 karesi örnek.)"
+      }
+    },
+    {
+      "order": 6,
+      "zone": "Oda",
+      "title": "Yatak",
+      "instruction": "Yatağı ayak ucundan, dalgalı ahşap başlık, iki komodin ve tablo görünecek şekilde çek.",
+      "checks": [
+        "Çarşaf gergin, dört köşe sıkıştırılmış",
+        "4 yastık düzgün",
+        "Kılıflarda leke, saç yok",
+        "Başlık ve baza tozsuz"
+      ],
+      "ai_prompt": "Yatak düzgün yapılmış mı? Çarşaf buruşuk ya da sarkık mı? Kaç yastık var, kılıflarda leke var mı? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "bed",
+          "label": "Çift kişilik yatak, dalgalı ahşap başlık",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "pillow",
+          "label": "Yastık",
+          "qty": 4,
+          "verified": true
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193946.jpg",
+        "note": "Yatağın ayak ucundan; başlığın tamamı, iki yanda komodin ve oval aplikler, üstte tablo. Tüm ışıklar açık."
+      }
+    },
+    {
+      "order": 7,
+      "zone": "Oda",
+      "title": "Komodinler ve başucu",
+      "instruction": "1. kare: sol komodin ve yatak kenarı. 2. kare: sağ komodin ve yatak kenarı. Çekmeceler açık.",
+      "checks": [
+        "Komodin üstü tozsuz",
+        "Çekmeceler boş",
+        "Başucu aplikleri yanıyor",
+        "Priz ve anahtarlar sağlam",
+        "Yatak kenarı ve altı temiz"
+      ],
+      "ai_prompt": "Komodin üstünde toz veya eşya var mı? Çekmecede unutulmuş eşya var mı? Yatak altında eşya var mı? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "nightstand",
+          "label": "Komodin, rattan çekmeceli",
+          "qty": 2,
+          "verified": true
+        },
+        {
+          "key": "bedside_wall_lamp",
+          "label": "Başucu apliği, dikey oval",
+          "qty": 2,
+          "verified": true
+        }
+      ],
+      "shots": 2,
+      "reference": {
+        "photo": "20261020_193946.jpg",
+        "note": "Yatak kenarından komodine doğru; komodin, priz/anahtar paneli ve yatak kenarı. İki kare."
+      }
+    },
+    {
+      "order": 8,
+      "zone": "Oda",
+      "title": "Gardırop",
+      "instruction": "İki kapağı da aç, feneri aç; askılar ve üst raf tek karede olsun.",
+      "checks": [
+        "Askılar tam",
+        "Üst rafta yedek battaniye katlı",
+        "Tabanda unutulmuş eşya yok"
+      ],
+      "ai_prompt": "Kaç askı var? Üst rafta battaniye var mı? Dolapta misafirden kalmış eşya var mı?",
+      "applies_to": [
+        "full"
+      ],
+      "required": true,
+      "needs_flash": true,
+      "items": [
+        {
+          "key": "wardrobe",
+          "label": "Gardırop",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "hanger",
+          "label": "Elbise askısı (siyah ahşap)",
+          "qty": 5,
+          "verified": false,
+          "note": "Askılar sola toplanmış; fotoğrafta 4-5 görünüyor"
+        },
+        {
+          "key": "spare_blanket",
+          "label": "Yedek battaniye",
+          "qty": 1,
+          "verified": true
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193930.jpg",
+        "note": "Kapaklar tam açık, karşıdan. Üstte katlı battaniye; askılar boruda ayrık dizilmiş (sola toplanmasın), altta taban."
+      }
+    },
+    {
+      "order": 9,
+      "zone": "Oda",
+      "title": "İkram ve kumandalar",
+      "instruction": "İkram tepsisini ve kumandaları üstten tek karede çek; paketler yan yana dizili.",
+      "checks": [
+        "3 fincan + bambu altlık (3 kişilik; teyit et)",
+        "Lokum kasesi dolu",
+        "Türk kahvesi, yeşil çay, Nescafe, kahve kreması, toz şeker tam",
+        "TV ve klima kumandası yerinde"
+      ],
+      "ai_prompt": "Tepside kaç fincan var? Türk kahvesi, yeşil çay, Nescafe, kahve kreması ve şeker paketlerini ayrı say. Kaç kumanda var? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "amenity_tray",
+          "label": "İkram tepsisi",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 ikram fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "coffee_cup",
+          "label": "Türk kahvesi fincanı + altlık",
+          "qty": 2,
+          "verified": false,
+          "note": "X1 ile aynı varsayıldı; 3 kişilikte 3 olabilir"
+        },
+        {
+          "key": "lokum_bowl",
+          "label": "Lokum kasesi",
+          "qty": 1,
+          "verified": false,
+          "note": "X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "remote",
+          "label": "Kumanda (TV + klima)",
+          "qty": 2,
+          "verified": false,
+          "note": "X1 ile aynı varsayıldı"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": null,
+        "note": "Tepsinin üstünden; fincanlar ters, paket etiketleri okunur, altta iki kumanda. (X1'deki 20261020_193142.jpg örnek.)"
+      }
+    },
+    {
+      "order": 10,
+      "zone": "Oda",
+      "title": "Oturma alanı",
+      "instruction": "Yatak tarafından pencereye doğru geniş açıyla çek: kanepe (sofa yatak), cam sehpa, halı, perdeler ve aplikler görünsün.",
+      "checks": [
+        "Sofa yatak toplanmış, minderler düzgün (3. kişi kullandıysa çarşafı alınmış)",
+        "Cam sehpa lekesiz",
+        "Halı düz, saçaklar düzgün",
+        "Perde ve tül düzgün",
+        "Aplikler yanıyor",
+        "Dekoratif dallar yerinde"
+      ],
+      "ai_prompt": "Kanepede, sehpada kir, leke veya eşya var mı? Sofa yatak açık mı? Perdeler düzgün mü? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "sofa_gray",
+          "label": "Kanepe / sofa yatak, gri kadife",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "coffee_table_glass",
+          "label": "Orta sehpa, yuvarlak cam",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "rug_striped",
+          "label": "Halı, krem çizgili + kiremit daire",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "round_wall_lamp",
+          "label": "Yuvarlak duvar apliği",
+          "qty": 2,
+          "verified": true
+        },
+        {
+          "key": "decor_branches",
+          "label": "Dekoratif kuru dal",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "wall_art",
+          "label": "Tablo",
+          "qty": 1,
+          "verified": true,
+          "note": "Yatak üstünde"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193951.jpg",
+        "note": "Yatağın ayak ucu yanından pencereye doğru geniş açı. Ortada kanepe ve cam sehpa, altta halı, solda mutfak köşesi, sağda dallar ve perde."
+      }
+    },
+    {
+      "order": 11,
+      "zone": "Mutfak",
+      "title": "Mutfak tezgahı",
+      "instruction": "Mutfağın karşısından çek: ocak, evye, batarya, sünger standı, asma çöp kovası, buzdolabı ve açık raflar tek karede.",
+      "checks": [
+        "2 gözlü ocak camı temiz",
+        "Evye ve batarya temiz",
+        "Fırça + sünger temiz",
+        "Bulaşıklık boş ve kuru",
+        "Asma çöp kovası boş",
+        "Buzdolabı kapağı kapalı ve temiz"
+      ],
+      "ai_prompt": "Ocakta yanık veya yağ lekesi var mı? Evyede bulaşık var mı? Bulaşıklıkta eşya var mı? Çöp kovası dolu mu? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "cooktop",
+          "label": "Ankastre 2 gözlü ocak",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "sponge_caddy",
+          "label": "Fırça + sünger standı",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "dish_rack",
+          "label": "Bulaşıklık",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "hanging_bin",
+          "label": "Asma çöp kovası",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "mini_fridge",
+          "label": "Mini buzdolabı, Beko",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "range_hood",
+          "label": "Davlumbaz",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "kettle",
+          "label": "Kettle",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "salt_pepper_set",
+          "label": "Tuz-biber-kürdan standı",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "oil_bottle",
+          "label": "Yağ şişesi",
+          "qty": 1,
+          "verified": true
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193957.jpg",
+        "note": "Mutfağın tam karşısından, kapı açıklığının yanından dikey kare. Üstte açık raflar (kettle, tuz-biber, yağ), ortada tezgah, ocak ve evye, altta dolaplar, sağda buzdolabı, solda banyo cam kapısı."
+      }
+    },
+    {
+      "order": 12,
+      "zone": "Mutfak",
+      "title": "Çekmece 1: çatal-bıçak",
+      "instruction": "Çekmeceyi tamamen aç, feneri aç, tam üstten çek. Çatal-bıçaklar üst üste binmesin.",
+      "checks": [
+        "Çatal, kaşık, bıçak ve çay kaşığı tam",
+        "Şarap açacağı yerinde",
+        "Setten olmayan parça yok",
+        "Kaşıklık altı kırıntısız"
+      ],
+      "ai_prompt": "Her bölmedeki yemek kaşığı, çatal, bıçak ve çay kaşığını ayrı say. Setle aynı olmayan parça var mı?",
+      "applies_to": [
+        "full"
+      ],
+      "required": true,
+      "needs_flash": true,
+      "items": [
+        {
+          "key": "cutlery_tray",
+          "label": "Kaşıklık",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "fork",
+          "label": "Yemek çatalı",
+          "qty": 6,
+          "verified": false,
+          "note": "Fotoğraftan sayıldı; odada say"
+        },
+        {
+          "key": "spoon",
+          "label": "Yemek kaşığı",
+          "qty": 6,
+          "verified": false,
+          "note": "Fotoğraftan sayıldı; odada say"
+        },
+        {
+          "key": "knife",
+          "label": "Yemek bıçağı",
+          "qty": 4,
+          "verified": false,
+          "note": "Fotoğrafta 4; set 6 olabilir"
+        },
+        {
+          "key": "teaspoon",
+          "label": "Çay kaşığı",
+          "qty": 3,
+          "verified": false,
+          "note": "Fotoğrafta 3"
+        },
+        {
+          "key": "corkscrew",
+          "label": "Şarap açacağı (kanatlı)",
+          "qty": 1,
+          "verified": true
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193842.jpg",
+        "note": "Tam üstten, fener açık. Soldan: çatal, kaşık, bıçak bölmeleri; sağ üstte kanatlı şarap açacağı, sağ altta çay kaşıkları."
+      }
+    },
+    {
+      "order": 13,
+      "zone": "Mutfak",
+      "title": "Çekmece 2: servis gereçleri",
+      "instruction": "Çekmeceyi tamamen aç, feneri aç, üstten çek.",
+      "checks": [
+        "4 silikon servis gereci (kepçe, delikli kepçe, kaşık, spatula)",
+        "Çekmece içi kırıntısız"
+      ],
+      "ai_prompt": "Kaç silikon servis gereci var? Hangileri eksik?",
+      "applies_to": [
+        "full"
+      ],
+      "required": true,
+      "needs_flash": true,
+      "items": [
+        {
+          "key": "silicone_ladle",
+          "label": "Silikon kepçe",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "silicone_slotted",
+          "label": "Silikon delikli kepçe",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "silicone_spoon",
+          "label": "Silikon servis kaşığı",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 fotoğrafı yok; X1 ile aynı varsayıldı"
+        },
+        {
+          "key": "silicone_spatula",
+          "label": "Silikon spatula",
+          "qty": 1,
+          "verified": false,
+          "note": "X2 fotoğrafı yok; X1 ile aynı varsayıldı"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": null,
+        "note": "Tam üstten, 4 gereç yan yana. (X1'deki 20261020_193130.jpg örnek.)"
+      }
+    },
+    {
+      "order": 14,
+      "zone": "Mutfak",
+      "title": "Çekmece 3: bıçak seti",
+      "instruction": "Çekmeceyi tamamen aç; bıçak seti kutusu açık ve kesme tahtası görünsün.",
+      "checks": [
+        "Bıçak seti tam (kutuda)",
+        "Kesme tahtası temiz"
+      ],
+      "ai_prompt": "Bıçak setinde boş yuva var mı? Kesme tahtasında leke veya küf var mı?",
+      "applies_to": [
+        "full"
+      ],
+      "required": true,
+      "needs_flash": true,
+      "items": [
+        {
+          "key": "knife_set",
+          "label": "Kiyomi bıçak seti (kutulu)",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "cutting_board",
+          "label": "Kesme tahtası",
+          "qty": 1,
+          "verified": false,
+          "note": "Fotoğrafta görünmüyor; kutunun altında olabilir"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193852.jpg",
+        "note": "Üstten; Kiyomi kutusu kapağı açık, bıçaklar ve kesme tahtası görünsün (fotoğrafta kutu kapalı, kapağı açarak çek)."
+      }
+    },
+    {
+      "order": 15,
+      "zone": "Mutfak",
+      "title": "Açık raf: tabak ve kase",
+      "instruction": "Açık raf bölümünü önden çek; tabak ve kase yığınları yandan sayılabilsin.",
+      "checks": [
+        "6 kase (zeytin yeşili)",
+        "4 küçük gri tabak",
+        "4 büyük düz tabak (zeytin yeşili)",
+        "4 büyük gri servis tabağı",
+        "Tabaklarda iz veya çatlak yok"
+      ],
+      "ai_prompt": "Kase, küçük tabak, büyük düz tabak ve gri tabak sayısını yığınlardan ayrı say. Çatlak veya leke var mı?",
+      "applies_to": [
+        "full"
+      ],
+      "required": true,
+      "needs_flash": true,
+      "items": [
+        {
+          "key": "bowl",
+          "label": "Kase (zeytin yeşili)",
+          "qty": 6,
+          "verified": false,
+          "note": "Fotoğrafta 6; teyit et"
+        },
+        {
+          "key": "side_plate",
+          "label": "Küçük tabak (gri)",
+          "qty": 4,
+          "verified": true
+        },
+        {
+          "key": "flat_plate_green",
+          "label": "Düz tabak (zeytin yeşili)",
+          "qty": 4,
+          "verified": false,
+          "note": "Fotoğrafta 4-5 görünüyor"
+        },
+        {
+          "key": "dinner_plate",
+          "label": "Büyük tabak (gri)",
+          "qty": 4,
+          "verified": true
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193834.jpg",
+        "note": "Rafın tam önünden, fener açık. Üst rafta solda küçük gri tabaklar, sağda kase yığını; alt rafta solda zeytin yeşili, sağda gri tabaklar."
+      }
+    },
+    {
+      "order": 16,
+      "zone": "Mutfak",
+      "title": "Üst dolap: kupa, fincan, bardak",
+      "instruction": "Kapağı aç, feneri aç; kupalar, fincan tabakları ve bardaklar yan yana görünsün.",
+      "checks": [
+        "2 kupa + 3 küçük fincan",
+        "Fincan tabakları tam",
+        "Su bardakları, kısa bardaklar ve kadehler tam",
+        "5 küçük kase",
+        "Bardaklarda su lekesi yok"
+      ],
+      "ai_prompt": "Kupa, küçük fincan, fincan tabağı, su bardağı, kısa bardak, kadeh ve küçük kaseyi ayrı say. Bardaklarda leke var mı?",
+      "applies_to": [
+        "full"
+      ],
+      "required": true,
+      "needs_flash": true,
+      "items": [
+        {
+          "key": "mug",
+          "label": "Kupa",
+          "qty": 2,
+          "verified": false,
+          "note": "Fotoğrafta 2"
+        },
+        {
+          "key": "espresso_cup",
+          "label": "Küçük fincan",
+          "qty": 3,
+          "verified": false,
+          "note": "Fotoğrafta 3"
+        },
+        {
+          "key": "saucer",
+          "label": "Fincan tabağı (geniş kenarlı)",
+          "qty": 12,
+          "verified": false,
+          "note": "7 + 5 iki yığın; odada say"
+        },
+        {
+          "key": "water_glass",
+          "label": "Su bardağı",
+          "qty": 7,
+          "verified": false,
+          "note": "Fotoğrafta 7"
+        },
+        {
+          "key": "short_glass",
+          "label": "Kısa bardak",
+          "qty": 4,
+          "verified": false,
+          "note": "Fotoğrafta 4"
+        },
+        {
+          "key": "stemless_glass",
+          "label": "Ayaksız kadeh",
+          "qty": 2,
+          "verified": false,
+          "note": "Fotoğrafta 2"
+        },
+        {
+          "key": "wine_glass",
+          "label": "Şarap kadehi",
+          "qty": 1,
+          "verified": false,
+          "note": "Fotoğrafta 1; set 2 olabilir"
+        },
+        {
+          "key": "sauce_bowl",
+          "label": "Küçük kase",
+          "qty": 5,
+          "verified": false,
+          "note": "Fotoğrafta 5"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193838.jpg",
+        "note": "Kapak açık, önden. Üst rafta solda kupalar ve küçük fincanlar, sağda fincan tabağı yığınları; alt rafta kadehler, bardaklar ters ve küçük kaseler."
+      }
+    },
+    {
+      "order": 17,
+      "zone": "Mutfak",
+      "title": "Evye altı: tencere-tava",
+      "instruction": "Kapakları aç, feneri aç; iki rafı da görecek şekilde çek.",
+      "checks": [
+        "Tencere ve tava kapaklarıyla tam",
+        "Tava içi temiz",
+        "Kağıt havlu standı ve rulo var",
+        "Sifonda sızıntı yok"
+      ],
+      "ai_prompt": "Kaç tencere ve tava var, kapakları var mı? Tava içinde yağ kalıntısı var mı? Dolap tabanında su var mı?",
+      "applies_to": [
+        "full"
+      ],
+      "required": true,
+      "needs_flash": true,
+      "items": [
+        {
+          "key": "pot",
+          "label": "Tencere + kapak",
+          "qty": 2,
+          "verified": true
+        },
+        {
+          "key": "saucepan",
+          "label": "Küçük tencere + kapak",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "frying_pan",
+          "label": "Tava",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "trivet",
+          "label": "Mantar nihale",
+          "qty": 2,
+          "verified": true
+        },
+        {
+          "key": "paper_towel",
+          "label": "Kağıt havlu standı + rulo",
+          "qty": 1,
+          "verified": true
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193900.jpg",
+        "note": "Kapaklar açık, önden çömelerek. Üst rafta solda büyük tencere (mantar nihale üstünde), ortada kağıt havlu, sağda küçük tencere; alt rafta tencere ve tava."
+      }
+    },
+    {
+      "order": 18,
+      "zone": "Mutfak",
+      "title": "Mini buzdolabı",
+      "instruction": "Kapağı tamamen aç; içi ve kapak rafları görünsün.",
+      "checks": [
+        "Raflar ve kapak rafları temiz",
+        "Misafirden kalan yiyecek/içecek yok",
+        "Koku ve buzlanma yok",
+        "Kapak rafındaki su şişeleri tam"
+      ],
+      "ai_prompt": "Buzdolabında misafirden kalan yiyecek/içecek var mı? Raflarda leke veya buzlanma var mı?",
+      "applies_to": [
+        "full"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "water",
+          "label": "Su (şişe)",
+          "qty": 4,
+          "verified": false,
+          "note": "Kapak rafında 1 mavi + 3 küçük şişe görünüyor; standart adedi teyit et"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193830.jpg",
+        "note": "Kapak tam açık, hafif yukarıdan; iç raflar, sebzelik ve kapak rafları tek karede, iç ışık yanık."
+      }
+    },
+    {
+      "order": 19,
+      "zone": "Oda",
+      "title": "Genel oda",
+      "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+      "checks": [
+        "Klima çalışıyor",
+        "Oda çöp kovası boş",
+        "Zemin temiz",
+        "Duvarda iz/sıyrık yok",
+        "Tüm aydınlatma yanıyor"
+      ],
+      "ai_prompt": "Zeminde kir veya çöp var mı? Açıkta kablo var mı? Duvarda iz var mı? Yanmayan lamba var mı? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
+      "applies_to": [
+        "full",
+        "stayover"
+      ],
+      "required": true,
+      "needs_flash": false,
+      "items": [
+        {
+          "key": "air_conditioner",
+          "label": "Klima iç ünitesi",
+          "qty": 1,
+          "verified": false,
+          "note": "Fotoğraflarda görünmüyor"
+        },
+        {
+          "key": "room_bin",
+          "label": "Oda çöp kovası",
+          "qty": 1,
+          "verified": false,
+          "note": "Kanepe yanında siyah kova görünüyor"
+        }
+      ],
+      "shots": 1,
+      "reference": {
+        "photo": "20261020_193951.jpg",
+        "note": "Odanın köşesinden geniş açı; yatak kenarı, oturma alanı, mutfak köşesi ve perdeler aynı karede, tüm ışıklar açık."
+      }
+    }
+  ],
+  "treats": [
+    {
+      "key": "turkish_coffee",
+      "label": "Hazır Türk kahvesi",
+      "qty": 2
+    },
+    {
+      "key": "tea",
+      "label": "Yeşil çay (poşet)",
+      "qty": 2
+    },
+    {
+      "key": "coffee",
+      "label": "Nescafe Classic (stick)",
+      "qty": 2
+    },
+    {
+      "key": "creamer",
+      "label": "Kahve kreması (stick)",
+      "qty": 2
+    },
+    {
+      "key": "sugar",
+      "label": "Toz şeker (stick)",
+      "qty": 2
+    }
+  ],
+  "treats_note": "X2 ikram fotoğrafı yok; X1 ile aynı varsayıldı (3 kişilikte 3 olabilir)",
+  "catalog_additions": [
+    {
+      "key": "amenity_tray",
+      "label": "İkram tepsisi, bambu, kulplu",
+      "kind": "Demirbaş",
+      "description": "Çalışma masasında; fincanlar ve ikram paketleri üstünde"
+    },
+    {
+      "key": "coffee_cup",
+      "label": "Türk kahvesi fincanı + bambu altlık",
+      "kind": "Mutfak Malzemesi",
+      "description": "Beyaz porselen, logolu; altlık yuvarlak bambu"
+    },
+    {
+      "key": "lokum_bowl",
+      "label": "Lokum kasesi, bambu",
+      "kind": "Mutfak Malzemesi",
+      "description": "İkram tepsisinde küçük yuvarlak kase"
+    },
+    {
+      "key": "turkish_coffee",
+      "label": "Hazır Türk kahvesi (paket)",
+      "kind": "İkram",
+      "description": "Lacivert paket, \"Hazır Türk Kahvesi Sade\""
+    },
+    {
+      "key": "creamer",
+      "label": "Kahve kreması (Coffee-mate stick)",
+      "kind": "İkram",
+      "description": "Kırmızı-beyaz stick"
+    },
+    {
+      "key": "hair_dryer",
+      "label": "Saç kurutma makinesi, beyaz",
+      "kind": "Demirbaş",
+      "description": "Lavabo altı rafında, kablosu toplanmış"
+    },
+    {
+      "key": "slippers",
+      "label": "Terlik (çift, poşetli)",
+      "kind": "Sarf",
+      "description": "Beyaz, logolu, poşet içinde"
+    },
+    {
+      "key": "silicone_ladle",
+      "label": "Silikon kepçe",
+      "kind": "Mutfak Malzemesi",
+      "description": "Siyah silikon, ahşap saplı"
+    },
+    {
+      "key": "silicone_spatula",
+      "label": "Silikon spatula",
+      "kind": "Mutfak Malzemesi",
+      "description": "Siyah silikon, ahşap saplı"
+    },
+    {
+      "key": "flat_plate_green",
+      "label": "Düz tabak (zeytin yeşili sırlı)",
+      "kind": "Mutfak Malzemesi",
+      "description": "Kenarı kalkık, koyu zeytin/hardal sır"
+    },
+    {
+      "key": "espresso_cup",
+      "label": "Küçük fincan (zeytin yeşili)",
+      "kind": "Mutfak Malzemesi",
+      "description": "Kulpsuz/küçük kulplu, kupadan küçük"
+    },
+    {
+      "key": "saucer",
+      "label": "Fincan tabağı (koyu zeytin, geniş kenarlı)",
+      "kind": "Mutfak Malzemesi",
+      "description": "Ortası çukur, geniş kenarlı"
+    },
+    {
+      "key": "short_glass",
+      "label": "Kısa bardak",
+      "kind": "Mutfak Malzemesi",
+      "description": "Alt kısmı dar, kısa şeffaf bardak"
+    },
+    {
+      "key": "stemless_glass",
+      "label": "Ayaksız kadeh, yuvarlak",
+      "kind": "Mutfak Malzemesi",
+      "description": "Yuvarlak gövdeli, ayaksız"
+    }
+  ]
+}

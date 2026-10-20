@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-# X3 dışındaki oda tipleri için kontrol adımlarını Excel'deki oda özelliklerinden üretir ve
-# data/HK_Veri_Toplama.xlsx → Kontrol Adımları sayfasına yazar (X3 satırlarına dokunmaz).
-import sys, openpyxl
+# Elle hazırlanmış şablonu olmayan oda tipleri için kontrol adımlarını Excel'deki oda özelliklerinden üretir ve
+# data/HK_Veri_Toplama.xlsx → Kontrol Adımları sayfasına yazar. templates/*.json'u olan tiplere (X1, X2, X3) dokunmaz;
+# onlar scripts/apply_room_templates.py ile yazılır.
+import sys, glob, os, openpyxl
 from copy import copy
 path = sys.argv[1]
+HAND = {os.path.basename(f)[:-5] for f in glob.glob(os.path.join(os.path.dirname(__file__), '..', 'templates', '*.json'))}
 wb = openpyxl.load_workbook(path)
 types = {}
 for r in wb['Oda Tipleri'].iter_rows(min_row=2, values_only=True):
@@ -128,15 +130,15 @@ for name in ('Kare Sayısı', 'AI Talimatı'):
         ws.cell(1, col, name)
         ws.cell(1, col)._style = copy(ws.cell(1, len(hdr))._style)
         hdr.append(name)
-# Eski üretilmiş satırları (X3 dışı) temizle
+# Eski üretilmiş satırları (elle şablonu olanlar hariç) temizle
 for row in range(ws.max_row, 1, -1):
     v = ws.cell(row, 1).value
-    if v and v != 'X3' and v in types: ws.delete_rows(row)
+    if v and v not in HAND and v in types: ws.delete_rows(row)
 last = max(r for r in range(1, ws.max_row + 1) if ws.cell(r, 1).value)
 style_row = 2
 n = 0
 for code in types:
-    if code == 'X3': continue
+    if code in HAND: continue
     for i, st in enumerate(steps(code), start=1):
         last += 1
         vals = (code, i) + st[:7] + (st[8], st[9])
@@ -148,4 +150,4 @@ for code in types:
 wb.save(path)
 print('yazılan adım:', n)
 for code in types:
-    if code != 'X3': print(code, len(steps(code)), sum(x[8] for x in steps(code)), 'kare')
+    if code not in HAND: print(code, len(steps(code)), sum(x[8] for x in steps(code)), 'kare')

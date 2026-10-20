@@ -31,6 +31,7 @@ Tare otelleri (İstanbul + İzmir/Urla) için housekeeping oda kontrol uygulamas
 | Otomatik onay | Kapalıyken her temizlik süpervizöre gider. Açılınca AI'ın hepsine "ok" dediği temizlik kendiliğinden onaylanır |
 | Süre uyarısı | Max süre aktif oda tipinde süreyi aşan temizlik Bugün ekranında "⚠ dk" ile işaretlenir |
 | Telegram özeti | n8n akışı "HK Kontrol Günlük Özet (Telegram)": 08:00 otel durumu, 20:00 kim ne yaptı (`daily_summary_auth`) |
+| Oda tipi şablonları | X3, X1, X2 elle hazırlanmış şablon (`templates/*.json`): adım, kontrol maddesi, AI talimatı, envanter ve referans fotoğraf tarifi. Excel'e `python3 scripts/apply_room_templates.py data/HK_Veri_Toplama.xlsx templates/X1.json templates/X2.json` ile yazılır, sonra admin panelinden içe aktarılır. X1/X2 oda dosyası (3B yerleşim, plan, görünüş): https://claude.ai/artifact/8o4ebkhuqdPPa3d66kzEH3 |
 | HotelRunner'a yazma | Kurulmadı: API'de oda temizlik durumu uç noktası yok (karar 21) |
 
 ## Yapı

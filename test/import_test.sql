@@ -73,7 +73,7 @@ select t.eq((select count(*) from expected_items e join room_types r on r.id = e
 -- ---------- Tekrar yükleme: kopya oluşmaz ----------
 insert into t.res values ('apply2', import_master_data(:'payload'::jsonb, true));
 select t.eq((select count(*) from rooms), 40::bigint, 'tekrar yükleyince oda kopyalanmaz');
-select t.eq((select count(*) from check_steps), 244::bigint, 'tekrar yükleyince adım kopyalanmaz');
+select t.eq((select count(*) from check_steps), (select jsonb_array_length(:'payload'::jsonb->'steps'))::bigint, 'tekrar yükleyince adım kopyalanmaz');
 select t.eq((select count(*) from expected_items),
             (select (v->'counts'->'inventory'->>'total')::bigint from t.res where k = 'apply1'), 'tekrar yükleyince envanter kopyalanmaz');
 select t.eq((select (v->'counts'->'rooms'->>'new')::int from t.res where k = 'apply2'), 0, 'ikinci yüklemede yeni oda sayısı 0');
