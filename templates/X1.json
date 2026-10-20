@@ -10,11 +10,10 @@
   ],
   "min_minutes_full": 25,
   "min_minutes_stayover": 10,
-  "_note": "20.10.2026 Drive fotoğraflarından (X1 klasörü, 21 kare) çıkarıldı. Adetler fotoğraftan sayıldı; verified=false olanlar odada sayılıp Excel'de \"Doğrulandı = Evet\" yapılmalı. Ölçüler tahmini (m² Excel'den). Video (20261020_192704.mp4) 10 MB sınırını aştığı için okunamadı.",
+  "_note": "20.10.2026 Drive fotoğrafları (21 kare) ve odanın videosundan (108 sn) çıkarıldı. Adetler fotoğraf/videodan sayıldı; verified=false olanlar odada sayılıp Excel'de \"Doğrulandı = Evet\" yapılmalı. Ölçüler tahmini (m² Excel'den).",
   "dimensions": {
     "area_m2": 35,
-    "width_m": 7.0,
-    "depth_m": 5.0,
+    "layout": "Giriş (şifreli kilit) yatak odasına açılır; iç kapıdan oturma + mutfak bölümüne, oradan banyoya geçilir",
     "height_m": 2.7,
     "estimated": true
   },
@@ -23,7 +22,7 @@
       "order": 1,
       "zone": "Giriş",
       "title": "Giriş, kapı ve TV duvarı",
-      "instruction": "Kapıyı açık bırak, odanın içinden kapıya doğru çek: kapı kolu/kilit, TV ve duvar dipleri görünsün.",
+      "instruction": "Yatak odasında, yatağın yanından giriş kapısına doğru çek: şifreli kilitli kapı, TV ve duvar dipleri görünsün.",
       "checks": [
         "Kapı, şifreli kilit ve kol çalışıyor",
         "TV ekranı tozsuz, kapalı",
@@ -43,13 +42,13 @@
           "label": "TV",
           "qty": 1,
           "verified": true,
-          "note": "2024 notunda 2 TV yazıyordu; yeni fotoğraflarda yatak karşısında 1 TV var. Odada say."
+          "note": "Yatak odasında 1 TV (video); oturma bölümünde TV yok"
         }
       ],
       "shots": 1,
       "reference": {
         "photo": "20261020_192907.jpg",
-        "note": "İçeriden kapıya doğru, göğüs hizasından dikey kare. Sol kenarda açık kapı ve elektronik kilit, ortada duvara asılı TV, altta zemin ve süpürgelik. Tavan ışığı açık, TV kapalı."
+        "note": "Yatak kenarından giriş kapısına doğru dikey kare. Solda açık giriş kapısı ve şifreli kilit, ortada duvardaki TV, altta zemin. Tavan ışığı açık, TV kapalı."
       }
     },
     {
@@ -62,7 +61,8 @@
         "Batarya parlak, su lekesi yok",
         "Sıvı sabun dolu",
         "LED ayna lekesiz, ışığı yanıyor",
-        "Tezgah kuru"
+        "Tezgah kuru",
+        "Havlu askısında 1 banyo havlusu, halkalarda el havlusu asılı"
       ],
       "ai_prompt": "Lavaboda kıl, sabun kalıntısı veya su lekesi var mı? Aynada leke var mı? Sıvı sabun yerinde mi? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
       "applies_to": [
@@ -95,6 +95,19 @@
           "label": "Sıvı el sabunu",
           "qty": 1,
           "verified": true
+        },
+        {
+          "key": "towel_bar",
+          "label": "Havlu askısı (çubuk), mat siyah",
+          "qty": 1,
+          "verified": true
+        },
+        {
+          "key": "towel_ring",
+          "label": "Havlu halkası, mat siyah",
+          "qty": 2,
+          "verified": true,
+          "note": "Lavabo yanında + duşta"
         }
       ],
       "shots": 1,
@@ -232,10 +245,11 @@
       "order": 5,
       "zone": "Banyo",
       "title": "Duş",
-      "instruction": "Duşu tam karşıdan çek: tepe duşu, el duşu, 3 dispenser ve köşe sepeti görünsün. Cam varsa ikinci açıyı ışığa karşı al.",
+      "instruction": "Kapısız, cam paravanlı duşu karşıdan çek: tepe duşu, el duşu, 3 dispenser, köşe sepeti ve lineer gider görünsün. İkinci açıda camı ışığa karşı al.",
       "checks": [
-        "Duvar ve zemin kireçsiz, su lekesi yok",
-        "Giderde saç yok",
+        "Cam paravanda kireç ve su lekesi yok",
+        "Duvar ve zemin temiz",
+        "Lineer giderde saç yok",
         "3 dispenser dolu (şampuan, saç kremi, duş jeli)",
         "El duşu askıda",
         "Köşe sepeti boş"
@@ -269,8 +283,8 @@
       ],
       "shots": 1,
       "reference": {
-        "photo": "20261020_193154.jpg",
-        "note": "Duşun girişinden dikey kare. Ortada siyah tepe duşu ve el duşu, solda yan yana 3 siyah dispenser, sağda köşe sepeti, altta gider ve zemin görünsün."
+        "photo": "X1_video_dus.jpg",
+        "note": "Banyonun kapısından duşa doğru geniş açı: cam paravan, tepe duşu, dispenserler, havlu halkası, lineer gider ve zemin tek karede. Ayna ışığı açık."
       }
     },
     {
@@ -460,7 +474,8 @@
         "Cam sehpa lekesiz",
         "Halı düz, saçaklar düzgün",
         "Perde ve tül düzgün",
-        "Aplikler ve lambader yanıyor"
+        "Aplikler ve lambader yanıyor",
+        "Balkon kapısı kapalı ve kilitli, camı lekesiz"
       ],
       "ai_prompt": "Kanepede, sehpada kir, leke veya eşya var mı? Perdeler düzgün mü? Yanmayan lamba var mı? (Konaklama kontrolündeysen misafir eşyalarını değerlendirme.)",
       "applies_to": [
@@ -966,10 +981,10 @@
       "order": 20,
       "zone": "Oda",
       "title": "Genel oda",
-      "instruction": "Kapı tarafından tüm odayı tek geniş karede çek. Tüm ışıklar açık.",
+      "instruction": "1. kare: yatak odası, giriş kapısının yanından. 2. kare: oturma + mutfak bölümü, iç kapıdan balkona doğru. Tüm ışıklar açık.",
       "checks": [
-        "Klima çalışıyor",
-        "Oda çöp kovası boş",
+        "Klima çalışıyor (oturma bölümü)",
+        "Masa altındaki çöp kovası boş",
         "Zemin temiz",
         "Duvarda iz/sıyrık yok",
         "Tüm aydınlatma yanıyor"
@@ -986,21 +1001,21 @@
           "key": "air_conditioner",
           "label": "Klima iç ünitesi",
           "qty": 1,
-          "verified": false,
-          "note": "Fotoğraflarda görünmüyor; yerini teyit et"
+          "verified": true,
+          "note": "Oturma bölümünde, banyo kapısının üstünde (video)"
         },
         {
           "key": "room_bin",
-          "label": "Oda çöp kovası",
+          "label": "Oda çöp kovası (pedallı, masa altında)",
           "qty": 1,
-          "verified": false,
-          "note": "Fotoğraflarda görünmüyor"
+          "verified": true,
+          "note": "Video"
         }
       ],
-      "shots": 1,
+      "shots": 2,
       "reference": {
-        "photo": "20261020_192921.jpg",
-        "note": "Odanın köşesinden geniş açı (0,5x varsa onunla). Kanepe, lambader, perdeler ve mutfak tarafı aynı karede; tüm ışıklar açık."
+        "photo": "X1_video_kapi_oturma.jpg",
+        "note": "İkinci kare: yatak odasından açık iç kapıdan oturma bölümüne; sağda mutfak, ileride balkon kapısı ve perdeler, solda cam sehpa, üstte klima görünsün."
       }
     }
   ],
